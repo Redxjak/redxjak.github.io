@@ -1,7 +1,11 @@
-# Redxjak's Password Generator
+# Redxjak's Projects
 
-Static GitHub Pages version of Redxjak's Password Generator.
+GitHub Pages home site for Redxjak's projects.
 
-The site generates passwords entirely in the visitor's browser. It does not send passwords to a server and does not use online storage.
+Main site:
 
 https://redxjak.github.io/
+
+Projects:
+
+- Password Generator: https://redxjak.github.io/PWGen/
