@@ -1,119 +1,113 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redxjak's Projects</title>
-  <style>
-    :root {
-      --bg: #f4f7f6;
-      --panel: #ffffff;
-      --ink: #16211e;
-      --muted: #5c6d67;
-      --line: #cbd8d3;
-      --accent: #157f6e;
-      --accent-dark: #0d584c;
-      --shadow: 0 18px 40px rgba(24, 43, 38, 0.12);
-    }
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Redxjak's project hub for published tools, experiments, and GitHub Pages projects."
+    >
+    <title>Redxjak | Project Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Redxjak home">
+        <span class="brand-mark">R</span>
+        <span>Redxjak</span>
+      </a>
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        linear-gradient(135deg, rgba(21, 127, 110, 0.12), transparent 36%),
-        var(--bg);
-      color: var(--ink);
-    }
-
-    .page {
-      width: min(920px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 44px 0;
-    }
-
-    header {
-      padding-bottom: 28px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2rem, 5vw, 3.4rem);
-      line-height: 1.05;
-      letter-spacing: 0;
-    }
-
-    .intro {
-      max-width: 620px;
-      margin: 12px 0 0;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.5;
-    }
-
-    .projects {
-      display: grid;
-      gap: 14px;
-    }
-
-    .project-link {
-      display: grid;
-      gap: 8px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      box-shadow: var(--shadow);
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .project-link:hover,
-    .project-link:focus-visible {
-      border-color: var(--accent);
-      outline: 3px solid rgba(21, 127, 110, 0.18);
-      outline-offset: 2px;
-    }
-
-    .project-title {
-      color: var(--accent-dark);
-      font-size: 1.25rem;
-      font-weight: 800;
-    }
-
-    .project-description {
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    footer {
-      padding-top: 28px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="page">
-    <header>
-      <h1>Redxjak's Projects</h1>
-      <p class="intro">A simple home base for tools and projects.</p>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="https://github.com/Redxjak" rel="noreferrer">GitHub</a>
+      </nav>
     </header>
 
-    <main class="projects" aria-label="Project links">
-      <a class="project-link" href="./PWGen/">
-        <span class="project-title">Password Generator</span>
-        <span class="project-description">Generate passwords locally in your browser with no online password storage.</span>
-      </a>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-content">
+          <p class="eyebrow">GitHub Pages project hub</p>
+          <h1 id="hero-title">Useful tools, experiments, and websites by Redxjak.</h1>
+          <p class="hero-copy">
+            A cleaner home base for published projects, quick utilities, and anything worth keeping one click away.
+          </p>
+
+          <div class="hero-actions" aria-label="Featured actions">
+            <a class="button primary" href="#projects">View projects</a>
+            <a class="button secondary" href="https://github.com/Redxjak/redxjak.github.io" rel="noreferrer">
+              Site repository
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Abstract project dashboard illustration">
+          <img src="assets/project-hub-hero.png" alt="">
+        </div>
+      </section>
+
+      <section class="section intro" id="about" aria-labelledby="about-title">
+        <div>
+          <p class="eyebrow">What this site is for</p>
+          <h2 id="about-title">A launchpad for posted projects.</h2>
+        </div>
+        <p>
+          This site collects public tools and project pages in one polished place. As new projects are ready, they can
+          be added here without rebuilding the whole site.
+        </p>
+      </section>
+
+      <section class="section" id="projects" aria-labelledby="projects-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Project directory</p>
+            <h2 id="projects-title">Projects</h2>
+          </div>
+          <a class="text-link" href="https://github.com/Redxjak" rel="noreferrer">See GitHub profile</a>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card">
+            <div class="project-icon" aria-hidden="true">
+              <span>PW</span>
+            </div>
+            <div class="project-body">
+              <p class="project-type">Browser tool</p>
+              <h3>Password Generator</h3>
+              <p>
+                Generate passwords locally in your browser with no online password storage.
+              </p>
+            </div>
+            <div class="project-actions">
+              <a class="button small primary" href="PWGen/">Open project</a>
+            </div>
+          </article>
+
+          <article class="project-card muted">
+            <div class="project-icon" aria-hidden="true">
+              <span>+</span>
+            </div>
+            <div class="project-body">
+              <p class="project-type">Coming soon</p>
+              <h3>Projects will appear here</h3>
+              <p>
+                This space is ready for the next published tool, website, or experiment when it is ready to share.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
     </main>
 
-    <footer>
-      <span>More projects can be added here later.</span>
+    <footer class="site-footer">
+      <p>&copy; 2026 Redxjak. Built for GitHub Pages.</p>
+      <a href="#">Back to top</a>
     </footer>
-  </div>
-</body>
+  </body>
 </html>
