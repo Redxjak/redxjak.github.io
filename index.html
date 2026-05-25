@@ -1,14 +1,758 @@
-<!doctype>
-<html>
-    <head>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redxjak's Password Generator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f7f6;
+      --panel: #ffffff;
+      --panel-soft: #eef5f2;
+      --ink: #16211e;
+      --muted: #5c6d67;
+      --line: #cbd8d3;
+      --accent: #157f6e;
+      --accent-dark: #0d584c;
+      --warn: #9b341f;
+      --shadow: 0 20px 45px rgba(24, 43, 38, 0.14);
+    }
 
-    </head>
-    <body>
-        <h1>Redxjak's Websites</h1>
-        <ul>
-            <li>
-                <a href="https://redxjak.github.io/ArmyMemoMaker/" target="_blank">U.S. Army Memo Maker</a>
-            </li>
-        </ul>
-    </body>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        linear-gradient(135deg, rgba(21, 127, 110, 0.12), transparent 35%),
+        linear-gradient(315deg, rgba(105, 76, 42, 0.12), transparent 30%),
+        var(--bg);
+      color: var(--ink);
+    }
+
+    a {
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--accent-dark);
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--accent-dark);
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .tool,
+    .output-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow);
+    }
+
+    .tool {
+      padding: 18px;
+    }
+
+    .output-panel {
+      position: sticky;
+      top: 18px;
+      padding: 18px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 400;
+      line-height: 1.35;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid #aebdb8;
+      border-radius: 6px;
+      padding: 10px 12px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus,
+    button:focus-visible {
+      outline: 3px solid rgba(21, 127, 110, 0.22);
+      outline-offset: 2px;
+      border-color: var(--accent);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .secondary {
+      border-color: var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .secondary:hover {
+      background: var(--panel-soft);
+    }
+
+    .danger-text {
+      min-height: 20px;
+      margin: 14px 0 0;
+      color: var(--warn);
+      font-weight: 700;
+    }
+
+    .password-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .password-line {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    #passwordOutput {
+      min-height: 48px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 1.05rem;
+    }
+
+    .icon-button {
+      width: 48px;
+      flex: 0 0 48px;
+      padding: 0;
+      border-color: var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-size: 1.1rem;
+    }
+
+    .generated-list {
+      display: grid;
+      gap: 8px;
+      max-height: 260px;
+      overflow: auto;
+      margin-top: 12px;
+      padding-right: 4px;
+    }
+
+    .generated-item {
+      display: grid;
+      gap: 4px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      font-family: Consolas, Monaco, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .generated-item span {
+      color: var(--muted);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      padding-top: 20px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 860px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .output-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions button {
+        width: 100%;
+      }
+
+      .status-pill {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="mark" aria-hidden="true">#</div>
+        <div>
+          <h1>Redxjak's Password Generator</h1>
+          <p class="subtitle">Generate passwords locally in your browser.</p>
+        </div>
+      </div>
+      <div class="status-pill" title="Passwords are generated in this browser session only.">
+        <span class="status-dot" aria-hidden="true"></span>
+        No online password storage
+      </div>
+    </header>
+
+    <main>
+      <section class="tool" aria-labelledby="settingsTitle">
+        <h2 class="section-title" id="settingsTitle">Settings</h2>
+        <form id="passwordForm">
+          <div class="grid">
+            <label>
+              Website/Application Name
+              <input id="siteName" autocomplete="off" placeholder="Example: Gmail">
+            </label>
+
+            <label>
+              Username
+              <input id="username" autocomplete="username" placeholder="Example: redxjak">
+            </label>
+
+            <label>
+              Minimum Password Length
+              <span class="hint">Defaults to 10.</span>
+              <input id="minLength" type="number" min="1" inputmode="numeric" placeholder="10">
+            </label>
+
+            <label>
+              Maximum Password Length
+              <span class="hint">Defaults to 20.</span>
+              <input id="maxLength" type="number" min="1" inputmode="numeric" placeholder="20">
+            </label>
+
+            <label>
+              Minimum Uppercase Letters
+              <input id="minUppercase" type="number" min="0" inputmode="numeric" placeholder="0">
+            </label>
+
+            <label>
+              Minimum Lowercase Letters
+              <input id="minLowercase" type="number" min="0" inputmode="numeric" placeholder="0">
+            </label>
+
+            <label>
+              Minimum Special Characters
+              <input id="minSymbols" type="number" min="0" inputmode="numeric" placeholder="0">
+            </label>
+
+            <label>
+              Number of Passwords
+              <span class="hint">Defaults to 1.</span>
+              <input id="count" type="number" min="1" inputmode="numeric" placeholder="1">
+            </label>
+
+            <label class="full">
+              Characters to Exclude
+              <span class="hint">Useful for avoiding confusing characters like O, 0, l, and 1.</span>
+              <input id="excludedCharacters" value="O0l1" autocomplete="off">
+            </label>
+
+            <label>
+              Export Format
+              <select id="exportFormat">
+                <option value="csv">CSV</option>
+                <option value="txt">Text</option>
+                <option value="json">JSON</option>
+                <option value="markdown">Markdown</option>
+              </select>
+            </label>
+
+            <label>
+              Download File Name
+              <input id="fileName" value="generated-passwords" autocomplete="off">
+            </label>
+          </div>
+
+          <div class="actions">
+            <button class="primary" type="submit">Generate Password</button>
+            <button class="secondary" type="button" id="downloadButton">Download File</button>
+            <button class="secondary" type="button" id="clearButton">Clear</button>
+          </div>
+
+          <p class="danger-text" id="errorMessage" role="alert"></p>
+        </form>
+      </section>
+
+      <aside class="output-panel" aria-labelledby="outputTitle">
+        <h2 class="section-title" id="outputTitle">Generated Password</h2>
+        <div class="password-box">
+          <div class="password-line">
+            <input id="passwordOutput" type="password" readonly aria-label="Generated password">
+            <button class="icon-button" type="button" id="togglePassword" title="Show password" aria-label="Show password">👁</button>
+          </div>
+          <div class="actions">
+            <button class="secondary" type="button" id="copyButton">Copy</button>
+          </div>
+          <div class="generated-list" id="generatedList" aria-live="polite"></div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <span>Passwords are generated on this page only.</span>
+      <a href="https://redxjak.github.io/ArmyMemoMaker/">U.S. Army Memo Maker</a>
+    </footer>
+  </div>
+
+  <script>
+    const symbols = "!@#$%^&*()";
+    const uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+    const digits = "0123456789";
+    const generatedRecords = [];
+    let passwordsVisible = false;
+
+    const form = document.getElementById("passwordForm");
+    const errorMessage = document.getElementById("errorMessage");
+    const passwordOutput = document.getElementById("passwordOutput");
+    const togglePassword = document.getElementById("togglePassword");
+    const copyButton = document.getElementById("copyButton");
+    const downloadButton = document.getElementById("downloadButton");
+    const clearButton = document.getElementById("clearButton");
+    const generatedList = document.getElementById("generatedList");
+
+    function getRandomIndex(max) {
+      const values = new Uint32Array(1);
+      const limit = Math.floor(0x100000000 / max) * max;
+
+      do {
+        crypto.getRandomValues(values);
+      } while (values[0] >= limit);
+
+      return values[0] % max;
+    }
+
+    function randomChoice(characters) {
+      return characters[getRandomIndex(characters.length)];
+    }
+
+    function shuffle(items) {
+      for (let i = items.length - 1; i > 0; i -= 1) {
+        const j = getRandomIndex(i + 1);
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+
+      return items;
+    }
+
+    function removeExcluded(characters, excludedCharacters) {
+      return [...characters].filter((character) => !excludedCharacters.includes(character)).join("");
+    }
+
+    function readNumber(id, defaultValue) {
+      const value = document.getElementById(id).value.trim();
+
+      if (value === "") {
+        return defaultValue;
+      }
+
+      const number = Number(value);
+
+      if (!Number.isInteger(number)) {
+        throw new Error("Length, count, and minimum requirements must be whole numbers.");
+      }
+
+      return number;
+    }
+
+    function generatePassword(settings) {
+      const uppercase = removeExcluded(uppercaseLetters, settings.excludedCharacters);
+      const lowercase = removeExcluded(lowercaseLetters, settings.excludedCharacters);
+      const numbers = removeExcluded(digits, settings.excludedCharacters);
+      const availableSymbols = removeExcluded(symbols, settings.excludedCharacters);
+      const allCharacters = uppercase + lowercase + numbers + availableSymbols;
+
+      if (settings.minUppercase > 0 && uppercase === "") {
+        throw new Error("Minimum uppercase letters were requested, but all uppercase letters are excluded.");
+      }
+
+      if (settings.minLowercase > 0 && lowercase === "") {
+        throw new Error("Minimum lowercase letters were requested, but all lowercase letters are excluded.");
+      }
+
+      if (settings.minSymbols > 0 && availableSymbols === "") {
+        throw new Error("Minimum special characters were requested, but all special characters are excluded.");
+      }
+
+      if (allCharacters === "") {
+        throw new Error("No characters are available after applying exclusions.");
+      }
+
+      const passwordCharacters = [];
+      let length = settings.minLength + getRandomIndex(settings.maxLength - settings.minLength + 1);
+
+      for (let i = 0; i < settings.minUppercase; i += 1) {
+        passwordCharacters.push(randomChoice(uppercase));
+      }
+
+      for (let i = 0; i < settings.minLowercase; i += 1) {
+        passwordCharacters.push(randomChoice(lowercase));
+      }
+
+      for (let i = 0; i < settings.minSymbols; i += 1) {
+        passwordCharacters.push(randomChoice(availableSymbols));
+      }
+
+      if (passwordCharacters.length > length) {
+        length = passwordCharacters.length;
+      }
+
+      while (passwordCharacters.length < length) {
+        passwordCharacters.push(randomChoice(allCharacters));
+      }
+
+      return shuffle(passwordCharacters).join("");
+    }
+
+    function readSettings() {
+      const settings = {
+        siteName: document.getElementById("siteName").value.trim(),
+        username: document.getElementById("username").value.trim(),
+        minLength: readNumber("minLength", 10),
+        maxLength: readNumber("maxLength", 20),
+        minUppercase: readNumber("minUppercase", 0),
+        minLowercase: readNumber("minLowercase", 0),
+        minSymbols: readNumber("minSymbols", 0),
+        count: readNumber("count", 1),
+        excludedCharacters: document.getElementById("excludedCharacters").value,
+      };
+
+      if (settings.minLength < 1 || settings.maxLength < 1) {
+        throw new Error("Password length must be at least 1.");
+      }
+
+      if (settings.minUppercase < 0 || settings.minLowercase < 0 || settings.minSymbols < 0) {
+        throw new Error("Minimum requirements cannot be negative.");
+      }
+
+      if (settings.minLength > settings.maxLength) {
+        throw new Error("Minimum length cannot be greater than maximum length.");
+      }
+
+      if (settings.count < 1) {
+        throw new Error("Number of passwords must be at least 1.");
+      }
+
+      return settings;
+    }
+
+    function renderGeneratedList() {
+      generatedList.innerHTML = "";
+
+      generatedRecords.slice(-10).reverse().forEach((record, index) => {
+        const item = document.createElement("div");
+        const displayedPassword = passwordsVisible ? record.password : "•".repeat(record.password.length);
+        item.className = "generated-item";
+        item.innerHTML = `<span>Password ${generatedRecords.length - index}</span>${displayedPassword}`;
+        generatedList.appendChild(item);
+      });
+    }
+
+    function generateRecords(event) {
+      event.preventDefault();
+      errorMessage.textContent = "";
+
+      try {
+        const settings = readSettings();
+        const now = new Date().toLocaleString();
+        const newRecords = [];
+
+        for (let i = 0; i < settings.count; i += 1) {
+          newRecords.push({
+            siteName: settings.siteName,
+            username: settings.username,
+            password: generatePassword(settings),
+            timestamp: now,
+          });
+        }
+
+        generatedRecords.push(...newRecords);
+        passwordOutput.value = newRecords.map((record) => record.password).join("\n");
+        passwordOutput.type = "password";
+        passwordsVisible = false;
+        togglePassword.textContent = "👁";
+        togglePassword.title = "Show password";
+        togglePassword.setAttribute("aria-label", "Show password");
+        renderGeneratedList();
+      } catch (error) {
+        errorMessage.textContent = error.message;
+      }
+    }
+
+    function escapeCsv(value) {
+      const text = String(value ?? "");
+      return `"${text.replaceAll('"', '""')}"`;
+    }
+
+    function markdownEscape(value) {
+      return String(value ?? "").replaceAll("|", "\\|");
+    }
+
+    function buildDownloadContent(format) {
+      if (generatedRecords.length === 0) {
+        throw new Error("Generate a password before downloading.");
+      }
+
+      if (format === "json") {
+        return {
+          content: JSON.stringify(generatedRecords, null, 2),
+          type: "application/json",
+          extension: "json",
+        };
+      }
+
+      if (format === "txt") {
+        const content = generatedRecords.map((record) => [
+          "=====================================",
+          `Website/Application: ${record.siteName}`,
+          `Username: ${record.username}`,
+          `Password: ${record.password}`,
+          `Timestamp: ${record.timestamp}`,
+        ].join("\n")).join("\n");
+
+        return { content, type: "text/plain", extension: "txt" };
+      }
+
+      if (format === "markdown") {
+        const rows = generatedRecords.map((record) => (
+          `| ${markdownEscape(record.siteName)} | ${markdownEscape(record.username)} | ${markdownEscape(record.password)} | ${markdownEscape(record.timestamp)} |`
+        ));
+        const content = [
+          "| Website/Application | Username | Password | Timestamp |",
+          "| --- | --- | --- | --- |",
+          ...rows,
+        ].join("\n");
+
+        return { content, type: "text/markdown", extension: "md" };
+      }
+
+      const rows = generatedRecords.map((record) => [
+        record.siteName,
+        record.username,
+        record.password,
+        record.timestamp,
+      ].map(escapeCsv).join(","));
+      const content = [
+        "Website/Application,Username,Password,Timestamp",
+        ...rows,
+      ].join("\n");
+
+      return { content, type: "text/csv", extension: "csv" };
+    }
+
+    function downloadRecords() {
+      errorMessage.textContent = "";
+
+      try {
+        const format = document.getElementById("exportFormat").value;
+        const fileNameInput = document.getElementById("fileName").value.trim() || "generated-passwords";
+        const fileName = fileNameInput.replace(/[\\/:*?"<>|]+/g, "-");
+        const download = buildDownloadContent(format);
+        const blob = new Blob([download.content], { type: `${download.type};charset=utf-8` });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = `${fileName}.${download.extension}`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        errorMessage.textContent = error.message;
+      }
+    }
+
+    async function copyPasswords() {
+      errorMessage.textContent = "";
+
+      if (passwordOutput.value.trim() === "") {
+        errorMessage.textContent = "Generate a password before copying.";
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(passwordOutput.value);
+      } catch {
+        passwordOutput.select();
+        document.execCommand("copy");
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const isHidden = passwordOutput.type === "password";
+      passwordOutput.type = isHidden ? "text" : "password";
+      passwordsVisible = isHidden;
+      togglePassword.textContent = isHidden ? "✕" : "👁";
+      togglePassword.title = isHidden ? "Hide password" : "Show password";
+      togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+      renderGeneratedList();
+    }
+
+    function clearGenerated() {
+      generatedRecords.length = 0;
+      passwordOutput.value = "";
+      generatedList.innerHTML = "";
+      errorMessage.textContent = "";
+    }
+
+    form.addEventListener("submit", generateRecords);
+    downloadButton.addEventListener("click", downloadRecords);
+    copyButton.addEventListener("click", copyPasswords);
+    togglePassword.addEventListener("click", togglePasswordVisibility);
+    clearButton.addEventListener("click", clearGenerated);
+  </script>
+</body>
 </html>
