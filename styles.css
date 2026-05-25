@@ -372,6 +372,22 @@ h1 {
   margin-bottom: 0;
 }
 
+.visitor-counter {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.visitor-counter img {
+  display: block;
+  height: 20px;
+  max-width: 100%;
+}
+
 .site-footer a {
   display: grid;
   width: 34px;
