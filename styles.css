@@ -225,6 +225,16 @@ h1 {
   content: "\25c9";
 }
 
+.project-icon.nut {
+  background: rgba(242, 184, 75, 0.14);
+  border-color: rgba(242, 184, 75, 0.26);
+  color: #f2b84b;
+}
+
+.project-icon.nut::before {
+  content: "\25c6";
+}
+
 .project-content {
   position: relative;
   z-index: 1;

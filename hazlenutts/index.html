@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Aventures of the Hazlenutts, a gentle branching browser adventure game."
+    >
+    <title>Aventures of the Hazlenutts</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Nunito:wght@700;800;900&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="game-board" aria-labelledby="game-title">
+        <header class="topbar">
+          <a class="home-link" href="../">Redxjak</a>
+          <div class="game-actions">
+            <button class="icon-button" id="home-button" type="button" aria-label="Choose hero" title="Choose hero">
+              <span aria-hidden="true">H</span>
+            </button>
+            <button class="icon-button" id="restart-button" type="button" aria-label="Restart story" title="Restart story">
+              <span aria-hidden="true">R</span>
+            </button>
+          </div>
+        </header>
+
+        <div class="story-layout">
+          <section class="story-panel" aria-live="polite">
+            <p class="kicker" id="hero-label">Choose your hero</p>
+            <h1 id="game-title">Aventures of the Hazlenutts</h1>
+            <h2 id="scene-title">Choose Your Hero</h2>
+            <div class="story-text" id="story-text"></div>
+            <div class="choice-grid" id="choices"></div>
+          </section>
+
+          <aside class="art-panel" aria-label="Story illustration">
+            <canvas id="scene-art" width="640" height="520"></canvas>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="story-data.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

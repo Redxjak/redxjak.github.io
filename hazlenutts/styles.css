@@ -1,0 +1,242 @@
+:root {
+  color-scheme: light;
+  --page: #f8f1e7;
+  --paper: #fffaf2;
+  --ink: #2f261c;
+  --soft-ink: #746554;
+  --line: #dcc8a9;
+  --leaf: #2f7b5f;
+  --leaf-dark: #215a48;
+  --berry: #c6415d;
+  --honey: #f2b84b;
+  --sky: #8ecae6;
+  --button: #3f6f64;
+  --button-hover: #31574f;
+  --shadow: 0 24px 70px rgba(78, 55, 31, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    linear-gradient(135deg, rgba(142, 202, 230, 0.34), transparent 38%),
+    linear-gradient(315deg, rgba(242, 184, 75, 0.24), transparent 35%),
+    var(--page);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible", Arial, sans-serif;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.game-shell {
+  width: min(1180px, calc(100% - 28px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 24px 0;
+  display: grid;
+  place-items: center;
+}
+
+.game-board {
+  width: 100%;
+  min-height: min(780px, calc(100vh - 48px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--paper);
+  border: 2px solid rgba(117, 92, 59, 0.18);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.home-link {
+  color: var(--leaf-dark);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.game-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.icon-button {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  color: var(--paper);
+  background: var(--button);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+  background: var(--button-hover);
+  outline: 3px solid rgba(47, 123, 95, 0.24);
+}
+
+.story-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+}
+
+.story-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(24px, 4vw, 54px);
+}
+
+.kicker {
+  margin: 0 0 10px;
+  color: var(--berry);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 11ch;
+  margin-bottom: 14px;
+  font-family: "Nunito", Arial, sans-serif;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+h2 {
+  margin-bottom: 18px;
+  color: var(--leaf-dark);
+  font-family: "Nunito", Arial, sans-serif;
+  font-size: clamp(1.35rem, 2.6vw, 2rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.story-text {
+  max-width: 64ch;
+  color: var(--soft-ink);
+  font-size: clamp(1.04rem, 1.7vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.story-text p {
+  margin-bottom: 1em;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.choice-button {
+  min-height: 58px;
+  padding: 13px 15px;
+  color: var(--paper);
+  background: var(--button);
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.choice-button:hover,
+.choice-button:focus-visible {
+  background: var(--button-hover);
+  outline: 3px solid rgba(47, 123, 95, 0.22);
+}
+
+.art-panel {
+  min-height: 520px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(180deg, rgba(142, 202, 230, 0.38), rgba(255, 250, 242, 0.2)),
+    #e7f3e4;
+  border-left: 1px solid var(--line);
+}
+
+canvas {
+  width: min(100%, 640px);
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 860px) {
+  .game-shell {
+    width: min(100% - 16px, 1180px);
+    padding: 8px 0;
+  }
+
+  .game-board {
+    min-height: calc(100vh - 16px);
+  }
+
+  .story-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .story-panel {
+    order: 2;
+    justify-content: flex-start;
+  }
+
+  .art-panel {
+    min-height: 300px;
+    border-left: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  canvas {
+    width: min(100%, 520px);
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    padding: 14px;
+  }
+
+  .story-panel {
+    padding: 22px 18px 26px;
+  }
+
+  .choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    max-width: 12ch;
+  }
+}
