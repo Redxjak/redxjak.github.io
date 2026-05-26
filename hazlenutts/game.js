@@ -133,15 +133,17 @@ function drawScene(image, hero) {
 
   if (image === "character_select") {
     drawGarden();
-    drawCat(190, 346, 0.95, "Melody");
-    drawDog(320, 356, 0.92, "Callum");
-    drawDino(455, 354, 0.9, "Ledger");
-    drawBunny(525, 265, 0.72, "Millie");
-    drawCousin("lily", 85, 230, 0.42);
-    drawCousin("mason", 145, 210, 0.42);
-    drawCousin("oliver", 240, 225, 0.42);
-    drawCousin("gemma", 390, 235, 0.42);
-    drawCousin("nora", 560, 370, 0.42);
+    [
+      ["melody", 125, 210, 0.52],
+      ["callum", 320, 210, 0.52],
+      ["ledger", 515, 210, 0.5],
+      ["millie", 125, 340, 0.58],
+      ["lily", 320, 340, 0.52],
+      ["mason", 515, 340, 0.52],
+      ["oliver", 125, 455, 0.52],
+      ["gemma", 320, 455, 0.52],
+      ["nora", 515, 455, 0.52],
+    ].forEach(([character, x, y, scale]) => drawPlayable(character, x, y, scale));
     return;
   }
 
