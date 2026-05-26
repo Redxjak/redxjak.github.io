@@ -116,7 +116,7 @@ function drawScene(image, hero) {
     drawCat(190, 346, 0.95, "Melody");
     drawDog(320, 356, 0.92, "Callum");
     drawDino(455, 354, 0.9, "Ledger");
-    drawMouse(525, 265, 0.72, "Millie");
+    drawBunny(525, 265, 0.72, "Millie");
     return;
   }
 
@@ -144,14 +144,14 @@ function drawHeroGroup(hero) {
     drawDog(300, 350, 1.08, "Callum");
     drawCat(180, 365, 0.78, "Melody");
     drawDino(445, 365, 0.78, "Ledger");
-    drawMouse(520, 265, 0.64, "Millie");
+    drawBunny(520, 265, 0.64, "Millie");
   } else if (hero === "ledger") {
     drawDino(315, 350, 1.08, "Ledger");
     drawCat(190, 365, 0.78, "Melody");
     drawDog(450, 365, 0.78, "Callum");
-    drawMouse(520, 265, 0.64, "Millie");
+    drawBunny(520, 265, 0.64, "Millie");
   } else if (hero === "millie") {
-    drawMouse(315, 340, 1.18, "Millie");
+    drawBunny(315, 340, 1.18, "Millie");
     drawCat(175, 365, 0.74, "Melody");
     drawDog(455, 365, 0.74, "Callum");
     drawDino(520, 255, 0.62, "Ledger");
@@ -159,7 +159,7 @@ function drawHeroGroup(hero) {
     drawCat(300, 350, 1.08, "Melody");
     drawDog(170, 365, 0.78, "Callum");
     drawDino(445, 365, 0.78, "Ledger");
-    drawMouse(520, 265, 0.64, "Millie");
+    drawBunny(520, 265, 0.64, "Millie");
   }
 }
 
@@ -383,19 +383,19 @@ function drawDino(x, y, scale, name) {
   label(name, x, y + 108 * s, 17 * s);
 }
 
-function drawMouse(x, y, scale, name) {
+function drawBunny(x, y, scale, name) {
   const s = scale;
-  const body = "#b7a7a0";
+  const body = "#d7d0c8";
   const outline = "#5c514b";
   const ear = "#f2c6c2";
 
   oval(x, y + 16 * s, 42 * s, 52 * s, body, outline, 4 * s);
   oval(x, y - 47 * s, 34 * s, 34 * s, body, outline, 4 * s);
-  circle(x - 32 * s, y - 76 * s, 20 * s, body, outline, 3 * s);
-  circle(x + 32 * s, y - 76 * s, 20 * s, body, outline, 3 * s);
-  circle(x - 32 * s, y - 76 * s, 12 * s, ear);
-  circle(x + 32 * s, y - 76 * s, 12 * s, ear);
-  drawBow(x + 18 * s, y - 88 * s, 10 * s, "#d94f70");
+  oval(x - 18 * s, y - 88 * s, 12 * s, 38 * s, body, outline, 3 * s);
+  oval(x + 18 * s, y - 88 * s, 12 * s, 38 * s, body, outline, 3 * s);
+  oval(x - 18 * s, y - 88 * s, 6 * s, 27 * s, ear, ear, 0);
+  oval(x + 18 * s, y - 88 * s, 6 * s, 27 * s, ear, ear, 0);
+  drawBow(x + 20 * s, y - 76 * s, 10 * s, "#d94f70");
   circle(x - 11 * s, y - 51 * s, 5 * s, "#1f2933");
   circle(x + 11 * s, y - 51 * s, 5 * s, "#1f2933");
   circle(x, y - 34 * s, 5 * s, "#7d4f50");
@@ -407,9 +407,9 @@ function drawMouse(x, y, scale, name) {
   }
 
   drawCheese(x, y + 10 * s, 16 * s);
-  line([[x - 38 * s, y + 40 * s], [x - 54 * s, y + 70 * s]], outline, 5 * s);
-  line([[x + 38 * s, y + 40 * s], [x + 54 * s, y + 70 * s]], outline, 5 * s);
-  line([[x + 35 * s, y + 12 * s], [x + 86 * s, y + 42 * s], [x + 104 * s, y + 18 * s]], "#f09a9a", 5 * s);
+  line([[x - 34 * s, y + 45 * s], [x - 50 * s, y + 72 * s]], outline, 5 * s);
+  line([[x + 34 * s, y + 45 * s], [x + 50 * s, y + 72 * s]], outline, 5 * s);
+  circle(x + 34 * s, y + 30 * s, 13 * s, "#ffffff", outline, 2 * s);
   shadow(x, y + 86 * s, 38 * s, 8 * s);
   label(name, x, y + 84 * s, 17 * s);
 }

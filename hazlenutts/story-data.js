@@ -18,8 +18,8 @@ window.HAZLENUTTS_STORY = {
     },
     "millie": {
       "name": "Millie",
-      "description": "Millie the curious mouse cousin",
-      "button": "Play as Millie the mouse"
+      "description": "Millie the curious bunny cousin",
+      "button": "Play as Millie the bunny"
     }
   },
   "stories": {
@@ -603,7 +603,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Millie and the Teacup Trail",
         "image": "kitchen",
-        "text": "Millie the Mouse arrived for cousin day with a thimble-sized backpack, a blue ribbon, and a very important squeak. She was Melody, Callum, and Ledger's cousin, and she knew small heroes could find clues that big paws missed.\n\nMama Bear set a tiny teacup on the table and said, \"Welcome, Millie.\" Daddy Monkey balanced a crumb on his nose and whispered, \"The house has been waiting for a mouse-sized mystery.\"\n\nAuntie Croc, Millie's mom and Daddy Monkey's sister, gave her a careful crocodile smile. Uncle Zebra, Millie's dad, straightened her ribbon stripes and said, \"Cousin adventures are best when you squeak bravely.\"",
+        "text": "Millie the Bunny arrived for cousin day with a thimble-sized backpack, a blue ribbon, and a very important hop. She was Melody, Callum, and Ledger's cousin, and she knew small heroes could find clues that big paws missed.\n\nMama Bear set a tiny teacup on the table and said, \"Welcome, Millie.\" Daddy Monkey balanced a crumb on his nose and whispered, \"The house has been waiting for a bunny-sized mystery.\"\n\nAuntie Croc, Millie's mom and Daddy Monkey's sister, gave her a careful crocodile smile. Uncle Zebra, Millie's dad, straightened her ribbon stripes and said, \"Cousin adventures are best when you hop bravely.\"",
         "choices": [
           [
             "Inspect the teacup",
@@ -618,7 +618,7 @@ window.HAZLENUTTS_STORY = {
       "teacup_clue": {
         "title": "The Teacup Clue",
         "image": "note",
-        "text": "Inside the teacup, Millie found a folded note no bigger than a cracker crumb. It said, \"The Whispering Crumbs need a brave cousin. Bring kindness and a good listening ear.\"\n\nMelody leaned close, Callum held very still, and Ledger wrote, \"Mouse clues are highly official.\"",
+        "text": "Inside the teacup, Millie found a folded note no bigger than a cracker crumb. It said, \"The Whispering Crumbs need a brave cousin. Bring kindness and a good listening ear.\"\n\nMelody leaned close, Callum held very still, and Ledger wrote, \"Bunny clues are highly official.\"",
         "choices": [
           [
             "Listen for whispering crumbs",
@@ -741,7 +741,7 @@ window.HAZLENUTTS_STORY = {
         "text": "In Grandma Mimi and Papa Dave's window garden, Millie opened the jam jar and released one tiny giggle. It bounced from flowerpot to flowerpot until the whole windowsill shimmered.\n\nMelody purred, and Papa Dave added Millie's cousin-sized victory to the map. Grandma Mimi declared the giggle officially saved.",
         "choices": [
           [
-            "Lead a mouse parade",
+            "Lead a bunny parade",
             "parade_ending"
           ],
           [
@@ -766,7 +766,7 @@ window.HAZLENUTTS_STORY = {
         ]
       },
       "map_ending": {
-        "title": "Millie's Mouse-Sized Map",
+        "title": "Millie's Bunny-Sized Map",
         "image": "map",
         "text": "Millie drew her path with a crumb, a button moon, a teacup, and one bright giggle. Ledger added labels, Melody added a heart, and Callum added a snack corner.\n\nGrandma Mimi called it brave. Papa Dave called it tiny-but-mighty. Auntie Croc and Uncle Zebra asked for a copy to hang on Millie's cousin wall.",
         "choices": [
@@ -781,7 +781,7 @@ window.HAZLENUTTS_STORY = {
         ]
       },
       "parade_ending": {
-        "title": "The Tiny Tail Parade",
+        "title": "The Bunny Hop Parade",
         "image": "parade",
         "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nGrandma Mimi and Papa Dave cheered from the tiny-things shelf, and Auntie Croc and Uncle Zebra cheered from the front row. The Hazlenutts cheered for their cousin, and Millie took the smallest, proudest bow.",
         "choices": [
