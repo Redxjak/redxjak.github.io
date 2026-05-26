@@ -22,7 +22,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Melody Wakes Up Brave",
         "image": "bedroom",
-        "text": "Melody the cat woke up in a sunbeam shaped exactly like a pancake. Her whiskers tingled. Today was clearly an adventure day.\n\nFrom the hallway, Callum the dog and Ledger the dinosaur were whispering very loudly. Callum had a backpack full of snacks. Ledger had a map that was mostly drawn in crayon.",
+        "text": "Melody the cat woke up in a sunbeam shaped exactly like a pancake. Her whiskers tingled. Today was clearly an adventure day.\n\nFrom the hallway, Callum the dog and Ledger the dinosaur were whispering very loudly. Callum had a backpack full of snacks. Ledger had a map that was mostly drawn in crayon.\n\nMama Bear, their mom, peeked in and said, \"Adventurers need kind hearts.\" Daddy Monkey, their dad, swung a banana-shaped flashlight onto the hook and said, \"And a very silly plan.\"",
         "choices": [
           [
             "Follow the snack crumbs",
@@ -67,7 +67,7 @@ window.HAZLENUTTS_STORY = {
       "breakfast_science": {
         "title": "Breakfast Science",
         "image": "kitchen",
-        "text": "Melody, Callum, and Ledger tested whether toast tastes better when it is cut into stars. The answer was yes. They also tested whether jam makes a good mustache. The answer was very sticky.\n\nA soft meow came from the pantry. Melody's ears popped up like two tiny flags.",
+        "text": "Melody, Callum, and Ledger tested whether toast tastes better when it is cut into stars. The answer was yes. They also tested whether jam makes a good mustache. The answer was very sticky.\n\nMama Bear called from the doorway, \"Breakfast science is best with napkins.\" Daddy Monkey handed over three napkins and somehow wore one on his head.\n\nA soft meow came from the pantry. Melody's ears popped up like two tiny flags.",
         "choices": [
           [
             "Open the pantry carefully",
@@ -127,7 +127,7 @@ window.HAZLENUTTS_STORY = {
       "tiny_note": {
         "title": "A Note for a Noble Cat",
         "image": "note",
-        "text": "The tiny note said: \"Dear Melody, the Giggle Garden needs your help. The flowers forgot how to giggle. Bring snacks.\"\n\nCallum saluted with a cracker. Ledger added a giant arrow to the map, pointing outside.",
+        "text": "The tiny note said: \"Dear Melody, the Giggle Garden needs your help. The flowers forgot how to giggle. Bring snacks. Love, Mama Bear and Daddy Monkey.\"\n\nCallum saluted with a cracker. Ledger added a giant arrow to the map, pointing outside.",
         "choices": [
           [
             "Visit the Giggle Garden",
@@ -217,7 +217,7 @@ window.HAZLENUTTS_STORY = {
       "garden": {
         "title": "The Giggle Garden",
         "image": "garden",
-        "text": "In the garden, the flowers drooped sadly. Melody gave her bell a tiny jingle. Callum made his silliest cereal-nose face. Ledger read a joke from the map: \"Why did the cat sit on the computer? To keep an eye on the mouse!\"\n\nThe flowers burst into giggles. Petals wiggled. Leaves clapped. Melody purred proudly.",
+        "text": "In the garden, the flowers drooped sadly. Mama Bear waited by the gate with a cozy picnic blanket. Daddy Monkey hung paper lanterns from a low branch and made his eyebrows dance.\n\nMelody gave her bell a tiny jingle. Callum made his silliest cereal-nose face. Ledger read a joke from the map: \"Why did the cat sit on the computer? To keep an eye on the mouse!\"\n\nThe flowers burst into giggles. Petals wiggled. Leaves clapped. Melody purred proudly.",
         "choices": [
           [
             "Dance with the flowers",
@@ -232,7 +232,7 @@ window.HAZLENUTTS_STORY = {
       "cozy_ending": {
         "title": "A Cozy Hero's Rest",
         "image": "nap",
-        "text": "Melody curled up with Callum and Ledger nearby, the map tucked safely under one paw. Some adventures end with treasure. This one ended with a nap, which Melody knew was even better.",
+        "text": "Melody curled up with Callum and Ledger nearby, the map tucked safely under one paw. Mama Bear tucked a blanket around all three heroes while Daddy Monkey tiptoed in with warm cocoa.\n\nSome adventures end with treasure. This one ended with a nap, which Melody knew was even better.",
         "choices": [
           [
             "Choose another hero",
@@ -247,7 +247,7 @@ window.HAZLENUTTS_STORY = {
       "parade_ending": {
         "title": "The Living Room Parade",
         "image": "parade",
-        "text": "Melody led the grand parade past Sofa Mountain, around the coffee table, and through the blanket fort. Callum jingled a spoon. Ledger waved the map. Everyone agreed it was the finest parade of the afternoon.",
+        "text": "Melody led the grand parade past Sofa Mountain, around the coffee table, and through the blanket fort. Mama Bear clapped along while Daddy Monkey announced each hero in his fanciest parade voice. Callum jingled a spoon. Ledger waved the map. Everyone agreed it was the finest parade of the afternoon.",
         "choices": [
           [
             "Choose another hero",
@@ -262,7 +262,7 @@ window.HAZLENUTTS_STORY = {
       "picnic_ending": {
         "title": "The Snack Picnic",
         "image": "picnic",
-        "text": "The adventurers held a picnic on a blanket. Melody got the sunniest spot. Callum counted crackers. Ledger gave a tiny speech about teamwork, bravery, and excellent toast shapes.",
+        "text": "The adventurers held a picnic on a blanket. Mama Bear poured tiny cups of juice, and Daddy Monkey balanced crackers like a tower. Melody got the sunniest spot. Callum counted crackers. Ledger gave a tiny speech about teamwork, bravery, and excellent toast shapes.",
         "choices": [
           [
             "Choose another hero",
@@ -277,7 +277,7 @@ window.HAZLENUTTS_STORY = {
       "dance_ending": {
         "title": "The Flower Dance",
         "image": "garden",
-        "text": "The flowers danced, Callum twirled, Ledger wiggled, and Melody performed one perfect cat leap. The Giggle Garden was saved, and the whole day smelled like sunshine.",
+        "text": "The flowers danced, Callum twirled, Ledger wiggled, and Melody performed one perfect cat leap. Mama Bear hummed the tune while Daddy Monkey played a spoon like a tiny cymbal. The Giggle Garden was saved, and the whole day smelled like sunshine.",
         "choices": [
           [
             "Choose another hero",
@@ -292,7 +292,7 @@ window.HAZLENUTTS_STORY = {
       "queen_ending": {
         "title": "Queen Melody of Giggles",
         "image": "queen",
-        "text": "The flowers crowned Melody with a daisy chain. Callum cheered. Ledger carefully wrote, \"Melody is brave, kind, and very good at mysteries.\"\n\nQueen Melody purred, because every kingdom needs kindness and snacks.",
+        "text": "The flowers crowned Melody with a daisy chain. Mama Bear gave a proud, gentle cheer. Daddy Monkey bowed so low his tail made a loop. Callum cheered. Ledger carefully wrote, \"Melody is brave, kind, and very good at mysteries.\"\n\nQueen Melody purred, because every kingdom needs kindness and snacks.",
         "choices": [
           [
             "Choose another hero",
@@ -309,7 +309,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Callum and the Snack Patrol",
         "image": "kitchen",
-        "text": "Callum the dog woke up with one very important thought: someone had to protect the snacks. He put on his pretend patrol badge and sniffed the air.\n\nMelody the cat stretched in a sunbeam. Ledger the dinosaur held up a crayon map. \"The Missing Crunchies are this way,\" Ledger announced.",
+        "text": "Callum the dog woke up with one very important thought: someone had to protect the snacks. Mama Bear, his mom, pinned on his pretend patrol badge and reminded him that sharing counts as protecting. Daddy Monkey, his dad, made a trumpet sound into a paper towel tube.\n\nMelody the cat stretched in a sunbeam. Ledger the dinosaur held up a crayon map. \"The Missing Crunchies are this way,\" Ledger announced.",
         "choices": [
           [
             "Sniff for clues under the table",
@@ -354,7 +354,7 @@ window.HAZLENUTTS_STORY = {
       "pantry_guard": {
         "title": "The Pantry Guard",
         "image": "pantry",
-        "text": "In the pantry, Callum found the Missing Crunchies sitting safely behind a flour bag. The flour bag had a white puff on top like a tiny snowy hat.\n\nCallum wagged so hard that Ledger had to hold onto the map. Melody declared the snacks rescued.",
+        "text": "In the pantry, Callum found the Missing Crunchies sitting safely behind a flour bag. A note from Mama Bear said, \"Saved for brave helpers.\" Daddy Monkey had drawn a smiling banana beside it.\n\nCallum wagged so hard that Ledger had to hold onto the map. Melody declared the snacks rescued.",
         "choices": [
           [
             "Share the rescued snacks",
@@ -399,7 +399,7 @@ window.HAZLENUTTS_STORY = {
       "garden_delivery": {
         "title": "Callum's Garden Delivery",
         "image": "garden",
-        "text": "Callum carried the crackers to the Giggle Garden. The flowers were droopy until he set the snack plate down and gave his happiest tail wag.\n\nThe flowers giggled. Melody purred. Ledger named the mission a crunchy success.",
+        "text": "Callum carried the crackers to the Giggle Garden. Mama Bear walked beside him with the picnic blanket, and Daddy Monkey swung the lanterns just high enough to make the flowers look up.\n\nThe flowers were droopy until he set the snack plate down and gave his happiest tail wag.\n\nThe flowers giggled. Melody purred. Ledger named the mission a crunchy success.",
         "choices": [
           [
             "Celebrate with a snack picnic",
@@ -414,7 +414,7 @@ window.HAZLENUTTS_STORY = {
       "snack_ending": {
         "title": "Captain Callum's Snack Picnic",
         "image": "picnic",
-        "text": "Callum shared every rescued snack. Melody got the sunniest spot, Ledger got the biggest cracker, and Callum got a hero hug.\n\nThe Snack Patrol was officially the coziest team in the house.",
+        "text": "Callum shared every rescued snack. Melody got the sunniest spot, Ledger got the biggest cracker, Mama Bear got the first thank-you, and Daddy Monkey got crumbs in his eyebrows. Callum got a hero hug.\n\nThe Snack Patrol was officially the coziest team in the house.",
         "choices": [
           [
             "Choose another hero",
@@ -429,7 +429,7 @@ window.HAZLENUTTS_STORY = {
       "parade_ending": {
         "title": "The Wagging Victory Parade",
         "image": "parade",
-        "text": "Callum led the parade with proud paws and a wagging tail. Melody jingled a bell. Ledger waved the map upside down, which somehow made it more exciting.",
+        "text": "Callum led the parade with proud paws and a wagging tail. Melody jingled a bell. Mama Bear waved a dish towel like a royal flag, and Daddy Monkey marched backward just to be funny. Ledger waved the map upside down, which somehow made it more exciting.",
         "choices": [
           [
             "Choose another hero",
@@ -446,7 +446,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Ledger's Tiny Dino Expedition",
         "image": "map",
-        "text": "Ledger the dinosaur woke up ready for science. He sharpened his green crayon, unrolled his map, and made his bravest tiny roar.\n\nMelody the cat blinked from her sunbeam. Callum the dog sniffed the map and found a cracker crumb.",
+        "text": "Ledger the dinosaur woke up ready for science. Mama Bear, his mom, packed his green crayon and whispered, \"Careful explorers notice small wonders.\" Daddy Monkey, his dad, tucked a banana sticker onto the map and whispered, \"Silly explorers notice big laughs.\"\n\nLedger unrolled his map and made his bravest tiny roar.\n\nMelody the cat blinked from her sunbeam. Callum the dog sniffed the map and found a cracker crumb.",
         "choices": [
           [
             "Study the cracker crumb",
@@ -491,7 +491,7 @@ window.HAZLENUTTS_STORY = {
       "pantry_volcano": {
         "title": "The Pantry Volcano",
         "image": "pantry",
-        "text": "The flour bag in the pantry looked exactly like a snowy volcano. Ledger announced that it must be studied from a safe distance, which was three dinosaur steps away.\n\nA note peeked out from behind it: \"The Giggle Garden needs a brave explorer.\"",
+        "text": "The flour bag in the pantry looked exactly like a snowy volcano. Mama Bear appeared with a broom and said, \"Gentle science first.\" Daddy Monkey put on a colander helmet and saluted the volcano.\n\nLedger announced that it must be studied from a safe distance, which was three dinosaur steps away.\n\nA note peeked out from behind it: \"The Giggle Garden needs a brave explorer.\"",
         "choices": [
           [
             "Lead the expedition to the garden",
@@ -551,7 +551,7 @@ window.HAZLENUTTS_STORY = {
       "garden_explorer": {
         "title": "Ledger Saves the Giggles",
         "image": "garden",
-        "text": "The Giggle Garden was quiet. Ledger stepped forward and told the flowers his best dinosaur joke: \"What do tiny dinosaurs put on toast? Jurassi-jam!\"\n\nThe flowers giggled so much their petals wobbled. Melody clapped her paws. Callum wagged in circles.",
+        "text": "The Giggle Garden was quiet. Mama Bear knelt beside the droopy flowers and gave them a kind smile. Daddy Monkey dangled from the lowest branch and made the gentlest monkey face.\n\nLedger stepped forward and told the flowers his best dinosaur joke: \"What do tiny dinosaurs put on toast? Jurassi-jam!\"\n\nThe flowers giggled so much their petals wobbled. Melody clapped her paws. Callum wagged in circles.",
         "choices": [
           [
             "Draw the garden on the map",
@@ -566,7 +566,7 @@ window.HAZLENUTTS_STORY = {
       "map_ending": {
         "title": "Ledger's Great Explorer Map",
         "image": "map",
-        "text": "Ledger drew the whole adventure on his map: the cave, the pantry volcano, the garden, and three heroic friends. He put a giant star beside his name, then added stars for everyone else too.",
+        "text": "Ledger drew the whole adventure on his map: the cave, the pantry volcano, the garden, Mama Bear's picnic blanket, Daddy Monkey's lanterns, and three heroic friends. He put a giant star beside his name, then added stars for everyone else too.",
         "choices": [
           [
             "Choose another hero",
@@ -581,7 +581,7 @@ window.HAZLENUTTS_STORY = {
       "dino_parade_ending": {
         "title": "The Tiny Dino Parade",
         "image": "parade",
-        "text": "Ledger led the tiniest, proudest dinosaur parade the living room had ever seen. Melody stepped lightly, Callum wagged proudly, and the Dino Expedition Flag waved all the way home.",
+        "text": "Ledger led the tiniest, proudest dinosaur parade the living room had ever seen. Mama Bear kept the beat with soft claps, and Daddy Monkey carried the snack banner. Melody stepped lightly, Callum wagged proudly, and the Dino Expedition Flag waved all the way home.",
         "choices": [
           [
             "Choose another hero",
