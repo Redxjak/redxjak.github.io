@@ -27,7 +27,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Melody Wakes Up Brave",
         "image": "bedroom",
-        "text": "Melody the cat woke up in a sunbeam shaped exactly like a pancake. Her whiskers tingled. Today was clearly an adventure day.\n\nFrom the hallway, Callum the dog and Ledger the dinosaur were whispering very loudly. Callum had a backpack full of snacks. Ledger had a map that was mostly drawn in crayon.\n\nMama Bear, their mom, peeked in and said, \"Adventurers need kind hearts.\" Daddy Monkey, their dad, swung a banana-shaped flashlight onto the hook and said, \"And a very silly plan.\"",
+        "text": "Melody the cat woke up in a sunbeam shaped exactly like a pancake. Her whiskers tingled. Today was clearly an adventure day.\n\nFrom the hallway, Callum the dog and Ledger the dinosaur were whispering very loudly. Callum had a backpack full of snacks. Ledger had a map that was mostly drawn in crayon.\n\nMama Bear, their mom, peeked in and said, \"Adventurers need kind hearts.\" Daddy Monkey, their dad, swung a banana-shaped flashlight onto the hook and said, \"And a very silly plan.\"\n\nGrandma GiGi and Papa Troy, Mama Bear's parents, waved from the cozy chair. Grandma Mimi and Papa Dave, Daddy Monkey's parents, promised to save the best story-listening spots for later.",
         "choices": [
           [
             "Follow the snack crumbs",
@@ -222,7 +222,7 @@ window.HAZLENUTTS_STORY = {
       "garden": {
         "title": "The Giggle Garden",
         "image": "garden",
-        "text": "In the garden, the flowers drooped sadly. Mama Bear waited by the gate with a cozy picnic blanket. Daddy Monkey hung paper lanterns from a low branch and made his eyebrows dance.\n\nMelody gave her bell a tiny jingle. Callum made his silliest cereal-nose face. Ledger read a joke from the map: \"Why did the cat sit on the computer? To keep an eye on the mouse!\"\n\nThe flowers burst into giggles. Petals wiggled. Leaves clapped. Melody purred proudly.",
+        "text": "In the garden, the flowers drooped sadly. Mama Bear waited by the gate with a cozy picnic blanket. Daddy Monkey hung paper lanterns from a low branch and made his eyebrows dance.\n\nGrandma GiGi carried extra napkins for Mama Bear's side of the family, while Papa Troy guarded the snack basket. Grandma Mimi sprinkled encouragement like confetti, and Papa Dave checked the path for puddles from Daddy Monkey's side.\n\nMelody gave her bell a tiny jingle. Callum made his silliest cereal-nose face. Ledger read a joke from the map: \"Why did the cat sit on the computer? To keep an eye on the mouse!\"\n\nThe flowers burst into giggles. Petals wiggled. Leaves clapped. Melody purred proudly.",
         "choices": [
           [
             "Dance with the flowers",
@@ -267,7 +267,7 @@ window.HAZLENUTTS_STORY = {
       "picnic_ending": {
         "title": "The Snack Picnic",
         "image": "picnic",
-        "text": "The adventurers held a picnic on a blanket. Mama Bear poured tiny cups of juice, and Daddy Monkey balanced crackers like a tower. Melody got the sunniest spot. Callum counted crackers. Ledger gave a tiny speech about teamwork, bravery, and excellent toast shapes.",
+        "text": "The adventurers held a picnic on a blanket. Mama Bear poured tiny cups of juice, and Daddy Monkey balanced crackers like a tower. Melody got the sunniest spot. Callum counted crackers. Ledger gave a tiny speech about teamwork, bravery, and excellent toast shapes.\n\nGrandma GiGi and Papa Troy cheered from Mama Bear's side of the blanket, while Grandma Mimi and Papa Dave cheered from Daddy Monkey's side. No blanket corner escaped.",
         "choices": [
           [
             "Choose another hero",
@@ -314,7 +314,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Callum and the Snack Patrol",
         "image": "kitchen",
-        "text": "Callum the dog woke up with one very important thought: someone had to protect the snacks. Mama Bear, his mom, pinned on his pretend patrol badge and reminded him that sharing counts as protecting. Daddy Monkey, his dad, made a trumpet sound into a paper towel tube.\n\nMelody the cat stretched in a sunbeam. Ledger the dinosaur held up a crayon map. \"The Missing Crunchies are this way,\" Ledger announced.",
+        "text": "Callum the dog woke up with one very important thought: someone had to protect the snacks. Mama Bear, his mom, pinned on his pretend patrol badge and reminded him that sharing counts as protecting. Daddy Monkey, his dad, made a trumpet sound into a paper towel tube.\n\nGrandma GiGi, Mama Bear's mom, called him Captain Crunchies. Papa Troy, Mama Bear's dad, nodded proudly. Grandma Mimi, Daddy Monkey's mom, called him Captain Kindness, and Papa Dave, Daddy Monkey's dad, agreed both titles were excellent.\n\nMelody the cat stretched in a sunbeam. Ledger the dinosaur held up a crayon map. \"The Missing Crunchies are this way,\" Ledger announced.",
         "choices": [
           [
             "Sniff for clues under the table",
@@ -419,7 +419,7 @@ window.HAZLENUTTS_STORY = {
       "snack_ending": {
         "title": "Captain Callum's Snack Picnic",
         "image": "picnic",
-        "text": "Callum shared every rescued snack. Melody got the sunniest spot, Ledger got the biggest cracker, Mama Bear got the first thank-you, and Daddy Monkey got crumbs in his eyebrows. Callum got a hero hug.\n\nThe Snack Patrol was officially the coziest team in the house.",
+        "text": "Callum shared every rescued snack. Melody got the sunniest spot, Ledger got the biggest cracker, Mama Bear got the first thank-you, and Daddy Monkey got crumbs in his eyebrows. Grandma GiGi and Papa Troy sat near Mama Bear, while Grandma Mimi and Papa Dave sat near Daddy Monkey. Callum got a hero hug.\n\nThe Snack Patrol was officially the coziest team in the house.",
         "choices": [
           [
             "Choose another hero",
@@ -434,7 +434,7 @@ window.HAZLENUTTS_STORY = {
       "parade_ending": {
         "title": "The Wagging Victory Parade",
         "image": "parade",
-        "text": "Callum led the parade with proud paws and a wagging tail. Melody jingled a bell. Mama Bear waved a dish towel like a royal flag, and Daddy Monkey marched backward just to be funny. Ledger waved the map upside down, which somehow made it more exciting.",
+        "text": "Callum led the parade with proud paws and a wagging tail. Melody jingled a bell. Mama Bear waved a dish towel like a royal flag, and Daddy Monkey marched backward just to be funny. Grandma GiGi and Papa Troy clapped beside Mama Bear, while Grandma Mimi and Papa Dave clapped beside Daddy Monkey. Ledger waved the map upside down, which somehow made it more exciting.",
         "choices": [
           [
             "Choose another hero",
@@ -451,7 +451,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Ledger's Tiny Dino Expedition",
         "image": "map",
-        "text": "Ledger the dinosaur woke up ready for science. Mama Bear, his mom, packed his green crayon and whispered, \"Careful explorers notice small wonders.\" Daddy Monkey, his dad, tucked a banana sticker onto the map and whispered, \"Silly explorers notice big laughs.\"\n\nLedger unrolled his map and made his bravest tiny roar.\n\nMelody the cat blinked from her sunbeam. Callum the dog sniffed the map and found a cracker crumb.",
+        "text": "Ledger the dinosaur woke up ready for science. Mama Bear, his mom, packed his green crayon and whispered, \"Careful explorers notice small wonders.\" Daddy Monkey, his dad, tucked a banana sticker onto the map and whispered, \"Silly explorers notice big laughs.\"\n\nGrandma GiGi and Papa Troy, Mama Bear's parents, lent him a tiny notebook for careful discoveries. Grandma Mimi and Papa Dave, Daddy Monkey's parents, lent him a shiny button for measuring bravery.\n\nLedger unrolled his map and made his bravest tiny roar.\n\nMelody the cat blinked from her sunbeam. Callum the dog sniffed the map and found a cracker crumb.",
         "choices": [
           [
             "Study the cracker crumb",
@@ -556,7 +556,7 @@ window.HAZLENUTTS_STORY = {
       "garden_explorer": {
         "title": "Ledger Saves the Giggles",
         "image": "garden",
-        "text": "The Giggle Garden was quiet. Mama Bear knelt beside the droopy flowers and gave them a kind smile. Daddy Monkey dangled from the lowest branch and made the gentlest monkey face.\n\nLedger stepped forward and told the flowers his best dinosaur joke: \"What do tiny dinosaurs put on toast? Jurassi-jam!\"\n\nThe flowers giggled so much their petals wobbled. Melody clapped her paws. Callum wagged in circles.",
+        "text": "The Giggle Garden was quiet. Mama Bear knelt beside the droopy flowers and gave them a kind smile. Daddy Monkey dangled from the lowest branch and made the gentlest monkey face.\n\nGrandma GiGi and Papa Troy hummed softly by Mama Bear. Grandma Mimi and Papa Dave held the map open beside Daddy Monkey so the breeze could not fold the important parts.\n\nLedger stepped forward and told the flowers his best dinosaur joke: \"What do tiny dinosaurs put on toast? Jurassi-jam!\"\n\nThe flowers giggled so much their petals wobbled. Melody clapped her paws. Callum wagged in circles.",
         "choices": [
           [
             "Draw the garden on the map",
@@ -571,7 +571,7 @@ window.HAZLENUTTS_STORY = {
       "map_ending": {
         "title": "Ledger's Great Explorer Map",
         "image": "map",
-        "text": "Ledger drew the whole adventure on his map: the cave, the pantry volcano, the garden, Mama Bear's picnic blanket, Daddy Monkey's lanterns, and three heroic friends. He put a giant star beside his name, then added stars for everyone else too.",
+        "text": "Ledger drew the whole adventure on his map: the cave, the pantry volcano, the garden, Mama Bear's picnic blanket, Daddy Monkey's lanterns, Grandma GiGi's notebook, Papa Troy's snack watch, Grandma Mimi's button, Papa Dave's puddle check, and three heroic friends. He put a giant star beside his name, then added stars for everyone else too.",
         "choices": [
           [
             "Choose another hero",
@@ -603,7 +603,7 @@ window.HAZLENUTTS_STORY = {
       "start": {
         "title": "Millie and the Teacup Trail",
         "image": "kitchen",
-        "text": "Millie the Mouse arrived for cousin day with a thimble-sized backpack, a blue ribbon, and a very important squeak. She was Melody, Callum, and Ledger's cousin, and she knew small heroes could find clues that big paws missed.\n\nMama Bear set a tiny teacup on the table and said, \"Welcome, Millie.\" Daddy Monkey balanced a crumb on his nose and whispered, \"The house has been waiting for a mouse-sized mystery.\"",
+        "text": "Millie the Mouse arrived for cousin day with a thimble-sized backpack, a blue ribbon, and a very important squeak. She was Melody, Callum, and Ledger's cousin, and she knew small heroes could find clues that big paws missed.\n\nMama Bear set a tiny teacup on the table and said, \"Welcome, Millie.\" Daddy Monkey balanced a crumb on his nose and whispered, \"The house has been waiting for a mouse-sized mystery.\"\n\nAuntie Croc, Millie's mom, gave her a careful crocodile smile. Uncle Zebra, Millie's dad, straightened her ribbon stripes and said, \"Cousin adventures are best when you squeak bravely.\"",
         "choices": [
           [
             "Inspect the teacup",
@@ -648,7 +648,7 @@ window.HAZLENUTTS_STORY = {
       "mama_advice": {
         "title": "Mama Bear's Tiny Advice",
         "image": "kitchen",
-        "text": "Mama Bear crouched beside Millie and said, \"Tiny paws are perfect for gentle jobs.\" She tied Millie's blue ribbon into a neat adventure bow.\n\nDaddy Monkey handed Millie a raisin and called it emergency treasure. Millie accepted, because every explorer needs supplies.",
+        "text": "Mama Bear crouched beside Millie and said, \"Tiny paws are perfect for gentle jobs.\" She tied Millie's blue ribbon into a neat adventure bow.\n\nDaddy Monkey handed Millie a raisin and called it emergency treasure. Millie accepted, because every explorer needs supplies.\n\nGrandma GiGi and Papa Troy sent a pocket-sized hug from Mama Bear's side of the family. Grandma Mimi and Papa Dave checked that the adventure bow was tied just right for Daddy Monkey's side.",
         "choices": [
           [
             "Follow the note to the pantry",
@@ -678,7 +678,7 @@ window.HAZLENUTTS_STORY = {
       "button_rescue": {
         "title": "The Moon Button Rescue",
         "image": "laundry",
-        "text": "Millie nudged the lost button out from under the sofa. It rolled across the floor and stopped beside Daddy Monkey's foot.\n\n\"A moon for the map!\" Daddy Monkey cheered. Mama Bear smiled and gave Millie a proud little nod.",
+        "text": "Millie nudged the lost button out from under the sofa. It rolled across the floor and stopped beside Daddy Monkey's foot.\n\n\"A moon for the map!\" Daddy Monkey cheered. Mama Bear smiled and gave Millie a proud little nod.\n\nAuntie Croc clicked her teeth softly, which was crocodile applause. Uncle Zebra tapped one striped hoof in a tiny victory rhythm.",
         "choices": [
           [
             "Add the moon button to the map",
@@ -738,7 +738,7 @@ window.HAZLENUTTS_STORY = {
       "garden_giggle": {
         "title": "Millie Saves a Little Giggle",
         "image": "garden",
-        "text": "In the Giggle Garden, Millie opened the jam jar and released one tiny giggle. It bounced from flower to flower until the whole garden shimmered.\n\nMelody purred, Callum wagged, and Ledger added Millie's cousin-sized victory to the map.",
+        "text": "In the Giggle Garden, Millie opened the jam jar and released one tiny giggle. It bounced from flower to flower until the whole garden shimmered.\n\nMelody purred, Callum wagged, and Ledger added Millie's cousin-sized victory to the map.\n\nAuntie Croc dabbed her happy eyes with a napkin. Uncle Zebra announced, \"That is our Millie, small enough for crumbs and brave enough for gardens.\"",
         "choices": [
           [
             "Lead a mouse parade",
@@ -753,7 +753,7 @@ window.HAZLENUTTS_STORY = {
       "picnic_ending": {
         "title": "Millie's Tiny Picnic",
         "image": "picnic",
-        "text": "Millie shared the raisin treasure, the jam jar giggle, and three heroic crumbs. Mama Bear poured juice into the tiniest cup, and Daddy Monkey made a napkin tent just for her.\n\nMillie decided cousin day was best when everyone had room at the blanket.",
+        "text": "Millie shared the raisin treasure, the jam jar giggle, and three heroic crumbs. Mama Bear poured juice into the tiniest cup, and Daddy Monkey made a napkin tent just for her.\n\nGrandma GiGi and Papa Troy sat with Mama Bear, Grandma Mimi and Papa Dave sat with Daddy Monkey, and Auntie Croc and Uncle Zebra found cozy spots nearby. Millie decided cousin day was best when everyone had room at the blanket.",
         "choices": [
           [
             "Choose another hero",
@@ -768,7 +768,7 @@ window.HAZLENUTTS_STORY = {
       "map_ending": {
         "title": "Millie's Mouse-Sized Map",
         "image": "map",
-        "text": "Millie drew her path with a crumb, a button moon, a teacup, and one bright giggle. Ledger added labels, Melody added a heart, and Callum added a snack corner.\n\nMama Bear called it brave. Daddy Monkey called it tiny-but-mighty.",
+        "text": "Millie drew her path with a crumb, a button moon, a teacup, and one bright giggle. Ledger added labels, Melody added a heart, and Callum added a snack corner.\n\nMama Bear called it brave. Daddy Monkey called it tiny-but-mighty. Auntie Croc and Uncle Zebra asked for a copy to hang on the cousin wall.",
         "choices": [
           [
             "Choose another hero",
@@ -783,7 +783,7 @@ window.HAZLENUTTS_STORY = {
       "parade_ending": {
         "title": "The Tiny Tail Parade",
         "image": "parade",
-        "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nThe Hazlenutts cheered for their cousin, and Millie took the smallest, proudest bow.",
+        "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nGrandma GiGi and Papa Troy cheered with Mama Bear, Grandma Mimi and Papa Dave cheered with Daddy Monkey, and Auntie Croc and Uncle Zebra cheered from the front row. The Hazlenutts cheered for their cousin, and Millie took the smallest, proudest bow.",
         "choices": [
           [
             "Choose another hero",

@@ -27,7 +27,7 @@ function showCharacterSelect() {
   heroLabel.textContent = "Choose your hero";
   sceneTitle.textContent = "Choose Your Hero";
   storyText.innerHTML = paragraphs(
-    "Pick who should lead this cozy adventure. The other Hazlenutts, plus Mama Bear and Daddy Monkey, will still help along the way."
+    "Pick who should lead this cozy adventure. The Hazlenutts family will still help along the way."
   );
   choices.replaceChildren(
     ...Object.entries(data.characters).map(([key, character]) =>
