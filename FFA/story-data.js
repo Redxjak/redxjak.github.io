@@ -648,7 +648,7 @@ window.HAZLENUTTS_STORY = {
       "mama_advice": {
         "title": "Mama Bear's Tiny Advice",
         "image": "kitchen",
-        "text": "Mama Bear crouched beside Millie and said, \"Tiny paws are perfect for gentle jobs.\" She tied Millie's blue ribbon into a neat adventure bow.\n\nDaddy Monkey handed Millie a raisin and called it emergency treasure. Millie accepted, because every explorer needs supplies.\n\n\"If the note is tiny,\" Mama Bear said, \"Grandma Mimi and Papa Dave might know what it means. They keep a whole shelf of tiny things.\"",
+        "text": "Mama Bear crouched beside Millie and said, \"Tiny paws are perfect for gentle jobs.\" She tied Millie's blue ribbon into a neat adventure bow.\n\nDaddy Monkey handed Millie a raisin and called it emergency treasure. Millie accepted, because every explorer needs supplies.\n\n\"If the note is tiny,\" Mama Bear said, \"Grandma Mimi and Papa Wolf might know what it means. They keep a whole shelf of tiny things.\"",
         "choices": [
           [
             "Follow the note to the pantry",
@@ -678,7 +678,7 @@ window.HAZLENUTTS_STORY = {
       "button_rescue": {
         "title": "The Moon Button Rescue",
         "image": "laundry",
-        "text": "Millie nudged the lost button out from under the sofa. It rolled across the floor and stopped beside Daddy Monkey's foot.\n\n\"A moon for the map!\" Grandma Mimi cheered when Millie rolled it onto her tiny-things shelf. Papa Dave found a bit of string and helped tie the button safely to Millie's map.",
+        "text": "Millie nudged the lost button out from under the sofa. It rolled across the floor and stopped beside Daddy Monkey's foot.\n\n\"A moon for the map!\" Grandma Mimi cheered when Millie rolled it onto her tiny-things shelf. Papa Wolf found a bit of string and helped tie the button safely to Millie's map.",
         "choices": [
           [
             "Add the moon button to the map",
@@ -738,7 +738,7 @@ window.HAZLENUTTS_STORY = {
       "garden_giggle": {
         "title": "Millie Saves a Little Giggle",
         "image": "garden",
-        "text": "In Grandma Mimi and Papa Dave's window garden, Millie opened the jam jar and released one tiny giggle. It bounced from flowerpot to flowerpot until the whole windowsill shimmered.\n\nMelody purred, and Papa Dave added Millie's cousin-sized victory to the map. Grandma Mimi declared the giggle officially saved.",
+        "text": "In Grandma Mimi and Papa Wolf's window garden, Millie opened the jam jar and released one tiny giggle. It bounced from flowerpot to flowerpot until the whole windowsill shimmered.\n\nMelody purred, and Papa Wolf added Millie's cousin-sized victory to the map. Grandma Mimi declared the giggle officially saved.",
         "choices": [
           [
             "Lead a bunny parade",
@@ -753,7 +753,7 @@ window.HAZLENUTTS_STORY = {
       "picnic_ending": {
         "title": "Millie's Tiny Picnic",
         "image": "picnic",
-        "text": "Millie shared the raisin treasure, the jam jar giggle, and three heroic crumbs. Grandma Mimi poured juice into the tiniest cup, and Papa Dave made a napkin tent just for her.\n\nAuntie Croc and Uncle Zebra found cozy spots nearby. Millie decided cousin day was best when everyone had room at the blanket.",
+        "text": "Millie shared the raisin treasure, the jam jar giggle, and three heroic crumbs. Grandma Mimi poured juice into the tiniest cup, and Papa Wolf made a napkin tent just for her.\n\nAuntie Croc and Uncle Zebra found cozy spots nearby. Millie decided cousin day was best when everyone had room at the blanket.",
         "choices": [
           [
             "Choose another hero",
@@ -768,7 +768,7 @@ window.HAZLENUTTS_STORY = {
       "map_ending": {
         "title": "Millie's Bunny-Sized Map",
         "image": "map",
-        "text": "Millie drew her path with a crumb, a button moon, a teacup, and one bright giggle. Ledger added labels, Melody added a heart, and Callum added a snack corner.\n\nGrandma Mimi called it brave. Papa Dave called it tiny-but-mighty. Auntie Croc and Uncle Zebra asked for a copy to hang on Millie's cousin wall.",
+        "text": "Millie drew her path with a crumb, a button moon, a teacup, and one bright giggle. Ledger added labels, Melody added a heart, and Callum added a snack corner.\n\nGrandma Mimi called it brave. Papa Wolf called it tiny-but-mighty. Auntie Croc and Uncle Zebra asked for a copy to hang on Millie's cousin wall.",
         "choices": [
           [
             "Choose another hero",
@@ -783,7 +783,7 @@ window.HAZLENUTTS_STORY = {
       "parade_ending": {
         "title": "The Bunny Hop Parade",
         "image": "parade",
-        "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nGrandma Mimi and Papa Dave cheered from the tiny-things shelf, and Auntie Croc and Uncle Zebra cheered from the front row. The family cheered for their cousin, and Millie took the smallest, proudest bow.",
+        "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nGrandma Mimi and Papa Wolf cheered from the tiny-things shelf, and Auntie Croc and Uncle Zebra cheered from the front row. The family cheered for their cousin, and Millie took the smallest, proudest bow.",
         "choices": [
           [
             "Choose another hero",
