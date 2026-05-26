@@ -285,24 +285,24 @@ function drawQueen() {
 function drawCat(x, y, scale, name) {
   const s = scale;
   const body = "#f4a261";
-  const stripe = "#bc6c25";
   const outline = "#5c4033";
+  const dark = "#1f2933";
 
-  oval(x, y + 25 * s, 58 * s, 42 * s, body, outline, 4 * s);
-  oval(x, y - 46 * s, 44 * s, 41 * s, body, outline, 4 * s);
-  triangle(x - 40 * s, y - 68 * s, x - 24 * s, y - 116 * s, x - 8 * s, y - 70 * s, body, outline);
-  triangle(x + 40 * s, y - 68 * s, x + 24 * s, y - 116 * s, x + 8 * s, y - 70 * s, body, outline);
-  triangle(x - 31 * s, y - 70 * s, x - 24 * s, y - 94 * s, x - 16 * s, y - 70 * s, "#ffd6d6", "#ffd6d6");
-  triangle(x + 31 * s, y - 70 * s, x + 24 * s, y - 94 * s, x + 16 * s, y - 70 * s, "#ffd6d6", "#ffd6d6");
+  oval(x, y + 24 * s, 55 * s, 56 * s, body, outline, 4 * s);
+  oval(x, y - 52 * s, 48 * s, 45 * s, body, outline, 4 * s);
+  triangle(x - 39 * s, y - 75 * s, x - 24 * s, y - 125 * s, x - 5 * s, y - 82 * s, body, outline);
+  triangle(x + 39 * s, y - 75 * s, x + 24 * s, y - 125 * s, x + 5 * s, y - 82 * s, body, outline);
+  triangle(x - 30 * s, y - 79 * s, x - 24 * s, y - 103 * s, x - 15 * s, y - 79 * s, "#ffd0c8", "#ffd0c8");
+  triangle(x + 30 * s, y - 79 * s, x + 24 * s, y - 103 * s, x + 15 * s, y - 79 * s, "#ffd0c8", "#ffd0c8");
 
-  for (const offset of [-22, 0, 22]) {
-    line([[x + offset * s, y - 80 * s], [x + (offset - 7) * s, y - 58 * s]], stripe, 3 * s);
-  }
+  drawFlower(x + 32 * s, y - 91 * s, 11 * s, "#d94f70", "#f5b23d");
+  line([[x - 28 * s, y - 3 * s], [x + 28 * s, y - 3 * s]], "#d94f70", 6 * s);
+  drawMedal(x, y + 8 * s, 8 * s, "#f6c453");
 
-  circle(x - 16 * s, y - 50 * s, 7 * s, "#243b53");
-  circle(x + 16 * s, y - 50 * s, 7 * s, "#243b53");
+  circle(x - 15 * s, y - 58 * s, 7 * s, dark);
+  circle(x + 15 * s, y - 58 * s, 7 * s, dark);
   circle(x, y - 32 * s, 5 * s, outline);
-  smile(x, y - 29 * s, 16 * s, 12 * s, outline, 2.5 * s);
+  smile(x, y - 28 * s, 18 * s, 12 * s, outline, 2.5 * s);
 
   for (const side of [-1, 1]) {
     line([[x + side * 5 * s, y - 32 * s], [x + side * 40 * s, y - 40 * s]], outline, 1.5 * s);
@@ -310,7 +310,11 @@ function drawCat(x, y, scale, name) {
     line([[x + side * 5 * s, y - 24 * s], [x + side * 40 * s, y - 18 * s]], outline, 1.5 * s);
   }
 
-  curvedTail(x + 48 * s, y + 22 * s, 66 * s, 56 * s, body, 11 * s);
+  line([[x - 22 * s, y + 36 * s], [x - 22 * s, y + 72 * s]], "#b56b31", 3 * s);
+  line([[x, y + 36 * s], [x, y + 72 * s]], "#b56b31", 3 * s);
+  line([[x + 22 * s, y + 36 * s], [x + 22 * s, y + 72 * s]], "#b56b31", 3 * s);
+  curvedTail(x + 44 * s, y + 18 * s, 70 * s, 72 * s, body, 12 * s);
+  shadow(x, y + 88 * s, 44 * s, 9 * s);
   label(name, x, y + 92 * s, 17 * s);
 }
 
@@ -320,20 +324,25 @@ function drawDog(x, y, scale, name) {
   const dark = "#3b2a24";
   const cream = "#f5dfbf";
 
-  oval(x, y + 20 * s, 58 * s, 43 * s, tan, dark, 4 * s);
-  oval(x + 2 * s, y - 52 * s, 48 * s, 42 * s, tan, dark, 4 * s);
-  triangle(x - 34 * s, y - 73 * s, x - 18 * s, y - 124 * s, x - 3 * s, y - 69 * s, dark, dark);
-  triangle(x + 34 * s, y - 73 * s, x + 18 * s, y - 124 * s, x + 3 * s, y - 69 * s, dark, dark);
+  oval(x, y + 24 * s, 55 * s, 58 * s, tan, dark, 4 * s);
+  oval(x, y - 50 * s, 50 * s, 47 * s, tan, dark, 4 * s);
+  triangle(x - 33 * s, y - 78 * s, x - 22 * s, y - 128 * s, x - 4 * s, y - 79 * s, dark, dark);
+  triangle(x + 33 * s, y - 78 * s, x + 22 * s, y - 128 * s, x + 4 * s, y - 79 * s, dark, dark);
+  oval(x, y - 39 * s, 30 * s, 22 * s, dark, dark, 0);
+  oval(x + 6 * s, y - 31 * s, 25 * s, 17 * s, cream, cream, 0);
 
-  oval(x + 5 * s, y - 43 * s, 28 * s, 21 * s, dark, dark, 0);
-  oval(x + 12 * s, y - 35 * s, 25 * s, 18 * s, cream, cream, 0);
-  oval(x - 28 * s, y + 30 * s, 16 * s, 22 * s, cream, cream, 0);
-  circle(x - 18 * s, y - 61 * s, 7 * s, "#1f2933");
-  circle(x + 18 * s, y - 61 * s, 7 * s, "#1f2933");
-  circle(x + 8 * s, y - 36 * s, 7 * s, "#1f2933");
-  smile(x + 10 * s, y - 32 * s, 18 * s, 13 * s, dark, 2.5 * s);
-
-  line([[x + 48 * s, y + 10 * s], [x + 84 * s, y - 18 * s], [x + 98 * s, y - 8 * s]], dark, 9 * s);
+  circle(x - 17 * s, y - 62 * s, 7 * s, "#132233");
+  circle(x + 17 * s, y - 62 * s, 7 * s, "#132233");
+  oval(x, y - 39 * s, 10 * s, 8 * s, "#132233", "#132233", 0);
+  tongue(x + 2 * s, y - 24 * s, 9 * s);
+  line([[x - 20 * s, y - 81 * s], [x - 8 * s, y - 86 * s]], dark, 4 * s);
+  line([[x + 8 * s, y - 86 * s], [x + 20 * s, y - 81 * s]], dark, 4 * s);
+  line([[x - 31 * s, y - 5 * s], [x + 31 * s, y - 5 * s]], "#21864f", 7 * s);
+  drawMedal(x, y + 8 * s, 8 * s, "#f6c453");
+  oval(x - 24 * s, y + 56 * s, 13 * s, 18 * s, cream, cream, 0);
+  oval(x + 24 * s, y + 56 * s, 13 * s, 18 * s, cream, cream, 0);
+  line([[x + 45 * s, y + 12 * s], [x + 78 * s, y - 24 * s], [x + 92 * s, y - 10 * s]], dark, 10 * s);
+  shadow(x, y + 92 * s, 44 * s, 9 * s);
   label(name, x, y + 96 * s, 17 * s);
 }
 
@@ -344,12 +353,12 @@ function drawDino(x, y, scale, name) {
   const belly = "#d8f3dc";
   const spike = "#f9c74f";
 
-  oval(x - 12 * s, y + 22 * s, 58 * s, 45 * s, green, darkGreen, 4 * s);
-  oval(x + 22 * s, y - 58 * s, 46 * s, 38 * s, green, darkGreen, 4 * s);
-  triangle(x - 56 * s, y + 8 * s, x - 112 * s, y + 38 * s, x - 54 * s, y + 56 * s, green, darkGreen);
-  oval(x - 14 * s, y + 31 * s, 25 * s, 33 * s, belly, belly, 0);
+  oval(x - 4 * s, y + 22 * s, 55 * s, 62 * s, green, darkGreen, 4 * s);
+  oval(x + 14 * s, y - 54 * s, 48 * s, 42 * s, green, darkGreen, 4 * s);
+  triangle(x - 48 * s, y + 16 * s, x - 112 * s, y + 44 * s, x - 48 * s, y + 62 * s, green, darkGreen);
+  oval(x - 8 * s, y + 30 * s, 26 * s, 38 * s, belly, belly, 0);
 
-  for (const [dx, dy] of [[-30, -45], [-10, -76], [14, -95], [40, -82]]) {
+  for (const [dx, dy] of [[-36, -38], [-18, -70], [6, -96], [32, -86]]) {
     triangle(
       x + dx * s,
       y + dy * s,
@@ -362,13 +371,15 @@ function drawDino(x, y, scale, name) {
     );
   }
 
-  circle(x + 24 * s, y - 67 * s, 7 * s, "#1f2933");
-  smile(x + 39 * s, y - 50 * s, 24 * s, 14 * s, darkGreen, 2.5 * s);
-  triangle(x + 53 * s, y - 52 * s, x + 76 * s, y - 43 * s, x + 53 * s, y - 35 * s, belly, darkGreen);
-  line([[x - 14 * s, y + 12 * s], [x - 42 * s, y + 35 * s]], darkGreen, 7 * s);
-  line([[x + 18 * s, y + 12 * s], [x + 44 * s, y + 35 * s]], darkGreen, 7 * s);
+  circle(x + 22 * s, y - 65 * s, 7 * s, "#132233");
+  roundedMouth(x + 35 * s, y - 47 * s, 30 * s, 18 * s, darkGreen);
+  tooth(x + 43 * s, y - 39 * s, 5 * s);
+  tooth(x + 56 * s, y - 39 * s, 5 * s);
+  line([[x - 18 * s, y + 8 * s], [x - 42 * s, y + 30 * s]], darkGreen, 7 * s);
+  line([[x + 18 * s, y + 8 * s], [x + 40 * s, y + 30 * s]], darkGreen, 7 * s);
   line([[x - 22 * s, y + 60 * s], [x - 34 * s, y + 86 * s]], darkGreen, 8 * s);
   line([[x + 16 * s, y + 60 * s], [x + 30 * s, y + 86 * s]], darkGreen, 8 * s);
+  shadow(x, y + 98 * s, 46 * s, 9 * s);
   label(name, x, y + 108 * s, 17 * s);
 }
 
@@ -378,14 +389,15 @@ function drawMouse(x, y, scale, name) {
   const outline = "#5c514b";
   const ear = "#f2c6c2";
 
-  oval(x, y + 18 * s, 44 * s, 33 * s, body, outline, 4 * s);
-  oval(x, y - 45 * s, 34 * s, 34 * s, body, outline, 4 * s);
-  circle(x - 32 * s, y - 72 * s, 18 * s, body, outline, 3 * s);
-  circle(x + 32 * s, y - 72 * s, 18 * s, body, outline, 3 * s);
-  circle(x - 32 * s, y - 72 * s, 10 * s, ear);
-  circle(x + 32 * s, y - 72 * s, 10 * s, ear);
-  circle(x - 11 * s, y - 50 * s, 5 * s, "#1f2933");
-  circle(x + 11 * s, y - 50 * s, 5 * s, "#1f2933");
+  oval(x, y + 16 * s, 42 * s, 52 * s, body, outline, 4 * s);
+  oval(x, y - 47 * s, 34 * s, 34 * s, body, outline, 4 * s);
+  circle(x - 32 * s, y - 76 * s, 20 * s, body, outline, 3 * s);
+  circle(x + 32 * s, y - 76 * s, 20 * s, body, outline, 3 * s);
+  circle(x - 32 * s, y - 76 * s, 12 * s, ear);
+  circle(x + 32 * s, y - 76 * s, 12 * s, ear);
+  drawBow(x + 18 * s, y - 88 * s, 10 * s, "#d94f70");
+  circle(x - 11 * s, y - 51 * s, 5 * s, "#1f2933");
+  circle(x + 11 * s, y - 51 * s, 5 * s, "#1f2933");
   circle(x, y - 34 * s, 5 * s, "#7d4f50");
   smile(x, y - 30 * s, 14 * s, 10 * s, outline, 2 * s);
 
@@ -394,9 +406,55 @@ function drawMouse(x, y, scale, name) {
     line([[x + side * 4 * s, y - 31 * s], [x + side * 34 * s, y - 31 * s]], outline, 1.3 * s);
   }
 
-  line([[x - 24 * s, y - 18 * s], [x + 24 * s, y - 18 * s]], "#7aa7c7", 5 * s);
-  line([[x + 35 * s, y + 12 * s], [x + 86 * s, y + 42 * s], [x + 104 * s, y + 18 * s]], outline, 5 * s);
+  drawCheese(x, y + 10 * s, 16 * s);
+  line([[x - 38 * s, y + 40 * s], [x - 54 * s, y + 70 * s]], outline, 5 * s);
+  line([[x + 38 * s, y + 40 * s], [x + 54 * s, y + 70 * s]], outline, 5 * s);
+  line([[x + 35 * s, y + 12 * s], [x + 86 * s, y + 42 * s], [x + 104 * s, y + 18 * s]], "#f09a9a", 5 * s);
+  shadow(x, y + 86 * s, 38 * s, 8 * s);
   label(name, x, y + 84 * s, 17 * s);
+}
+
+function drawFlower(x, y, r, petal, center) {
+  for (const [dx, dy] of [[0, -1], [0.9, -0.25], [0.55, 0.85], [-0.55, 0.85], [-0.9, -0.25]]) {
+    circle(x + dx * r, y + dy * r, r * 0.58, petal, "#9b2c45", 1.5);
+  }
+  circle(x, y, r * 0.42, center, "#9b6b1c", 1);
+}
+
+function drawBow(x, y, r, color) {
+  triangle(x, y, x - 18 * r / 10, y - 10 * r / 10, x - 18 * r / 10, y + 10 * r / 10, color, "#9b2c45");
+  triangle(x, y, x + 18 * r / 10, y - 10 * r / 10, x + 18 * r / 10, y + 10 * r / 10, color, "#9b2c45");
+  circle(x, y, r * 0.45, "#f3a4b8", "#9b2c45", 1);
+}
+
+function drawMedal(x, y, r, color) {
+  circle(x, y, r, color, "#b97912", 1.5);
+  circle(x - r * 0.25, y - r * 0.25, r * 0.22, "#fff0a6", "#fff0a6", 0);
+}
+
+function drawCheese(x, y, size) {
+  triangle(x - size, y + size * 0.4, x + size, y - size * 0.8, x + size, y + size, "#f6c453", "#b97912");
+  circle(x + size * 0.35, y + size * 0.2, size * 0.16, "#d99a27", "#d99a27", 0);
+  circle(x + size * 0.7, y - size * 0.3, size * 0.13, "#d99a27", "#d99a27", 0);
+}
+
+function tongue(x, y, size) {
+  oval(x, y, size * 0.55, size, "#f77f8d", "#a53f4b", 1);
+}
+
+function roundedMouth(x, y, width, height, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.roundRect(x - width * 0.5, y - height * 0.5, width, height, height * 0.45);
+  ctx.fill();
+}
+
+function tooth(x, y, size) {
+  triangle(x - size, y, x + size, y, x, y + size * 1.3, "#ffffff", "#ffffff");
+}
+
+function shadow(x, y, rx, ry) {
+  oval(x, y, rx, ry, "rgba(91, 64, 38, 0.16)", "rgba(91, 64, 38, 0.16)", 0);
 }
 
 function oval(x, y, radiusX, radiusY, fill, stroke = fill, width = 2) {
