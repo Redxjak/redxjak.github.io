@@ -284,57 +284,153 @@ function drawQueen() {
 
 function drawCat(x, y, scale, name) {
   const s = scale;
-  circle(x, y - 70 * s, 46 * s, "#f4a261", "#7f5539", 4);
-  circle(x, y, 58 * s, "#f4a261", "#7f5539", 4);
-  triangle(x - 36 * s, y - 100 * s, x - 14 * s, y - 145 * s, x + 2 * s, y - 95 * s, "#f4a261", "#7f5539");
-  triangle(x + 36 * s, y - 100 * s, x + 14 * s, y - 145 * s, x - 2 * s, y - 95 * s, "#f4a261", "#7f5539");
-  circle(x - 16 * s, y - 78 * s, 6 * s, "#263238");
-  circle(x + 16 * s, y - 78 * s, 6 * s, "#263238");
-  circle(x, y - 62 * s, 5 * s, "#5c4033");
-  line([[x + 42 * s, y + 10 * s], [x + 88 * s, y - 15 * s]], "#f4a261", 10 * s);
-  text(name, x, y + 78 * s, 17 * s, "#3f3428", "center");
+  const body = "#f4a261";
+  const stripe = "#bc6c25";
+  const outline = "#5c4033";
+
+  oval(x, y + 25 * s, 58 * s, 42 * s, body, outline, 4 * s);
+  oval(x, y - 46 * s, 44 * s, 41 * s, body, outline, 4 * s);
+  triangle(x - 40 * s, y - 68 * s, x - 24 * s, y - 116 * s, x - 8 * s, y - 70 * s, body, outline);
+  triangle(x + 40 * s, y - 68 * s, x + 24 * s, y - 116 * s, x + 8 * s, y - 70 * s, body, outline);
+  triangle(x - 31 * s, y - 70 * s, x - 24 * s, y - 94 * s, x - 16 * s, y - 70 * s, "#ffd6d6", "#ffd6d6");
+  triangle(x + 31 * s, y - 70 * s, x + 24 * s, y - 94 * s, x + 16 * s, y - 70 * s, "#ffd6d6", "#ffd6d6");
+
+  for (const offset of [-22, 0, 22]) {
+    line([[x + offset * s, y - 80 * s], [x + (offset - 7) * s, y - 58 * s]], stripe, 3 * s);
+  }
+
+  circle(x - 16 * s, y - 50 * s, 7 * s, "#243b53");
+  circle(x + 16 * s, y - 50 * s, 7 * s, "#243b53");
+  circle(x, y - 32 * s, 5 * s, outline);
+  smile(x, y - 29 * s, 16 * s, 12 * s, outline, 2.5 * s);
+
+  for (const side of [-1, 1]) {
+    line([[x + side * 5 * s, y - 32 * s], [x + side * 40 * s, y - 40 * s]], outline, 1.5 * s);
+    line([[x + side * 5 * s, y - 28 * s], [x + side * 42 * s, y - 28 * s]], outline, 1.5 * s);
+    line([[x + side * 5 * s, y - 24 * s], [x + side * 40 * s, y - 18 * s]], outline, 1.5 * s);
+  }
+
+  curvedTail(x + 48 * s, y + 22 * s, 66 * s, 56 * s, body, 11 * s);
+  label(name, x, y + 92 * s, 17 * s);
 }
 
 function drawDog(x, y, scale, name) {
   const s = scale;
-  circle(x, y - 62 * s, 48 * s, "#c98f5a", "#3b2a24", 4);
-  circle(x, y, 60 * s, "#c98f5a", "#3b2a24", 4);
-  triangle(x - 35 * s, y - 86 * s, x - 22 * s, y - 135 * s, x - 5 * s, y - 85 * s, "#3b2a24", "#3b2a24");
-  triangle(x + 35 * s, y - 86 * s, x + 22 * s, y - 135 * s, x + 5 * s, y - 85 * s, "#3b2a24", "#3b2a24");
-  circle(x - 16 * s, y - 72 * s, 6 * s, "#1f2933");
-  circle(x + 16 * s, y - 72 * s, 6 * s, "#1f2933");
-  circle(x + 7 * s, y - 54 * s, 8 * s, "#1f2933");
-  line([[x + 48 * s, y + 5 * s], [x + 90 * s, y - 24 * s]], "#3b2a24", 9 * s);
-  text(name, x, y + 82 * s, 17 * s, "#3f3428", "center");
+  const tan = "#c98f5a";
+  const dark = "#3b2a24";
+  const cream = "#f5dfbf";
+
+  oval(x, y + 20 * s, 58 * s, 43 * s, tan, dark, 4 * s);
+  oval(x + 2 * s, y - 52 * s, 48 * s, 42 * s, tan, dark, 4 * s);
+  triangle(x - 34 * s, y - 73 * s, x - 18 * s, y - 124 * s, x - 3 * s, y - 69 * s, dark, dark);
+  triangle(x + 34 * s, y - 73 * s, x + 18 * s, y - 124 * s, x + 3 * s, y - 69 * s, dark, dark);
+
+  oval(x + 5 * s, y - 43 * s, 28 * s, 21 * s, dark, dark, 0);
+  oval(x + 12 * s, y - 35 * s, 25 * s, 18 * s, cream, cream, 0);
+  oval(x - 28 * s, y + 30 * s, 16 * s, 22 * s, cream, cream, 0);
+  circle(x - 18 * s, y - 61 * s, 7 * s, "#1f2933");
+  circle(x + 18 * s, y - 61 * s, 7 * s, "#1f2933");
+  circle(x + 8 * s, y - 36 * s, 7 * s, "#1f2933");
+  smile(x + 10 * s, y - 32 * s, 18 * s, 13 * s, dark, 2.5 * s);
+
+  line([[x + 48 * s, y + 10 * s], [x + 84 * s, y - 18 * s], [x + 98 * s, y - 8 * s]], dark, 9 * s);
+  label(name, x, y + 96 * s, 17 * s);
 }
 
 function drawDino(x, y, scale, name) {
   const s = scale;
-  circle(x, y - 68 * s, 48 * s, "#7cc576", "#2d6a4f", 4);
-  circle(x - 10 * s, y, 60 * s, "#7cc576", "#2d6a4f", 4);
-  triangle(x - 55 * s, y + 8 * s, x - 110 * s, y + 38 * s, x - 50 * s, y + 54 * s, "#7cc576", "#2d6a4f");
-  circle(x + 16 * s, y - 80 * s, 6 * s, "#1f2933");
-  triangle(x + 48 * s, y - 65 * s, x + 78 * s, y - 55 * s, x + 48 * s, y - 45 * s, "#d8f3dc", "#2d6a4f");
-  for (const [dx, dy] of [[-30, -92], [-5, -118], [25, -110]]) {
-    triangle(x + dx * s, y + dy * s, x + (dx + 11) * s, y + (dy - 25) * s, x + (dx + 23) * s, y + dy * s, "#f2b84b", "#2d6a4f");
+  const green = "#7cc576";
+  const darkGreen = "#2d6a4f";
+  const belly = "#d8f3dc";
+  const spike = "#f9c74f";
+
+  oval(x - 12 * s, y + 22 * s, 58 * s, 45 * s, green, darkGreen, 4 * s);
+  oval(x + 22 * s, y - 58 * s, 46 * s, 38 * s, green, darkGreen, 4 * s);
+  triangle(x - 56 * s, y + 8 * s, x - 112 * s, y + 38 * s, x - 54 * s, y + 56 * s, green, darkGreen);
+  oval(x - 14 * s, y + 31 * s, 25 * s, 33 * s, belly, belly, 0);
+
+  for (const [dx, dy] of [[-30, -45], [-10, -76], [14, -95], [40, -82]]) {
+    triangle(
+      x + dx * s,
+      y + dy * s,
+      x + (dx + 11) * s,
+      y + (dy - 24) * s,
+      x + (dx + 23) * s,
+      y + dy * s,
+      spike,
+      darkGreen
+    );
   }
-  text(name, x, y + 88 * s, 17 * s, "#3f3428", "center");
+
+  circle(x + 24 * s, y - 67 * s, 7 * s, "#1f2933");
+  smile(x + 39 * s, y - 50 * s, 24 * s, 14 * s, darkGreen, 2.5 * s);
+  triangle(x + 53 * s, y - 52 * s, x + 76 * s, y - 43 * s, x + 53 * s, y - 35 * s, belly, darkGreen);
+  line([[x - 14 * s, y + 12 * s], [x - 42 * s, y + 35 * s]], darkGreen, 7 * s);
+  line([[x + 18 * s, y + 12 * s], [x + 44 * s, y + 35 * s]], darkGreen, 7 * s);
+  line([[x - 22 * s, y + 60 * s], [x - 34 * s, y + 86 * s]], darkGreen, 8 * s);
+  line([[x + 16 * s, y + 60 * s], [x + 30 * s, y + 86 * s]], darkGreen, 8 * s);
+  label(name, x, y + 108 * s, 17 * s);
 }
 
 function drawMouse(x, y, scale, name) {
   const s = scale;
-  circle(x, y - 58 * s, 36 * s, "#b7a7a0", "#5c514b", 4);
-  circle(x, y, 46 * s, "#b7a7a0", "#5c514b", 4);
-  circle(x - 32 * s, y - 82 * s, 18 * s, "#b7a7a0", "#5c514b", 3);
-  circle(x + 32 * s, y - 82 * s, 18 * s, "#b7a7a0", "#5c514b", 3);
-  circle(x - 32 * s, y - 82 * s, 10 * s, "#f2c6c2");
-  circle(x + 32 * s, y - 82 * s, 10 * s, "#f2c6c2");
-  circle(x - 11 * s, y - 64 * s, 5 * s, "#1f2933");
-  circle(x + 11 * s, y - 64 * s, 5 * s, "#1f2933");
-  circle(x, y - 48 * s, 5 * s, "#7d4f50");
-  line([[x - 24 * s, y - 42 * s], [x + 24 * s, y - 42 * s]], "#7aa7c7", 5 * s);
-  line([[x + 34 * s, y + 14 * s], [x + 88 * s, y + 42 * s], [x + 104 * s, y + 18 * s]], "#5c514b", 5 * s);
-  text(name, x, y + 70 * s, 17 * s, "#3f3428", "center");
+  const body = "#b7a7a0";
+  const outline = "#5c514b";
+  const ear = "#f2c6c2";
+
+  oval(x, y + 18 * s, 44 * s, 33 * s, body, outline, 4 * s);
+  oval(x, y - 45 * s, 34 * s, 34 * s, body, outline, 4 * s);
+  circle(x - 32 * s, y - 72 * s, 18 * s, body, outline, 3 * s);
+  circle(x + 32 * s, y - 72 * s, 18 * s, body, outline, 3 * s);
+  circle(x - 32 * s, y - 72 * s, 10 * s, ear);
+  circle(x + 32 * s, y - 72 * s, 10 * s, ear);
+  circle(x - 11 * s, y - 50 * s, 5 * s, "#1f2933");
+  circle(x + 11 * s, y - 50 * s, 5 * s, "#1f2933");
+  circle(x, y - 34 * s, 5 * s, "#7d4f50");
+  smile(x, y - 30 * s, 14 * s, 10 * s, outline, 2 * s);
+
+  for (const side of [-1, 1]) {
+    line([[x + side * 4 * s, y - 35 * s], [x + side * 31 * s, y - 42 * s]], outline, 1.3 * s);
+    line([[x + side * 4 * s, y - 31 * s], [x + side * 34 * s, y - 31 * s]], outline, 1.3 * s);
+  }
+
+  line([[x - 24 * s, y - 18 * s], [x + 24 * s, y - 18 * s]], "#7aa7c7", 5 * s);
+  line([[x + 35 * s, y + 12 * s], [x + 86 * s, y + 42 * s], [x + 104 * s, y + 18 * s]], outline, 5 * s);
+  label(name, x, y + 84 * s, 17 * s);
+}
+
+function oval(x, y, radiusX, radiusY, fill, stroke = fill, width = 2) {
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = stroke;
+  ctx.lineWidth = Math.max(0, width);
+  ctx.beginPath();
+  ctx.ellipse(x, y, radiusX, radiusY, 0, 0, Math.PI * 2);
+  ctx.fill();
+  if (stroke && width > 0) ctx.stroke();
+}
+
+function smile(x, y, width, height, color, lineWidth) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.beginPath();
+  ctx.arc(x - width * 0.25, y, width * 0.35, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(x + width * 0.25, y, width * 0.35, 0.1 * Math.PI, 0.9 * Math.PI);
+  ctx.stroke();
+}
+
+function curvedTail(x, y, width, height, color, lineWidth) {
+  ctx.strokeStyle = color;
+  ctx.lineWidth = lineWidth;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.arc(x + width * 0.25, y + height * 0.05, width * 0.45, 0.55 * Math.PI, 1.65 * Math.PI);
+  ctx.stroke();
+}
+
+function label(value, x, y, size) {
+  text(value, x, y, size, "#3f3428", "center");
 }
 
 function drawWindow(x, y) {
