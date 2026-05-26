@@ -31,6 +31,11 @@ const storyText = document.querySelector("#story-text");
 const choices = document.querySelector("#choices");
 const canvas = document.querySelector("#scene-art");
 const ctx = canvas.getContext("2d");
+const characterCardsImage = new Image();
+characterCardsImage.src = "assets/character-cards.png?v=20260526-family-art";
+characterCardsImage.addEventListener("load", () => {
+  if (state.scene === "character_select") drawScene("character_select", null);
+});
 
 document.querySelector("#home-button").addEventListener("click", showCharacterSelect);
 document.querySelector("#restart-button").addEventListener("click", () => {
@@ -132,6 +137,7 @@ function drawScene(image, hero) {
   };
 
   if (image === "character_select") {
+    if (drawCharacterCardArt()) return;
     drawGarden();
     [
       ["melody", 125, 210, 0.52],
@@ -149,6 +155,22 @@ function drawScene(image, hero) {
 
   (drawByImage[image] || drawGarden)();
   drawHeroGroup(hero);
+}
+
+function drawCharacterCardArt() {
+  if (!characterCardsImage.complete || !characterCardsImage.naturalWidth) return false;
+  ctx.fillStyle = "#fffaf0";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const scale = Math.min(
+    canvas.width / characterCardsImage.naturalWidth,
+    canvas.height / characterCardsImage.naturalHeight
+  );
+  const width = characterCardsImage.naturalWidth * scale;
+  const height = characterCardsImage.naturalHeight * scale;
+  const x = (canvas.width - width) / 2;
+  const y = (canvas.height - height) / 2;
+  ctx.drawImage(characterCardsImage, x, y, width, height);
+  return true;
 }
 
 function background(top, bottom) {
