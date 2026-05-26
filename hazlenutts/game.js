@@ -116,6 +116,7 @@ function drawScene(image, hero) {
     drawCat(190, 346, 0.95, "Melody");
     drawDog(320, 356, 0.92, "Callum");
     drawDino(455, 354, 0.9, "Ledger");
+    drawMouse(525, 265, 0.72, "Millie");
     return;
   }
 
@@ -143,14 +144,22 @@ function drawHeroGroup(hero) {
     drawDog(300, 350, 1.08, "Callum");
     drawCat(180, 365, 0.78, "Melody");
     drawDino(445, 365, 0.78, "Ledger");
+    drawMouse(520, 265, 0.64, "Millie");
   } else if (hero === "ledger") {
     drawDino(315, 350, 1.08, "Ledger");
     drawCat(190, 365, 0.78, "Melody");
     drawDog(450, 365, 0.78, "Callum");
+    drawMouse(520, 265, 0.64, "Millie");
+  } else if (hero === "millie") {
+    drawMouse(315, 340, 1.18, "Millie");
+    drawCat(175, 365, 0.74, "Melody");
+    drawDog(455, 365, 0.74, "Callum");
+    drawDino(520, 255, 0.62, "Ledger");
   } else {
     drawCat(300, 350, 1.08, "Melody");
     drawDog(170, 365, 0.78, "Callum");
     drawDino(445, 365, 0.78, "Ledger");
+    drawMouse(520, 265, 0.64, "Millie");
   }
 }
 
@@ -310,6 +319,22 @@ function drawDino(x, y, scale, name) {
     triangle(x + dx * s, y + dy * s, x + (dx + 11) * s, y + (dy - 25) * s, x + (dx + 23) * s, y + dy * s, "#f2b84b", "#2d6a4f");
   }
   text(name, x, y + 88 * s, 17 * s, "#3f3428", "center");
+}
+
+function drawMouse(x, y, scale, name) {
+  const s = scale;
+  circle(x, y - 58 * s, 36 * s, "#b7a7a0", "#5c514b", 4);
+  circle(x, y, 46 * s, "#b7a7a0", "#5c514b", 4);
+  circle(x - 32 * s, y - 82 * s, 18 * s, "#b7a7a0", "#5c514b", 3);
+  circle(x + 32 * s, y - 82 * s, 18 * s, "#b7a7a0", "#5c514b", 3);
+  circle(x - 32 * s, y - 82 * s, 10 * s, "#f2c6c2");
+  circle(x + 32 * s, y - 82 * s, 10 * s, "#f2c6c2");
+  circle(x - 11 * s, y - 64 * s, 5 * s, "#1f2933");
+  circle(x + 11 * s, y - 64 * s, 5 * s, "#1f2933");
+  circle(x, y - 48 * s, 5 * s, "#7d4f50");
+  line([[x - 24 * s, y - 42 * s], [x + 24 * s, y - 42 * s]], "#7aa7c7", 5 * s);
+  line([[x + 34 * s, y + 14 * s], [x + 88 * s, y + 42 * s], [x + 104 * s, y + 18 * s]], "#5c514b", 5 * s);
+  text(name, x, y + 70 * s, 17 * s, "#3f3428", "center");
 }
 
 function drawWindow(x, y) {

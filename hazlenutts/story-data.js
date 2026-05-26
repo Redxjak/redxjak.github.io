@@ -15,6 +15,11 @@ window.HAZLENUTTS_STORY = {
       "name": "Ledger",
       "description": "Ledger the tiny T. rex explorer",
       "button": "Play as Ledger the dinosaur"
+    },
+    "millie": {
+      "name": "Millie",
+      "description": "Millie the curious mouse cousin",
+      "button": "Play as Millie the mouse"
     }
   },
   "stories": {
@@ -589,6 +594,203 @@ window.HAZLENUTTS_STORY = {
           ],
           [
             "Play Ledger's story again",
+            "start"
+          ]
+        ]
+      }
+    },
+    "millie": {
+      "start": {
+        "title": "Millie and the Teacup Trail",
+        "image": "kitchen",
+        "text": "Millie the Mouse arrived for cousin day with a thimble-sized backpack, a blue ribbon, and a very important squeak. She was Melody, Callum, and Ledger's cousin, and she knew small heroes could find clues that big paws missed.\n\nMama Bear set a tiny teacup on the table and said, \"Welcome, Millie.\" Daddy Monkey balanced a crumb on his nose and whispered, \"The house has been waiting for a mouse-sized mystery.\"",
+        "choices": [
+          [
+            "Inspect the teacup",
+            "teacup_clue"
+          ],
+          [
+            "Follow the ribbon under the sofa",
+            "sofa_tunnel"
+          ]
+        ]
+      },
+      "teacup_clue": {
+        "title": "The Teacup Clue",
+        "image": "note",
+        "text": "Inside the teacup, Millie found a folded note no bigger than a cracker crumb. It said, \"The Whispering Crumbs need a brave cousin. Bring kindness and a good listening ear.\"\n\nMelody leaned close, Callum held very still, and Ledger wrote, \"Mouse clues are highly official.\"",
+        "choices": [
+          [
+            "Listen for whispering crumbs",
+            "crumb_whispers"
+          ],
+          [
+            "Ask Mama Bear about the note",
+            "mama_advice"
+          ]
+        ]
+      },
+      "sofa_tunnel": {
+        "title": "The Sofa Tunnel",
+        "image": "sofa",
+        "text": "Millie followed the ribbon under Sofa Mountain, where the dust looked like fluffy clouds and a lost button shone like a moon.\n\nCallum tried to peek underneath and bumped his nose. Millie patted it and said, \"This is cousin-sized exploring.\"",
+        "choices": [
+          [
+            "Rescue the moon button",
+            "button_rescue"
+          ],
+          [
+            "Crawl toward the pantry light",
+            "pantry_path"
+          ]
+        ]
+      },
+      "mama_advice": {
+        "title": "Mama Bear's Tiny Advice",
+        "image": "kitchen",
+        "text": "Mama Bear crouched beside Millie and said, \"Tiny paws are perfect for gentle jobs.\" She tied Millie's blue ribbon into a neat adventure bow.\n\nDaddy Monkey handed Millie a raisin and called it emergency treasure. Millie accepted, because every explorer needs supplies.",
+        "choices": [
+          [
+            "Follow the note to the pantry",
+            "pantry_path"
+          ],
+          [
+            "Share the raisin with the team",
+            "picnic_ending"
+          ]
+        ]
+      },
+      "crumb_whispers": {
+        "title": "The Whispering Crumbs",
+        "image": "pantry",
+        "text": "Millie pressed one ear to the floor. The crumbs whispered, \"This way, this way,\" in tiny crunchy voices. They led her to a pantry shelf where a jam jar had lost its giggle.\n\nLedger gasped. Melody blinked wisely. Callum promised not to eat any clue that was currently talking.",
+        "choices": [
+          [
+            "Help the jam jar giggle",
+            "jam_giggle"
+          ],
+          [
+            "Build a crumb bridge",
+            "crumb_bridge"
+          ]
+        ]
+      },
+      "button_rescue": {
+        "title": "The Moon Button Rescue",
+        "image": "laundry",
+        "text": "Millie nudged the lost button out from under the sofa. It rolled across the floor and stopped beside Daddy Monkey's foot.\n\n\"A moon for the map!\" Daddy Monkey cheered. Mama Bear smiled and gave Millie a proud little nod.",
+        "choices": [
+          [
+            "Add the moon button to the map",
+            "map_ending"
+          ],
+          [
+            "Follow the button's roll to the pantry",
+            "pantry_path"
+          ]
+        ]
+      },
+      "pantry_path": {
+        "title": "The Pantry Path",
+        "image": "pantry",
+        "text": "The pantry smelled like crackers, cinnamon, and adventure. Millie climbed a spoon like a ladder and found the jam jar hiding behind a flour bag.\n\nThe jar whispered, \"I forgot my giggle, and now the Giggle Garden will be quiet.\"",
+        "choices": [
+          [
+            "Carry the giggle to the garden",
+            "garden_giggle"
+          ],
+          [
+            "Ask the crumbs to help",
+            "crumb_bridge"
+          ]
+        ]
+      },
+      "crumb_bridge": {
+        "title": "The Crumb Bridge",
+        "image": "map",
+        "text": "Millie lined the crumbs into a tiny bridge across the map. Each crumb pointed toward the garden, and the moon button made the path shine.\n\nMelody called it beautiful. Callum called it snack architecture. Ledger called it science with crumbs.",
+        "choices": [
+          [
+            "March across the crumb bridge",
+            "garden_giggle"
+          ],
+          [
+            "Save the bridge on the map",
+            "map_ending"
+          ]
+        ]
+      },
+      "jam_giggle": {
+        "title": "The Jam Jar Giggle",
+        "image": "bell",
+        "text": "Millie tapped the jar with her tail. Tink, tink, squeak! A tiny giggle bubbled up through the jam.\n\nDaddy Monkey made his silliest face in the shiny lid. Mama Bear hummed a soft song. The giggle grew warm and bright enough to carry.",
+        "choices": [
+          [
+            "Bring the giggle to the garden",
+            "garden_giggle"
+          ],
+          [
+            "Celebrate with a tiny picnic",
+            "picnic_ending"
+          ]
+        ]
+      },
+      "garden_giggle": {
+        "title": "Millie Saves a Little Giggle",
+        "image": "garden",
+        "text": "In the Giggle Garden, Millie opened the jam jar and released one tiny giggle. It bounced from flower to flower until the whole garden shimmered.\n\nMelody purred, Callum wagged, and Ledger added Millie's cousin-sized victory to the map.",
+        "choices": [
+          [
+            "Lead a mouse parade",
+            "parade_ending"
+          ],
+          [
+            "Draw Millie's path on the map",
+            "map_ending"
+          ]
+        ]
+      },
+      "picnic_ending": {
+        "title": "Millie's Tiny Picnic",
+        "image": "picnic",
+        "text": "Millie shared the raisin treasure, the jam jar giggle, and three heroic crumbs. Mama Bear poured juice into the tiniest cup, and Daddy Monkey made a napkin tent just for her.\n\nMillie decided cousin day was best when everyone had room at the blanket.",
+        "choices": [
+          [
+            "Choose another hero",
+            "character_select"
+          ],
+          [
+            "Play Millie's story again",
+            "start"
+          ]
+        ]
+      },
+      "map_ending": {
+        "title": "Millie's Mouse-Sized Map",
+        "image": "map",
+        "text": "Millie drew her path with a crumb, a button moon, a teacup, and one bright giggle. Ledger added labels, Melody added a heart, and Callum added a snack corner.\n\nMama Bear called it brave. Daddy Monkey called it tiny-but-mighty.",
+        "choices": [
+          [
+            "Choose another hero",
+            "character_select"
+          ],
+          [
+            "Play Millie's story again",
+            "start"
+          ]
+        ]
+      },
+      "parade_ending": {
+        "title": "The Tiny Tail Parade",
+        "image": "parade",
+        "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nThe Hazlenutts cheered for their cousin, and Millie took the smallest, proudest bow.",
+        "choices": [
+          [
+            "Choose another hero",
+            "character_select"
+          ],
+          [
+            "Play Millie's story again",
             "start"
           ]
         ]
