@@ -83,7 +83,7 @@ function showScene(sceneId) {
       }
     }))
   );
-  drawScene(scene.image, state.hero);
+  drawScene(scene.image, state.hero, scene);
 }
 
 function button(label, onClick) {
@@ -112,7 +112,7 @@ function escapeHtml(value) {
   }[char]));
 }
 
-function drawScene(image, hero) {
+function drawScene(image, hero, scene = null) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   background("#bfe5f2", "#f8e4bb");
   drawGround();
@@ -154,7 +154,7 @@ function drawScene(image, hero) {
   }
 
   (drawByImage[image] || drawGarden)();
-  drawHeroGroup(hero);
+  drawHeroGroup(hero, scene);
 }
 
 function drawCharacterCardArt() {
@@ -188,15 +188,14 @@ function drawGround() {
   ctx.fill();
 }
 
-function drawHeroGroup(hero) {
+function drawHeroGroup(hero, scene) {
   const currentHero = playableOrder.includes(hero) ? hero : "melody";
-  const sideCharacters = playableOrder.filter((character) => character !== currentHero);
+  const sideCharacters = activeSceneCharacters(scene, currentHero).filter((character) => character !== currentHero);
   const leftSide = sideCharacters.slice(0, 4);
   const rightSide = sideCharacters.slice(4);
-  const sideRows = [150, 225, 300, 375];
 
-  leftSide.forEach((character, index) => drawPlayable(character, 92, sideRows[index], 0.42));
-  rightSide.forEach((character, index) => drawPlayable(character, 548, sideRows[index], 0.42));
+  leftSide.forEach((character, index) => drawPlayable(character, 92, sideRowY(index, leftSide.length), 0.42));
+  rightSide.forEach((character, index) => drawPlayable(character, 548, sideRowY(index, rightSide.length), 0.42));
 
   let heroScale = 0.92;
   if (currentHero === "millie") heroScale = 1.02;
@@ -204,6 +203,26 @@ function drawHeroGroup(hero) {
   if (cousinVisuals[currentHero]) heroScale = 0.96;
 
   drawPlayable(currentHero, 320, 365, heroScale);
+}
+
+function activeSceneCharacters(scene, currentHero) {
+  if (!scene) return [currentHero];
+  const choiceText = scene.choices.map(([label]) => label).join(" ");
+  const sceneText = `${scene.title} ${scene.text} ${choiceText}`.toLowerCase();
+  const active = new Set([currentHero]);
+  for (const character of playableOrder) {
+    const info = data.characters[character];
+    const names = [info.name, info.description].map((value) => value.toLowerCase());
+    if (names.some((name) => sceneText.includes(name))) active.add(character);
+  }
+  return playableOrder.filter((character) => active.has(character));
+}
+
+function sideRowY(index, total) {
+  if (total <= 1) return 245;
+  if (total === 2) return [190, 305][index];
+  if (total === 3) return [165, 260, 355][index];
+  return [145, 220, 295, 370][index];
 }
 
 function drawPlayable(character, x, y, scale) {
