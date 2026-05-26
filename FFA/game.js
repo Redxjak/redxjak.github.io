@@ -40,6 +40,7 @@ const storyText = document.querySelector("#story-text");
 const choices = document.querySelector("#choices");
 const canvas = document.querySelector("#scene-art");
 const ctx = canvas.getContext("2d");
+const gameBoard = document.querySelector(".game-board");
 const characterCardsImage = new Image();
 characterCardsImage.src = "assets/character-cards.png?v=20260526-family-art";
 characterCardsImage.addEventListener("load", () => {
@@ -58,6 +59,7 @@ document.querySelector("#restart-button").addEventListener("click", () => {
 function showCharacterSelect() {
   state.hero = null;
   state.scene = "character_select";
+  gameBoard.classList.add("is-character-select");
   heroLabel.textContent = "Choose your hero";
   sceneTitle.textContent = "Choose Your Hero";
   storyText.innerHTML = paragraphs(
@@ -65,7 +67,7 @@ function showCharacterSelect() {
   );
   choices.replaceChildren(
     ...Object.entries(data.characters).map(([key, character]) =>
-      button(character.button, () => {
+      heroButton(key, character, () => {
         state.hero = key;
         showScene("start");
       })
@@ -76,6 +78,7 @@ function showCharacterSelect() {
 
 function showScene(sceneId) {
   state.scene = sceneId;
+  gameBoard.classList.remove("is-character-select");
   const story = data.stories[state.hero];
   const scene = story[sceneId];
   const character = data.characters[state.hero];
@@ -101,6 +104,35 @@ function button(label, onClick) {
   element.type = "button";
   element.textContent = label;
   element.addEventListener("click", onClick);
+  return element;
+}
+
+function heroButton(key, character, onClick) {
+  const element = document.createElement("button");
+  element.className = "choice-button hero-choice";
+  element.type = "button";
+  element.addEventListener("click", onClick);
+
+  const labelWrap = document.createElement("span");
+  labelWrap.className = "hero-choice-text";
+  const action = document.createElement("span");
+  action.className = "hero-choice-action";
+  action.textContent = "Play as";
+  const name = document.createElement("span");
+  name.className = "hero-choice-name";
+  name.textContent = character.name;
+  const animal = document.createElement("span");
+  animal.className = "hero-choice-animal";
+  animal.textContent = character.description.replace(`${character.name} `, "");
+  labelWrap.append(action, name, animal);
+
+  const image = document.createElement("img");
+  image.className = "hero-choice-sprite";
+  image.src = `assets/sprites/${key}.png?v=20260526-sprite-sheets`;
+  image.alt = "";
+  image.decoding = "async";
+
+  element.append(labelWrap, image);
   return element;
 }
 

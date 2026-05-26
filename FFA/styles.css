@@ -101,6 +101,34 @@ a {
   grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
 }
 
+.game-board.is-character-select .story-layout {
+  grid-template-columns: 1fr;
+}
+
+.game-board.is-character-select .art-panel {
+  display: none;
+}
+
+.game-board.is-character-select .story-panel {
+  align-items: center;
+  text-align: center;
+  padding-inline: clamp(24px, 6vw, 84px);
+}
+
+.game-board.is-character-select h1 {
+  max-width: 12ch;
+}
+
+.game-board.is-character-select .story-text {
+  max-width: 48ch;
+}
+
+.game-board.is-character-select .choice-grid {
+  width: min(920px, 100%);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .story-panel {
   display: flex;
   flex-direction: column;
@@ -177,6 +205,43 @@ h2 {
   outline: 3px solid rgba(47, 123, 95, 0.22);
 }
 
+.hero-choice {
+  min-height: 132px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(76px, 0.68fr);
+  align-items: center;
+  gap: 10px;
+  padding: 16px 14px 14px 18px;
+  overflow: hidden;
+}
+
+.hero-choice-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hero-choice-action,
+.hero-choice-animal {
+  font-size: 0.92rem;
+  line-height: 1.05;
+}
+
+.hero-choice-name {
+  font-family: "Nunito", Arial, sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.15rem);
+  line-height: 0.95;
+}
+
+.hero-choice-sprite {
+  max-width: 100%;
+  max-height: 112px;
+  justify-self: center;
+  align-self: end;
+  object-fit: contain;
+  pointer-events: none;
+}
+
 .art-panel {
   min-height: 520px;
   display: grid;
@@ -207,6 +272,10 @@ canvas {
     grid-template-columns: 1fr;
   }
 
+  .game-board.is-character-select .choice-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .story-panel {
     order: 2;
     justify-content: flex-start;
@@ -234,6 +303,14 @@ canvas {
 
   .choice-grid {
     grid-template-columns: 1fr;
+  }
+
+  .game-board.is-character-select .choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-choice {
+    min-height: 112px;
   }
 
   h1 {
