@@ -249,9 +249,23 @@ h1 {
 
 .project-content p {
   max-width: 28ch;
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   color: var(--muted);
   font-size: 0.94rem;
+}
+
+.release-notes {
+  display: grid;
+  gap: 6px;
+  max-width: 30ch;
+  margin: 0 0 18px;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.release-notes li::marker {
+  color: var(--cyan);
 }
 
 .badge {
