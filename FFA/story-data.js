@@ -783,7 +783,7 @@ window.HAZLENUTTS_STORY = {
       "parade_ending": {
         "title": "The Bunny Hop Parade",
         "image": "parade",
-        "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nGrandma Mimi and Papa Dave cheered from the tiny-things shelf, and Auntie Croc and Uncle Zebra cheered from the front row. The Hazlenutts cheered for their cousin, and Millie took the smallest, proudest bow.",
+        "text": "Millie led a parade around the table leg, across the blanket, and past the pantry door. Her tail held the blue ribbon like a flag.\n\nGrandma Mimi and Papa Dave cheered from the tiny-things shelf, and Auntie Croc and Uncle Zebra cheered from the front row. The family cheered for their cousin, and Millie took the smallest, proudest bow.",
         "choices": [
           [
             "Choose another hero",

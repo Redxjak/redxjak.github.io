@@ -346,7 +346,7 @@ function drawLaundry() {
 
 function drawNote() {
   rect(160, 100, 320, 230, "#fffaf2", "#b08968", 5);
-  text("Dear Hazlenutts,", 320, 160, 30, "#3f6f64", "center");
+  text("Dear Fun Family Adventurers,", 320, 160, 30, "#3f6f64", "center");
   line([[210, 205], [430, 205]], "#dcc8a9", 4);
   line([[210, 245], [430, 245]], "#dcc8a9", 4);
 }
