@@ -1,5 +1,5 @@
 window.HAZLENUTTS_STORY = {
-  "title": "Aventures of the Hazlenutts",
+  "title": "Adventures of the Hazlenutts",
   "characters": {
     "melody": {
       "name": "Melody",
