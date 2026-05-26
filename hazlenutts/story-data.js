@@ -1,5 +1,5 @@
 window.HAZLENUTTS_STORY = {
-  "title": "Adventures of the Hazlenutts",
+  "title": "Fun Family Adventures",
   "characters": {
     "melody": {
       "name": "Melody",
@@ -222,7 +222,7 @@ window.HAZLENUTTS_STORY = {
       "garden": {
         "title": "The Giggle Garden",
         "image": "garden",
-        "text": "In the garden behind Grandma GiGi and Papa Troy's house, the flowers drooped sadly. Grandma GiGi carried extra napkins, and Papa Troy guarded the snack basket like it was royal treasure.\n\nMelody gave her bell a tiny jingle. Callum made his silliest cereal-nose face. Ledger read a joke from the map: \"Why did the cat sit on the computer? To keep an eye on the mouse!\"\n\nThe flowers burst into giggles. Petals wiggled. Leaves clapped. Melody purred proudly.",
+        "text": "In the garden behind Gigi and Papa Gecko's house, the flowers drooped sadly. Gigi carried extra napkins, and Papa Gecko guarded the snack basket like it was royal treasure.\n\nMelody gave her bell a tiny jingle. Callum made his silliest cereal-nose face. Ledger read a joke from the map: \"Why did the cat sit on the computer? To keep an eye on the mouse!\"\n\nThe flowers burst into giggles. Petals wiggled. Leaves clapped. Melody purred proudly.",
         "choices": [
           [
             "Dance with the flowers",
@@ -267,7 +267,7 @@ window.HAZLENUTTS_STORY = {
       "picnic_ending": {
         "title": "The Snack Picnic",
         "image": "picnic",
-        "text": "The adventurers held a picnic on Grandma GiGi and Papa Troy's blanket. Grandma GiGi poured tiny cups of juice, and Papa Troy balanced crackers like a tower. Melody got the sunniest spot.\n\nCallum counted crackers. Ledger gave a tiny speech about teamwork, bravery, and excellent toast shapes.",
+        "text": "The adventurers held a picnic on Gigi and Papa Gecko's blanket. Gigi poured tiny cups of juice, and Papa Gecko balanced crackers like a tower. Melody got the sunniest spot.\n\nCallum counted crackers. Ledger gave a tiny speech about teamwork, bravery, and excellent toast shapes.",
         "choices": [
           [
             "Choose another hero",
@@ -419,7 +419,7 @@ window.HAZLENUTTS_STORY = {
       "snack_ending": {
         "title": "Captain Callum's Snack Picnic",
         "image": "picnic",
-        "text": "Callum shared every rescued snack. Melody got the sunniest spot, Ledger got the biggest cracker, Grandma GiGi got the first thank-you, and Papa Troy got crumbs in his eyebrows. Callum got a hero hug.\n\nThe Snack Patrol was officially the coziest team in the house.",
+        "text": "Callum shared every rescued snack. Melody got the sunniest spot, Ledger got the biggest cracker, Gigi got the first thank-you, and Papa Gecko got crumbs in his eyebrows. Callum got a hero hug.\n\nThe Snack Patrol was officially the coziest team in the house.",
         "choices": [
           [
             "Choose another hero",
@@ -434,7 +434,7 @@ window.HAZLENUTTS_STORY = {
       "parade_ending": {
         "title": "The Wagging Victory Parade",
         "image": "parade",
-        "text": "Callum led the parade with proud paws and a wagging tail. Melody jingled a bell. Grandma GiGi waved a dish towel like a royal flag, and Papa Troy marched backward just to be funny. Ledger waved the map upside down, which somehow made it more exciting.",
+        "text": "Callum led the parade with proud paws and a wagging tail. Melody jingled a bell. Gigi waved a dish towel like a royal flag, and Papa Gecko marched backward just to be funny. Ledger waved the map upside down, which somehow made it more exciting.",
         "choices": [
           [
             "Choose another hero",
@@ -556,7 +556,7 @@ window.HAZLENUTTS_STORY = {
       "garden_explorer": {
         "title": "Ledger Saves the Giggles",
         "image": "garden",
-        "text": "The Giggle Garden at Grandma GiGi and Papa Troy's house was quiet. Grandma GiGi hummed softly beside the droopy flowers, and Papa Troy held Ledger's map open so the breeze could not fold the important parts.\n\nLedger stepped forward and told the flowers his best dinosaur joke: \"What do tiny dinosaurs put on toast? Jurassi-jam!\"\n\nThe flowers giggled so much their petals wobbled. Melody clapped her paws. Callum wagged in circles.",
+        "text": "The Giggle Garden at Gigi and Papa Gecko's house was quiet. Gigi hummed softly beside the droopy flowers, and Papa Gecko held Ledger's map open so the breeze could not fold the important parts.\n\nLedger stepped forward and told the flowers his best dinosaur joke: \"What do tiny dinosaurs put on toast? Jurassi-jam!\"\n\nThe flowers giggled so much their petals wobbled. Melody clapped her paws. Callum wagged in circles.",
         "choices": [
           [
             "Draw the garden on the map",
@@ -571,7 +571,7 @@ window.HAZLENUTTS_STORY = {
       "map_ending": {
         "title": "Ledger's Great Explorer Map",
         "image": "map",
-        "text": "Ledger drew the whole adventure on his map: the cave, the pantry volcano, the garden, Grandma GiGi's humming flowers, Papa Troy's snack watch, and three heroic friends. He put a giant star beside his name, then added stars for everyone else too.",
+        "text": "Ledger drew the whole adventure on his map: the cave, the pantry volcano, the garden, Gigi's humming flowers, Papa Gecko's snack watch, and three heroic friends. He put a giant star beside his name, then added stars for everyone else too.",
         "choices": [
           [
             "Choose another hero",
@@ -798,3 +798,135 @@ window.HAZLENUTTS_STORY = {
     }
   }
 };
+
+(function addCousinHeroes() {
+  const cousins = {
+    lily: {
+      name: "Lily",
+      fullName: "Lily the Beaver",
+      animal: "beaver",
+      gift: "building stick bridges",
+      tool: "a bundle of smooth sticks",
+      sound: "tap-tap-build"
+    },
+    mason: {
+      name: "Mason",
+      fullName: "Mason the Dragon",
+      animal: "dragon",
+      gift: "warming lanterns with gentle dragon breath",
+      tool: "a tiny lantern",
+      sound: "whoosh-glow"
+    },
+    oliver: {
+      name: "Oliver",
+      fullName: "Oliver the Husky",
+      animal: "husky",
+      gift: "pulling sleds and sniffing snowy clues",
+      tool: "a blue scarf",
+      sound: "ruff-rush"
+    },
+    gemma: {
+      name: "Gemma",
+      fullName: "Gemma the Hedgehog",
+      animal: "hedgehog",
+      gift: "finding tiny clues in cozy corners",
+      tool: "a leaf notebook",
+      sound: "sniff-snuffle"
+    },
+    nora: {
+      name: "Nora",
+      fullName: "Nora the Kangaroo",
+      animal: "kangaroo",
+      gift: "carrying helpful supplies in her pocket",
+      tool: "a pocket full of buttons",
+      sound: "hop-hop-hooray"
+    }
+  };
+
+  function makeCousinStory(hero) {
+    const { name, fullName, gift, tool, sound } = hero;
+    return {
+      start: {
+        title: `${name}'s Cousin Club Day`,
+        image: "garden",
+        text: `${fullName} arrived for Cousin Club Day carrying ${tool}. Aunt Chicken packed a snack pouch, Uncle Panther gave a quiet proud nod, and the cousins gathered near the family tree.\n\n${name} was especially good at ${gift}. Today, that might be exactly what the family needed.`,
+        choices: [
+          ["Check the family tree map", "family_tree_map"],
+          ["Follow the giggle trail", "giggle_trail"]
+        ]
+      },
+      family_tree_map: {
+        title: "The Wiggly Family Map",
+        image: "map",
+        text: `Gigi and Papa Gecko had drawn a big family map, but one ribbon path had wiggled loose. Melody held one corner, Ledger read the labels, and Callum guarded the snack bowl.\n\n${name} studied the map and spotted where the cousin branch should go.`,
+        choices: [
+          ["Fix the cousin branch", "cousin_branch"],
+          ["Ask Millie to check the tiny labels", "tiny_labels"]
+        ]
+      },
+      giggle_trail: {
+        title: "The Giggle Trail",
+        image: "hallway",
+        text: `A tiny giggle bounced down the hallway, around a chair leg, and under the picnic blanket. ${name} followed it carefully, using ${tool} to mark the way.\n\nMillie hopped beside the trail and whispered, "Cousin clue detected."`,
+        choices: [
+          ["Track the giggle to the garden", "garden_helper"],
+          ["Build a tiny clue station", "cousin_branch"]
+        ]
+      },
+      cousin_branch: {
+        title: "The Cousin Branch",
+        image: "supplies",
+        text: `${name} used ${gift} to help put every cousin in the right place. Lily, Mason, Oliver, Gemma, Nora, Melody, Callum, Ledger, and Millie all got their own spot.\n\nThen ${name} made the official family-helper sound: "${sound}!"`,
+        choices: [
+          ["Bring the fixed branch to the garden", "garden_helper"],
+          ["Celebrate with a cousin parade", "parade_ending"]
+        ]
+      },
+      tiny_labels: {
+        title: "Millie's Tiny Labels",
+        image: "note",
+        text: `Millie found the tiniest labels tucked inside a teacup. One said Cousins. One said Aunt Chicken. One said Uncle Panther.\n\n${name} placed them carefully while Gemma checked the corners and Mason warmed the glue just enough.`,
+        choices: [
+          ["Finish the family map", "map_ending"],
+          ["Take the labels to the garden", "garden_helper"]
+        ]
+      },
+      garden_helper: {
+        title: `${name} Helps the Garden`,
+        image: "garden",
+        text: `The garden flowers had been waiting for the family names to settle. When ${name} brought the fixed cousin branch, every flower leaned closer to listen.\n\n${name} shared ${tool}, and the garden answered with a warm little giggle.`,
+        choices: [
+          ["Save the family giggle", "map_ending"],
+          ["Lead a cousin parade", "parade_ending"]
+        ]
+      },
+      map_ending: {
+        title: `${name}'s Family Map`,
+        image: "map",
+        text: `${name} helped finish the family map. It showed grandparents, parents, aunts, uncles, siblings, and cousins all connected with bright careful lines.\n\nMama Bear called it beautiful. Daddy Monkey called it official. The cousins called it theirs.`,
+        choices: [
+          ["Choose another hero", "character_select"],
+          [`Play ${name}'s story again`, "start"]
+        ]
+      },
+      parade_ending: {
+        title: `${name}'s Cousin Parade`,
+        image: "parade",
+        text: `${name} led a cousin parade past the family tree, around the snack blanket, and through the garden path. Everyone had a part: builders, hoppers, sniffers, map-makers, and giggle-carriers.\n\nThe whole family cheered, because every good adventure has room for one more cousin story.`,
+        choices: [
+          ["Choose another hero", "character_select"],
+          [`Play ${name}'s story again`, "start"]
+        ]
+      }
+    };
+  }
+
+  for (const [key, hero] of Object.entries(cousins)) {
+    window.HAZLENUTTS_STORY.characters[key] = {
+      name: hero.name,
+      description: hero.fullName,
+      button: `Play as ${hero.fullName}`
+    };
+    window.HAZLENUTTS_STORY.stories[key] = makeCousinStory(hero);
+  }
+}());

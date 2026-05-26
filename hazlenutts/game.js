@@ -1,5 +1,13 @@
 const data = window.HAZLENUTTS_STORY;
 
+const cousinVisuals = {
+  lily: { name: "Lily", color: "#8b5e34" },
+  mason: { name: "Mason", color: "#b84a62" },
+  oliver: { name: "Oliver", color: "#8da9c4" },
+  gemma: { name: "Gemma", color: "#9b7e5c" },
+  nora: { name: "Nora", color: "#c9865b" },
+};
+
 const state = {
   hero: null,
   scene: "character_select",
@@ -27,7 +35,7 @@ function showCharacterSelect() {
   heroLabel.textContent = "Choose your hero";
   sceneTitle.textContent = "Choose Your Hero";
   storyText.innerHTML = paragraphs(
-    "Pick who should lead this cozy adventure. The Hazlenutts family will still help along the way."
+    "Pick who should lead this cozy adventure. The family will still help along the way."
   );
   choices.replaceChildren(
     ...Object.entries(data.characters).map(([key, character]) =>
@@ -117,6 +125,11 @@ function drawScene(image, hero) {
     drawDog(320, 356, 0.92, "Callum");
     drawDino(455, 354, 0.9, "Ledger");
     drawBunny(525, 265, 0.72, "Millie");
+    drawCousin("lily", 85, 230, 0.42);
+    drawCousin("mason", 145, 210, 0.42);
+    drawCousin("oliver", 240, 225, 0.42);
+    drawCousin("gemma", 390, 235, 0.42);
+    drawCousin("nora", 560, 370, 0.42);
     return;
   }
 
@@ -155,6 +168,11 @@ function drawHeroGroup(hero) {
     drawCat(175, 365, 0.74, "Melody");
     drawDog(455, 365, 0.74, "Callum");
     drawDino(520, 255, 0.62, "Ledger");
+  } else if (cousinVisuals[hero]) {
+    drawCousin(hero, 315, 345, 1.08);
+    drawCat(175, 365, 0.72, "Melody");
+    drawBunny(455, 290, 0.62, "Millie");
+    drawDog(505, 380, 0.6, "Callum");
   } else {
     drawCat(300, 350, 1.08, "Melody");
     drawDog(170, 365, 0.78, "Callum");
@@ -412,6 +430,53 @@ function drawBunny(x, y, scale, name) {
   circle(x + 34 * s, y + 30 * s, 13 * s, "#ffffff", outline, 2 * s);
   shadow(x, y + 86 * s, 38 * s, 8 * s);
   label(name, x, y + 84 * s, 17 * s);
+}
+
+function drawCousin(id, x, y, scale) {
+  const visual = cousinVisuals[id];
+  if (!visual) return;
+  const s = scale;
+  const body = visual.color;
+  const outline = "#5c4033";
+
+  oval(x, y + 18 * s, 46 * s, 55 * s, body, outline, 4 * s);
+  oval(x, y - 50 * s, 38 * s, 38 * s, body, outline, 4 * s);
+
+  if (id === "lily") {
+    oval(x - 42 * s, y - 43 * s, 18 * s, 14 * s, body, outline, 3 * s);
+    oval(x + 42 * s, y - 43 * s, 18 * s, 14 * s, body, outline, 3 * s);
+    oval(x, y - 25 * s, 19 * s, 12 * s, "#d7b38c", outline, 2 * s);
+    curvedTail(x + 38 * s, y + 22 * s, 44 * s, 46 * s, "#6f4d2f", 8 * s);
+  } else if (id === "mason") {
+    triangle(x - 28 * s, y - 72 * s, x - 15 * s, y - 105 * s, x - 2 * s, y - 72 * s, body, outline);
+    triangle(x + 28 * s, y - 72 * s, x + 15 * s, y - 105 * s, x + 2 * s, y - 72 * s, body, outline);
+    for (const offset of [-21, 0, 21]) {
+      triangle(x + offset * s, y - 82 * s, x + (offset + 8) * s, y - 102 * s, x + (offset + 16) * s, y - 82 * s, "#f7c948", outline);
+    }
+    curvedTail(x + 34 * s, y + 15 * s, 58 * s, 58 * s, body, 9 * s);
+  } else if (id === "oliver") {
+    triangle(x - 28 * s, y - 72 * s, x - 16 * s, y - 108 * s, x - 4 * s, y - 72 * s, "#f7f7f7", outline);
+    triangle(x + 28 * s, y - 72 * s, x + 16 * s, y - 108 * s, x + 4 * s, y - 72 * s, "#f7f7f7", outline);
+    oval(x, y - 38 * s, 22 * s, 18 * s, "#f7f7f7", "#f7f7f7", 0);
+    line([[x - 27 * s, y + 4 * s], [x + 27 * s, y + 4 * s]], "#457b9d", 6 * s);
+  } else if (id === "gemma") {
+    for (const offset of [-28, -14, 0, 14, 28]) {
+      line([[x + offset * s, y - 82 * s], [x + (offset - 8) * s, y - 58 * s]], "#3f3428", 2 * s);
+    }
+    oval(x, y - 25 * s, 20 * s, 13 * s, "#f4d1ae", outline, 2 * s);
+  } else if (id === "nora") {
+    oval(x - 22 * s, y - 94 * s, 10 * s, 34 * s, body, outline, 3 * s);
+    oval(x + 22 * s, y - 94 * s, 10 * s, 34 * s, body, outline, 3 * s);
+    oval(x, y + 34 * s, 20 * s, 20 * s, "#f6d7b0", outline, 2 * s);
+    line([[x + 38 * s, y + 25 * s], [x + 74 * s, y + 62 * s]], outline, 5 * s);
+  }
+
+  circle(x - 13 * s, y - 52 * s, 5 * s, "#1f2933");
+  circle(x + 13 * s, y - 52 * s, 5 * s, "#1f2933");
+  circle(x, y - 34 * s, 4 * s, outline);
+  smile(x, y - 30 * s, 14 * s, 10 * s, outline, 2 * s);
+  shadow(x, y + 84 * s, 38 * s, 8 * s);
+  label(visual.name, x, y + 90 * s, 17 * s);
 }
 
 function drawFlower(x, y, r, petal, center) {
