@@ -8,6 +8,18 @@ const cousinVisuals = {
   nora: { name: "Nora", color: "#c9865b" },
 };
 
+const playableOrder = [
+  "melody",
+  "callum",
+  "ledger",
+  "millie",
+  "lily",
+  "mason",
+  "oliver",
+  "gemma",
+  "nora",
+];
+
 const state = {
   hero: null,
   scene: "character_select",
@@ -153,32 +165,29 @@ function drawGround() {
 }
 
 function drawHeroGroup(hero) {
-  if (hero === "callum") {
-    drawDog(300, 350, 1.08, "Callum");
-    drawCat(180, 365, 0.78, "Melody");
-    drawDino(445, 365, 0.78, "Ledger");
-    drawBunny(520, 265, 0.64, "Millie");
-  } else if (hero === "ledger") {
-    drawDino(315, 350, 1.08, "Ledger");
-    drawCat(190, 365, 0.78, "Melody");
-    drawDog(450, 365, 0.78, "Callum");
-    drawBunny(520, 265, 0.64, "Millie");
-  } else if (hero === "millie") {
-    drawBunny(315, 340, 1.18, "Millie");
-    drawCat(175, 365, 0.74, "Melody");
-    drawDog(455, 365, 0.74, "Callum");
-    drawDino(520, 255, 0.62, "Ledger");
-  } else if (cousinVisuals[hero]) {
-    drawCousin(hero, 315, 345, 1.08);
-    drawCat(175, 365, 0.72, "Melody");
-    drawBunny(455, 290, 0.62, "Millie");
-    drawDog(505, 380, 0.6, "Callum");
-  } else {
-    drawCat(300, 350, 1.08, "Melody");
-    drawDog(170, 365, 0.78, "Callum");
-    drawDino(445, 365, 0.78, "Ledger");
-    drawBunny(520, 265, 0.64, "Millie");
-  }
+  const currentHero = playableOrder.includes(hero) ? hero : "melody";
+  const sideCharacters = playableOrder.filter((character) => character !== currentHero);
+  const leftSide = sideCharacters.slice(0, 4);
+  const rightSide = sideCharacters.slice(4);
+  const sideRows = [150, 225, 300, 375];
+
+  leftSide.forEach((character, index) => drawPlayable(character, 92, sideRows[index], 0.42));
+  rightSide.forEach((character, index) => drawPlayable(character, 548, sideRows[index], 0.42));
+
+  let heroScale = 0.92;
+  if (currentHero === "millie") heroScale = 1.02;
+  if (currentHero === "ledger") heroScale = 0.88;
+  if (cousinVisuals[currentHero]) heroScale = 0.96;
+
+  drawPlayable(currentHero, 320, 365, heroScale);
+}
+
+function drawPlayable(character, x, y, scale) {
+  if (character === "melody") drawCat(x, y, scale, "Melody");
+  else if (character === "callum") drawDog(x, y, scale, "Callum");
+  else if (character === "ledger") drawDino(x, y, scale, "Ledger");
+  else if (character === "millie") drawBunny(x, y, scale, "Millie");
+  else drawCousin(character, x, y, scale);
 }
 
 function drawBedroom(nap = false) {
