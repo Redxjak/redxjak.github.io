@@ -723,7 +723,7 @@ window.HAZLENUTTS_STORY = {
       "jam_giggle": {
         "title": "The Jam Jar Giggle",
         "image": "bell",
-        "text": "Millie tapped the jar with her tail. Tink, tink, squeak! A tiny giggle bubbled up through the jam.\n\nDaddy Monkey made his silliest face in the shiny lid. Mama Bear hummed a soft song. The giggle grew warm and bright enough to carry.",
+        "text": "Millie tapped the jar with her tail. Tink, tink, hop! A tiny giggle bubbled up through the jam.\n\nDaddy Monkey made his silliest face in the shiny lid. Mama Bear hummed a soft song. The giggle grew warm and bright enough to carry.",
         "choices": [
           [
             "Bring the giggle to the garden",
