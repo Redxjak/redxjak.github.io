@@ -20,6 +20,15 @@ const playableOrder = [
   "nora",
 ];
 
+const spriteImages = Object.fromEntries(
+  playableOrder.map((character) => {
+    const image = new Image();
+    image.src = `assets/sprites/${character}.png?v=20260526-sprite-sheets`;
+    image.addEventListener("load", redrawCurrentArt);
+    return [character, image];
+  })
+);
+
 const state = {
   hero: null,
   scene: "character_select",
@@ -226,11 +235,34 @@ function sideRowY(index, total) {
 }
 
 function drawPlayable(character, x, y, scale) {
+  if (drawSprite(character, x, y, scale)) return;
+
   if (character === "melody") drawCat(x, y, scale, "Melody");
   else if (character === "callum") drawDog(x, y, scale, "Callum");
   else if (character === "ledger") drawDino(x, y, scale, "Ledger");
   else if (character === "millie") drawBunny(x, y, scale, "Millie");
   else drawCousin(character, x, y, scale);
+}
+
+function drawSprite(character, x, y, scale) {
+  const image = spriteImages[character];
+  if (!image || !image.complete || !image.naturalWidth) return false;
+  const height = 160 * scale;
+  const width = image.naturalWidth * (height / image.naturalHeight);
+  const bottom = y + 90 * scale;
+  ctx.drawImage(image, x - width / 2, bottom - height, width, height);
+  label(data.characters[character].name, x, bottom + 15 * scale, 17 * scale);
+  return true;
+}
+
+function redrawCurrentArt() {
+  if (state.scene === "character_select") {
+    drawScene("character_select", null);
+    return;
+  }
+  if (!state.hero) return;
+  const scene = data.stories[state.hero]?.[state.scene];
+  if (scene) drawScene(scene.image, state.hero, scene);
 }
 
 function drawBedroom(nap = false) {
