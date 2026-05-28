@@ -269,6 +269,19 @@ h1 {
   font-size: 0.94rem;
 }
 
+.version-history {
+  max-width: 34ch;
+  margin-bottom: 18px;
+}
+
+.version-history h3 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .release-notes {
   display: grid;
   gap: 6px;
@@ -281,6 +294,30 @@ h1 {
 
 .release-notes li::marker {
   color: var(--cyan);
+}
+
+.version-history .release-notes {
+  gap: 8px;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.version-history .release-notes li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+}
+
+.version-history .release-notes strong {
+  color: var(--cyan);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.version-history .release-notes span {
+  min-width: 0;
 }
 
 .badge {
