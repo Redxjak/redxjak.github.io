@@ -933,8 +933,9 @@ window.HAZLENUTTS_STORY = {
 
 (function addStoryChoices() {
   const storyData = window.HAZLENUTTS_STORY;
-  storyData.version = "v1.0.0";
+  storyData.version = "v1.1.4";
   storyData.releaseNotes = [
+    "Added five built-in branching adventures each for Melody, Callum, Ledger, and Millie.",
     "Added story selection after choosing a hero.",
     "Added a Family Map Quest that can star any hero.",
     "Added end-of-story choices to pick another story or another hero."
@@ -1087,6 +1088,1697 @@ window.HAZLENUTTS_STORY = {
     };
   }
 
+  const builtInBranchingStories = {
+      "melody": [
+          {
+              "id": "branching_melody_1",
+              "title": "The Pie Contest Disaster",
+              "description": "Sharing and kindness matter more than winning.",
+              "button": "Play The Pie Contest Disaster",
+              "scenes": {
+                  "start": {
+                      "title": "The Pie Contest Disaster",
+                      "image": "kitchen",
+                      "text": "Melody walks into the town square carrying a basket full of apples, sugar, and warm spices. Colorful flags wave above the tables, and the smell of fresh dough fills the air. She smiles, already imagining the blue ribbon pinned to her pie.\n\nThen she hears a sniffle.\n\nNear the fountain, a small rabbit child sits beside a ruined basket. Flour is scattered across the stones. Apples roll into puddles. The rabbit looks at Melody and says, \u201cI guess I cannot enter now.\u201d\n\nMelody looks down at her own full basket. She has just enough ingredients for one perfect pie.",
+                      "choices": [
+                          [
+                              "Keep all the ingredients",
+                              "choice_1"
+                          ],
+                          [
+                              "Share some ingredients",
+                              "choice_2"
+                          ],
+                          [
+                              "Help the rabbit bake entirely",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Keep all the ingredients",
+                      "image": "kitchen",
+                      "text": "Melody decides she worked hard and should focus on her own pie.\n\nMelody bakes a beautiful pie and may even win a prize, but she notices the rabbit watching sadly from the side. The ribbon feels less exciting than she expected.\n\nMelody learns that winning alone does not always feel good.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Share some ingredients",
+                      "image": "kitchen",
+                      "text": "Melody gives the rabbit enough apples and flour to bake a smaller pie.\n\nBoth pies turn out good. Melody does not win first place, but the judges compliment her kindness. The rabbit thanks her and asks to bake together next time.\n\nMelody learns that sharing can turn a competition into a friendship.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Help the rabbit bake entirely",
+                      "image": "kitchen",
+                      "text": "Melody decides to team up with the rabbit instead of competing alone.\n\nTogether, they create a strange but delicious apple-carrot pie. The judges create a new award called \u201cBest Teamwork.\u201d\n\nMelody learns that helping someone else can create something better than working alone.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_melody_2",
+              "title": "The Monster in the Attic",
+              "description": "Do not judge too quickly. Not every scary thing is dangerous.",
+              "button": "Play The Monster in the Attic",
+              "scenes": {
+                  "start": {
+                      "title": "The Monster in the Attic",
+                      "image": "bedroom",
+                      "text": "Melody stands in front of the old blue house at the edge of town. The windows are dusty, the porch creaks, and every few minutes something thumps above the ceiling.\n\nScratch. Scratch. Thump.\n\nA villager whispers, \u201cThere is a monster in the attic.\u201d\n\nMelody\u2019s ears twitch. The sound is strange, but it also sounds scared.",
+                      "choices": [
+                          [
+                              "Rush upstairs and attack",
+                              "choice_1"
+                          ],
+                          [
+                              "Sneak upstairs quietly",
+                              "choice_2"
+                          ],
+                          [
+                              "Ask the neighbors what happened",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Rush upstairs and attack",
+                      "image": "bedroom",
+                      "text": "Melody grabs a broom and storms into the attic.\n\nThe creature panics and flies around the room, knocking over boxes. Melody realizes too late that it is not attacking. It is frightened.\n\nMelody learns that charging in can make things worse.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Sneak upstairs quietly",
+                      "image": "garden",
+                      "text": "Melody moves carefully and listens before acting.\n\nShe finds a little owl creature tangled in curtain strings. It was scratching because it was trapped.\n\nMelody frees the owl and the house becomes peaceful again.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Ask the neighbors what happened",
+                      "image": "garden",
+                      "text": "Melody talks to people nearby and learns that an owl flew into the house during a storm.\n\nShe brings a blanket and gently helps the owl escape.\n\nMelody learns that asking questions first can prevent fear and mistakes.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_melody_3",
+              "title": "Melody and the Lost Kitten",
+              "description": "Responsibility means keeping promises, even when distractions are fun.",
+              "button": "Play Melody and the Lost Kitten",
+              "scenes": {
+                  "start": {
+                      "title": "Melody and the Lost Kitten",
+                      "image": "garden",
+                      "text": "The village festival is bright and loud. Drums beat near the stage, ribbons spin in the wind, and sweet cakes sit on every table.\n\nMelody\u2019s aunt kneels beside her and says, \u201cPlease watch Pip for a little while. He is small, and he gets distracted easily.\u201d\n\nPip waves both paws. \u201cI will stay right beside Melody!\u201d\n\nFor a while, he does. Then Melody sees a ring-toss game with a shiny prize.\n\nWhen she looks back, Pip is gone.",
+                      "choices": [
+                          [
+                              "Keep playing and hope Pip comes back",
+                              "choice_1"
+                          ],
+                          [
+                              "Search immediately",
+                              "choice_2"
+                          ],
+                          [
+                              "Ask friends and adults for help",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Keep playing and hope Pip comes back",
+                      "image": "garden",
+                      "text": "Melody tells herself Pip is probably nearby.\n\nPip wanders farther away. Melody feels worse the longer she waits.\n\nMelody learns that ignoring a problem usually makes it bigger.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Search immediately",
+                      "image": "garden",
+                      "text": "Melody leaves the game and starts looking for Pip.\n\nShe finds small paw prints near the puppet stage and follows them.\n\nMelody finds Pip helping a performer untangle puppet strings.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Ask friends and adults for help",
+                      "image": "garden",
+                      "text": "Melody admits what happened and asks others to help search.\n\nEveryone spreads out safely. Pip is found quickly near the candy booth.\n\nMelody learns that being responsible also means asking for help when needed.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_melody_4",
+              "title": "The Midnight Lantern",
+              "description": "Being brave means doing the right thing even when something feels scary.",
+              "button": "Play The Midnight Lantern",
+              "scenes": {
+                  "start": {
+                      "title": "The Midnight Lantern",
+                      "image": "hallway",
+                      "text": "Every night, just past moonrise, a tiny golden light appears between the trees. No one lives in that part of the woods. No path leads there. The villagers say it is probably a ghost.\n\nMelody watches the light from her window.\n\nTonight, the lantern flickers three times.\n\nIt almost looks like a signal.",
+                      "choices": [
+                          [
+                              "Ignore the lantern",
+                              "choice_1"
+                          ],
+                          [
+                              "Explore alone",
+                              "choice_2"
+                          ],
+                          [
+                              "Bring friends and supplies",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Ignore the lantern",
+                      "image": "hallway",
+                      "text": "Melody closes the curtain and tries to sleep.\n\nThe light appears again the next night, weaker than before.\n\nMelody realizes some mysteries are actually calls for help.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Explore alone",
+                      "image": "garden",
+                      "text": "Melody follows the light into the woods.\n\nShe becomes frightened by shadows but keeps going. She finds an elderly traveler who is lost and cold.\n\nMelody helps guide the traveler home.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Bring friends and supplies",
+                      "image": "picnic",
+                      "text": "Melody brings Callum, a blanket, and a small snack basket.\n\nTogether, they find the traveler and safely lead them back.\n\nMelody learns bravery is stronger when mixed with preparation and teamwork.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_melody_5",
+              "title": "The Broken Violin",
+              "description": "Honesty is better than hiding mistakes.",
+              "button": "Play The Broken Violin",
+              "scenes": {
+                  "start": {
+                      "title": "The Broken Violin",
+                      "image": "note",
+                      "text": "The traveling musician leaves his violin case on a bench while setting up the stage. Melody sees the polished wood shining in the afternoon light.\n\nShe only means to look.\n\nBut when she leans closer, her tail bumps the case. The violin slips out, hits the ground, and makes a terrible cracking sound.\n\nThe concert starts soon.",
+                      "choices": [
+                          [
+                              "Hide the violin",
+                              "choice_1"
+                          ],
+                          [
+                              "Blame someone else",
+                              "choice_2"
+                          ],
+                          [
+                              "Tell the truth",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Hide the violin",
+                      "image": "note",
+                      "text": "Melody hides the broken violin behind a curtain.\n\nThe musician panics before the concert. Everyone searches, and Melody feels worse.\n\nMelody learns that hiding a mistake can hurt others.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Blame someone else",
+                      "image": "note",
+                      "text": "Melody says she saw another child near the violin.\n\nThe wrong person gets blamed. Melody must decide whether to confess.\n\nMelody learns that dishonesty can spread harm.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Tell the truth",
+                      "image": "picnic",
+                      "text": "Melody admits what happened and apologizes.\n\nThe musician is sad but appreciates her honesty. Together, they find a backup instrument.\n\nThe musician later teaches Melody a simple song.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          }
+      ],
+      "callum": [
+          {
+              "id": "branching_callum_1",
+              "title": "The Angry Bull",
+              "description": "Fighting is not always the answer. Understanding the problem can solve it better.",
+              "button": "Play The Angry Bull",
+              "scenes": {
+                  "start": {
+                      "title": "The Angry Bull",
+                      "image": "garden",
+                      "text": "Callum hears shouting from the market.\n\n\u201cRun! The bull is loose!\u201d\n\nA large bull crashes through a fruit stand. Apples bounce across the street. People hide behind doors. The bull snorts and stomps, but Callum notices something strange.\n\nThe bull\u2019s eyes are wide with fear, not anger.",
+                      "choices": [
+                          [
+                              "Fight the bull",
+                              "choice_1"
+                          ],
+                          [
+                              "Distract the bull",
+                              "choice_2"
+                          ],
+                          [
+                              "Find what scared the bull",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Fight the bull",
+                      "image": "garden",
+                      "text": "Callum charges toward the bull.\n\nThe bull becomes even more frightened and causes more damage.\n\nCallum learns that force can make fear worse.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Distract the bull",
+                      "image": "garden",
+                      "text": "Callum grabs a red festival banner and leads the bull away from the crowd.\n\nThe village becomes safer, but the bull is still scared.\n\nCallum buys time for others to help.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Find what scared the bull",
+                      "image": "garden",
+                      "text": "Callum listens carefully and hears loud hammering from a construction site.\n\nHe asks the builders to stop. The bull calms down and follows Callum back to its pen.\n\nCallum learns that solving the cause is better than fighting the result.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_callum_2",
+              "title": "The Rainy Day Race",
+              "description": "Fairness matters more than winning.",
+              "button": "Play The Rainy Day Race",
+              "scenes": {
+                  "start": {
+                      "title": "The Rainy Day Race",
+                      "image": "hallway",
+                      "text": "Rain taps against the rooftops, but the race is still on. Callum stretches at the starting line, paws ready in the mud.\n\nThe prize is a shiny silver whistle.\n\nCallum wants it badly.\n\nThen he notices one racer tying a loose shoe and another slipping near the first turn.",
+                      "choices": [
+                          [
+                              "Cheat by taking a shortcut",
+                              "choice_1"
+                          ],
+                          [
+                              "Help the fallen racer",
+                              "choice_2"
+                          ],
+                          [
+                              "Run honestly and carefully",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Cheat by taking a shortcut",
+                      "image": "hallway",
+                      "text": "Callum cuts through an alley.\n\nHe reaches the finish line first, but mud on his paws proves he left the race path.\n\nCallum learns that winning unfairly does not count.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Help the fallen racer",
+                      "image": "hallway",
+                      "text": "Callum stops to help another racer out of the mud.\n\nHe loses time but earns cheers from the crowd.\n\nCallum may not win the whistle, but he wins respect.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Run honestly and carefully",
+                      "image": "hallway",
+                      "text": "Callum stays on the path and watches his footing.\n\nHe finishes the race fairly. Whether he wins or loses, he feels proud.\n\nCallum learns that effort and honesty matter.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_callum_3",
+              "title": "The Cave Echo",
+              "description": "Being brave does not mean being unafraid. It means helping even when afraid.",
+              "button": "Play The Cave Echo",
+              "scenes": {
+                  "start": {
+                      "title": "The Cave Echo",
+                      "image": "fort",
+                      "text": "The storm has passed, but water still drips from the trees. Callum walks near the hillside when he hears a small cry.\n\n\u201cHelp!\u201d\n\nThe sound comes from a cave entrance half-covered by fallen branches.\n\nInside, everything is dark.",
+                      "choices": [
+                          [
+                              "Run away",
+                              "choice_1"
+                          ],
+                          [
+                              "Enter alone",
+                              "choice_2"
+                          ],
+                          [
+                              "Gather help first",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Run away",
+                      "image": "fort",
+                      "text": "Callum decides the cave is too scary.\n\nThe cries continue behind him. Callum feels uneasy and knows someone still needs help.\n\nCallum learns that fear should not always make the choice.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Enter alone",
+                      "image": "fort",
+                      "text": "Callum squeezes into the cave and follows the sound.\n\nHe finds trapped animals but has trouble moving the branches alone.\n\nCallum comforts them until more help arrives.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Gather help first",
+                      "image": "hallway",
+                      "text": "Callum runs to get villagers, ropes, and lanterns.\n\nEveryone works together to rescue the trapped animals safely.\n\nCallum learns brave choices can also be smart choices.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_callum_4",
+              "title": "Callum and the Garden Thief",
+              "description": "Do not accuse someone without understanding the full story.",
+              "button": "Play Callum and the Garden Thief",
+              "scenes": {
+                  "start": {
+                      "title": "Callum and the Garden Thief",
+                      "image": "garden",
+                      "text": "The village garden is full of tiny holes and missing carrots.\n\nA gardener points toward the woods. \u201cIt must be that fox. Foxes are always trouble.\u201d\n\nCallum sees pawprints in the mud, but they are small. Very small.\n\nThe fox watches from behind a bush, looking nervous.",
+                      "choices": [
+                          [
+                              "Chase the fox",
+                              "choice_1"
+                          ],
+                          [
+                              "Investigate the garden",
+                              "choice_2"
+                          ],
+                          [
+                              "Talk to the fox",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Chase the fox",
+                      "image": "picnic",
+                      "text": "Callum barks and runs after the fox.\n\nThe fox flees, and the real thieves keep stealing vegetables.\n\nCallum learns that blaming too quickly can miss the truth.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Investigate the garden",
+                      "image": "garden",
+                      "text": "Callum studies the pawprints and follows a trail of carrot tops.\n\nHe finds hungry rabbits hiding under the fence.\n\nCallum discovers the real problem.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Talk to the fox",
+                      "image": "garden",
+                      "text": "Callum calmly asks the fox what happened.\n\nThe fox explains that the rabbits are hungry because their burrow flooded.\n\nCallum helps build a small shared garden for the rabbits.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_callum_5",
+              "title": "The Broken Promise",
+              "description": "Responsibility means doing what you promised before doing what is fun.",
+              "button": "Play The Broken Promise",
+              "scenes": {
+                  "start": {
+                      "title": "The Broken Promise",
+                      "image": "supplies",
+                      "text": "The healer gives Callum a small wrapped bottle.\n\n\u201cThis medicine must reach Elder Rowan before sunset,\u201d she says. \u201cCan I trust you-\u201d\n\nCallum nods proudly. \u201cAbsolutely!\u201d\n\nOn the road, he passes friends playing ball. Then he smells fresh biscuits. Then he sees a kite stuck in a tree.\n\nThe sun keeps sinking lower.",
+                      "choices": [
+                          [
+                              "Play first",
+                              "choice_1"
+                          ],
+                          [
+                              "Take a risky shortcut",
+                              "choice_2"
+                          ],
+                          [
+                              "Deliver the medicine first",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Play first",
+                      "image": "garden",
+                      "text": "Callum joins the game and loses track of time.\n\nHe arrives late, worried and ashamed.\n\nCallum learns that promises should come first.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Take a risky shortcut",
+                      "image": "supplies",
+                      "text": "Callum cuts through the marsh to save time.\n\nHe gets muddy and almost drops the medicine.\n\nCallum learns shortcuts are not always responsible.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Deliver the medicine first",
+                      "image": "supplies",
+                      "text": "Callum ignores distractions and goes straight to Elder Rowan.\n\nHe arrives on time. Afterward, he still has time to play.\n\nCallum learns responsibility can make fun feel even better later.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          }
+      ],
+      "ledger": [
+          {
+              "id": "branching_ledger_1",
+              "title": "The Tiny Tea Party",
+              "description": "Being gentle and careful shows respect for others.",
+              "button": "Play The Tiny Tea Party",
+              "scenes": {
+                  "start": {
+                      "title": "The Tiny Tea Party",
+                      "image": "picnic",
+                      "text": "Millie sets out four tiny cups, four tiny plates, and a tiny cake with pink frosting.\n\nLedger crouches beside the table and whispers, \u201cI will be very careful.\u201d\n\nHis whisper blows two napkins into a bush.\n\nMillie smiles nervously. \u201cMaybe just a little more careful.\u201d",
+                      "choices": [
+                          [
+                              "Leave because he is embarrassed",
+                              "choice_1"
+                          ],
+                          [
+                              "Try to help carefully",
+                              "choice_2"
+                          ],
+                          [
+                              "Build a bigger tea party",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Leave because he is embarrassed",
+                      "image": "picnic",
+                      "text": "Ledger backs away and says he is too big for tea parties.\n\nMillie feels sad because she invited him for his company, not his size.\n\nLedger learns that giving up can hurt friends too.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Try to help carefully",
+                      "image": "picnic",
+                      "text": "Ledger moves slowly, uses two claws to lift a cup, and listens to Millie\u2019s instructions.\n\nHe spills a little tea but does much better.\n\nLedger learns patience and gentleness.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Build a bigger tea party",
+                      "image": "picnic",
+                      "text": "Ledger gathers safe logs for benches and large leaves for plates.\n\nEveryone joins, big and small.\n\nLedger learns that being different can help create something special.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_ledger_2",
+              "title": "Ledger and the Big Roar",
+              "description": "It is okay to feel angry, but it is important to control what you do with anger.",
+              "button": "Play Ledger and the Big Roar",
+              "scenes": {
+                  "start": {
+                      "title": "Ledger and the Big Roar",
+                      "image": "fort",
+                      "text": "Ledger carefully stacks one block on top of another.\n\nThe tower wobbles.\n\nIt falls.\n\nLedger tries again.\n\nIt falls again.\n\nHis face gets hot. His tail thumps the ground. A roar builds in his chest.\n\nNearby, his friends cover their ears.",
+                      "choices": [
+                          [
+                              "Keep roaring",
+                              "choice_1"
+                          ],
+                          [
+                              "Walk away and breathe",
+                              "choice_2"
+                          ],
+                          [
+                              "Talk about what he feels",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Keep roaring",
+                      "image": "fort",
+                      "text": "Ledger roars loudly.\n\nThe blocks scatter and his friends move away.\n\nLedger learns that anger can push people away.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Walk away and breathe",
+                      "image": "garden",
+                      "text": "Ledger steps back, counts to ten, and takes deep breaths.\n\nHe calms down and is ready to try again.\n\nLedger learns that taking a break can help.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Talk about what he feels",
+                      "image": "garden",
+                      "text": "Ledger says, \u201cI am frustrated because I keep messing up.\u201d\n\nHis friends offer to help build the tower together.\n\nLedger learns that sharing feelings can solve problems.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_ledger_3",
+              "title": "The Falling Bridge",
+              "description": "Big problems are easier when everyone works together.",
+              "button": "Play The Falling Bridge",
+              "scenes": {
+                  "start": {
+                      "title": "The Falling Bridge",
+                      "image": "kitchen",
+                      "text": "Ledger hears a crack from the river path.\n\nThe wooden bridge sags in the middle. A cart is stuck on one side, and two villagers are afraid to move.\n\nLedger is strong enough to lift heavy things, but there are too many broken pieces for one dinosaur to handle alone.",
+                      "choices": [
+                          [
+                              "Try to fix everything alone",
+                              "choice_1"
+                          ],
+                          [
+                              "Ask everyone to help",
+                              "choice_2"
+                          ],
+                          [
+                              "Panic",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Try to fix everything alone",
+                      "image": "garden",
+                      "text": "Ledger lifts boards and ropes by himself.\n\nHe gets tired and drops some supplies.\n\nLedger learns that strength alone is not always enough.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Ask everyone to help",
+                      "image": "picnic",
+                      "text": "Ledger asks villagers to carry ropes, hold boards, and guide the cart.\n\nThe bridge is stabilized long enough for everyone to cross.\n\nLedger learns that teamwork is a kind of strength.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Panic",
+                      "image": "garden",
+                      "text": "Ledger runs in circles, unsure what to do.\n\nCallum helps him slow down and make a plan.\n\nLedger learns that calming down helps him think.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_ledger_4",
+              "title": "The Shiny Rock",
+              "description": "Sharing something useful can help more people than keeping it alone.",
+              "button": "Play The Shiny Rock",
+              "scenes": {
+                  "start": {
+                      "title": "The Shiny Rock",
+                      "image": "treasure",
+                      "text": "Ledger finds a crystal under a tree root. It glows soft blue and lights up the shadows around him.\n\n\u201cIt is perfect,\u201d Ledger says. \u201cIt can be my night-light.\u201d\n\nWhen he returns to the village, he notices the street lamps are broken. Several younger children are afraid to walk home in the dark.\n\nLedger holds the crystal closer to his chest.",
+                      "choices": [
+                          [
+                              "Keep the crystal hidden",
+                              "choice_1"
+                          ],
+                          [
+                              "Share the crystal for the night",
+                              "choice_2"
+                          ],
+                          [
+                              "Give the crystal to the village",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Keep the crystal hidden",
+                      "image": "garden",
+                      "text": "Ledger sneaks home with the crystal.\n\nHis room glows beautifully, but the village streets remain dark.\n\nLedger learns that keeping something only for himself can leave others without help.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Share the crystal for the night",
+                      "image": "garden",
+                      "text": "Ledger carries the crystal through town so everyone can get home safely.\n\nThe children cheer and walk home without fear.\n\nLedger learns that sharing can make him feel proud.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Give the crystal to the village",
+                      "image": "hallway",
+                      "text": "Ledger places the crystal in the town square lantern.\n\nThe crystal lights the whole village every night.\n\nLedger learns that generosity can create lasting good.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_ledger_5",
+              "title": "The Forest Picnic",
+              "description": "Listening and following instructions can prevent problems.",
+              "button": "Play The Forest Picnic",
+              "scenes": {
+                  "start": {
+                      "title": "The Forest Picnic",
+                      "image": "picnic",
+                      "text": "The friends arrive at Sunnyroot Grove for a picnic.\n\nMillie reads the sign aloud:\n\u201cPlease keep food covered. Please stay on the path. Please do not wake the honeybees.\u201d\n\nLedger nods while staring at the berry muffins.\n\n\u201cI heard everything,\u201d he says.\n\nHe did not hear everything.",
+                      "choices": [
+                          [
+                              "Ignore the instructions",
+                              "choice_1"
+                          ],
+                          [
+                              "Ask Millie to repeat the rules",
+                              "choice_2"
+                          ],
+                          [
+                              "Help set up the picnic correctly",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Ignore the instructions",
+                      "image": "picnic",
+                      "text": "Ledger leaves the food uncovered and wanders off the path.\n\nSquirrels steal the sandwiches, and bees chase everyone away from the muffins.\n\nLedger learns that rules often exist for a reason.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Ask Millie to repeat the rules",
+                      "image": "picnic",
+                      "text": "Ledger admits he was distracted and asks to hear the rules again.\n\nThe picnic goes smoothly.\n\nLedger learns that asking questions is responsible.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Help set up the picnic correctly",
+                      "image": "picnic",
+                      "text": "Ledger covers the food, places blankets safely, and marks the walking path.\n\nEveryone has a wonderful picnic, and Ledger gets thanked for helping.\n\nLedger learns that listening helps everyone have fun.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          }
+      ],
+      "millie": [
+          {
+              "id": "branching_millie_1",
+              "title": "The Cheese Competition",
+              "description": "Sharing ideas can be better than keeping them secret.",
+              "button": "Play The Cheese Competition",
+              "scenes": {
+                  "start": {
+                      "title": "The Cheese Competition",
+                      "image": "kitchen",
+                      "text": "Millie loves cheese more than almost anything.\n\nThe night before the competition, she finds a folded recipe tucked behind an old cookbook.\n\n\u201cMoon-Melt Cheese,\u201d it says. \u201cSoft, golden, and best when made with friends.\u201d\n\nMillie looks around. No one else has seen it.\n\nIf she keeps it secret, she might win.",
+                      "choices": [
+                          [
+                              "Keep the recipe secret",
+                              "choice_1"
+                          ],
+                          [
+                              "Share the recipe with one friend",
+                              "choice_2"
+                          ],
+                          [
+                              "Share the recipe with everyone",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Keep the recipe secret",
+                      "image": "kitchen",
+                      "text": "Millie makes the cheese alone.\n\nThe cheese tastes good, but it does not melt correctly because the recipe needed more than one helper.\n\nMillie learns that some things are meant to be shared.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Share the recipe with one friend",
+                      "image": "kitchen",
+                      "text": "Millie asks Melody to help.\n\nTogether, they make a better cheese dish.\n\nMillie learns that sharing can improve an idea.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Share the recipe with everyone",
+                      "image": "kitchen",
+                      "text": "Millie invites all contestants to make a giant cheese feast.\n\nNo one wins first place, but everyone enjoys the best festival meal ever.\n\nMillie learns that joy can be better than a trophy.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_millie_2",
+              "title": "The Library Ghost",
+              "description": "Learning the truth is better than reacting with fear.",
+              "button": "Play The Library Ghost",
+              "scenes": {
+                  "start": {
+                      "title": "The Library Ghost",
+                      "image": "note",
+                      "text": "Millie loves the library because it is quiet, warm, and smells like old paper.\n\nBut tonight, the library is not quiet.\n\nThump.\n\nA book falls from the top shelf.\n\nFlutter.\n\nPages turn by themselves.\n\nThe librarian whispers, \u201cIt must be a ghost.\u201d\n\nMillie sees tiny footprints in the dust.",
+                      "choices": [
+                          [
+                              "Run away",
+                              "choice_1"
+                          ],
+                          [
+                              "Set a trap",
+                              "choice_2"
+                          ],
+                          [
+                              "Investigate quietly",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Run away",
+                      "image": "note",
+                      "text": "Millie leaves the library.\n\nThe books keep falling every night.\n\nMillie learns that running from a mystery does not solve it.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Set a trap",
+                      "image": "kitchen",
+                      "text": "Millie builds a small box trap with cheese inside.\n\nShe catches a tiny invisible creature, but it is frightened.\n\nMillie learns that trapping something before understanding it can be unkind.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Investigate quietly",
+                      "image": "note",
+                      "text": "Millie follows the footprints and listens.\n\nShe discovers a tiny invisible creature who only wanted someone to read aloud.\n\nMillie reads a story, and the library becomes peaceful.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_millie_3",
+              "title": "The Storm Drain Rescue",
+              "description": "Bravery and caution should work together.",
+              "button": "Play The Storm Drain Rescue",
+              "scenes": {
+                  "start": {
+                      "title": "The Storm Drain Rescue",
+                      "image": "garden",
+                      "text": "Rain rushes along the street in silver streams.\n\nA young squirrel cries beside the curb. \u201cMy boat! My grandfather made it for me!\u201d\n\nA small wooden toy boat spins near the storm drain.\n\nMillie is tiny enough to fit inside, but the water is moving fast.",
+                      "choices": [
+                          [
+                              "Ignore the toy",
+                              "choice_1"
+                          ],
+                          [
+                              "Climb into the drain alone",
+                              "choice_2"
+                          ],
+                          [
+                              "Ask for help and make a plan",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Ignore the toy",
+                      "image": "garden",
+                      "text": "Millie decides it is too dangerous and walks away.\n\nThe squirrel is safe, but very sad.\n\nMillie wonders if there was a safer way to help.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Climb into the drain alone",
+                      "image": "garden",
+                      "text": "Millie squeezes into the drain after the toy.\n\nShe reaches it but struggles against the rushing water.\n\nMillie learns that bravery without caution can be risky.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Ask for help and make a plan",
+                      "image": "garden",
+                      "text": "Millie gets Callum to hold a rope and Ledger to block part of the water flow.\n\nMillie safely retrieves the toy.\n\nMillie learns that brave plans are better than reckless ones.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_millie_4",
+              "title": "The Clocktower Secret",
+              "description": "Responsibility means taking care of things others trust you with.",
+              "button": "Play The Clocktower Secret",
+              "scenes": {
+                  "start": {
+                      "title": "The Clocktower Secret",
+                      "image": "map",
+                      "text": "The clockkeeper places a tiny brass key in Millie\u2019s paws.\n\n\u201cThis opens the clocktower panel,\u201d he says. \u201cPlease keep it safe while I repair the bell rope.\u201d\n\nMillie nods seriously.\n\nThe key is small, shiny, and important.\n\nVery important things can be very tempting to show off.",
+                      "choices": [
+                          [
+                              "Play with the key",
+                              "choice_1"
+                          ],
+                          [
+                              "Show it off to friends",
+                              "choice_2"
+                          ],
+                          [
+                              "Keep it safe",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Play with the key",
+                      "image": "garden",
+                      "text": "Millie spins the key on a string.\n\nThe key flies into a crack between stones.\n\nMillie learns important things are not toys.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Show it off to friends",
+                      "image": "garden",
+                      "text": "Millie brings the key to the playground.\n\nEveryone wants to hold it, and it almost gets lost.\n\nMillie learns that being trusted sometimes means saying no.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Keep it safe",
+                      "image": "garden",
+                      "text": "Millie places the key in a small pouch and checks on it carefully.\n\nWhen the clockkeeper returns, the key is safe.\n\nMillie earns trust and is invited to help wind the clock.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          },
+          {
+              "id": "branching_millie_5",
+              "title": "The Invisible Ink Map",
+              "description": "Honesty and sharing lead to better discoveries than greed.",
+              "button": "Play The Invisible Ink Map",
+              "scenes": {
+                  "start": {
+                      "title": "The Invisible Ink Map",
+                      "image": "map",
+                      "text": "Millie spills lemon juice on an old blank page.\n\nSlowly, brown lines appear.\n\nA map.\n\nIt shows the fountain, the old oak tree, and a big X near the hill.\n\nMillie\u2019s heart beats fast. If she keeps it secret, the treasure could be all hers.",
+                      "choices": [
+                          [
+                              "Keep the map secret",
+                              "choice_1"
+                          ],
+                          [
+                              "Lie about what she found",
+                              "choice_2"
+                          ],
+                          [
+                              "Share the map",
+                              "choice_3"
+                          ]
+                      ]
+                  },
+                  "choice_1": {
+                      "title": "Keep the map secret",
+                      "image": "map",
+                      "text": "Millie sneaks away alone.\n\nShe reaches the hill but cannot move the heavy stone covering the treasure.\n\nMillie learns that some adventures need friends.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_2": {
+                      "title": "Lie about what she found",
+                      "image": "garden",
+                      "text": "Millie tells her friends the paper is only a drawing.\n\nHer friends feel hurt when they discover the truth.\n\nMillie learns that lying can damage trust.",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  },
+                  "choice_3": {
+                      "title": "Share the map",
+                      "image": "hallway",
+                      "text": "Millie tells her friends what she found.\n\nTogether, they follow the map and lift the stone.\n\nThe treasure is a box of old friendship bracelets with a note: \u201cThe real treasure is who you bring with you.\u201d",
+                      "choices": [
+                          [
+                              "Choose another story",
+                              "story_select"
+                          ],
+                          [
+                              "Choose another hero",
+                              "character_select"
+                          ],
+                          [
+                              "Play this story again",
+                              "start"
+                          ]
+                      ]
+                  }
+              }
+          }
+      ]
+  };
+
   storyData.storyOptions = Object.fromEntries(
     Object.keys(storyData.stories).map((key) => {
       const hero = heroDetails[key];
@@ -1106,4 +2798,8 @@ window.HAZLENUTTS_STORY = {
       ]];
     })
   );
+
+  for (const [characterId, stories] of Object.entries(builtInBranchingStories)) {
+    storyData.storyOptions[characterId].push(...stories);
+  }
 }());
