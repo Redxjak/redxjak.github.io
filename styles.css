@@ -320,6 +320,43 @@ h1 {
   min-width: 0;
 }
 
+.older-updates {
+  margin-top: 10px;
+}
+
+.older-updates summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 10px;
+  color: var(--cyan);
+  background: var(--cyan-soft);
+  border: 1px solid rgba(32, 230, 200, 0.18);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+  list-style: none;
+}
+
+.older-updates summary::-webkit-details-marker {
+  display: none;
+}
+
+.older-updates summary::after {
+  margin-left: 8px;
+  color: var(--muted);
+  content: "+";
+}
+
+.older-updates[open] summary {
+  margin-bottom: 10px;
+}
+
+.older-updates[open] summary::after {
+  content: "-";
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
