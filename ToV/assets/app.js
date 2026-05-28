@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.0";
+  const VERSION = "0.8.1";
   const MAP_DIRECTIONS = ["LEFT", "UP", "RIGHT", "DOWN"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -65,6 +65,8 @@
       cloudSaved: "Cloud save updated.",
       accountLabel: "Player: {name}",
       accountMenu: "Account menu",
+      info: "Info",
+      achievementsLabel: "Achievements",
       faq: "FAQ",
       closeFaq: "Close FAQ",
       suggest: "Suggest",
@@ -125,6 +127,8 @@
       cloudSaved: "Guardado en la nube actualizado.",
       accountLabel: "Jugador: {name}",
       accountMenu: "Menu de cuenta",
+      info: "Info",
+      achievementsLabel: "Logros",
       faq: "FAQ",
       closeFaq: "Cerrar FAQ",
       suggest: "Sugerir",
@@ -368,6 +372,7 @@
     levelRewardChoices: [],
     pendingChoices: null,
     pendingLevelContinuation: null,
+    activeMobilePanel: null,
     oauthLoginFailed: false,
     account: loadAccount(),
     leaderboard: [],
@@ -431,20 +436,35 @@
             </div>
           </details>
           <button id="log-button" class="utility-button" type="button">${ui.log}</button>
+          <details id="info-menu" class="mobile-info-menu">
+            <summary>${ui.info}</summary>
+            <div class="mobile-info-menu-panel">
+              <button type="button" data-mobile-panel="character">${ui.characterSheet}</button>
+              <button type="button" data-mobile-panel="plot">${ui.plotDevelopment}</button>
+              <button type="button" data-mobile-panel="achievements">${ui.achievementsLabel}</button>
+            </div>
+          </details>
         </div>
         <div id="status" class="status"></div>
       </header>
       <section class="layout">
-        <aside class="side-panel player-panel">
+        <aside class="side-panel player-panel" data-mobile-panel-name="character">
+          <button class="mobile-panel-close" type="button">${ui.closeLog}</button>
           <h2 class="panel-title">${ui.characterSheet}</h2>
           <div id="sheet" class="sheet"></div>
         </aside>
         <section class="story-panel">
           <div id="story" class="story"></div>
         </section>
-        <aside class="side-panel plot-panel">
+        <aside class="side-panel plot-panel" data-mobile-panel-name="plot">
+          <button class="mobile-panel-close" type="button">${ui.closeLog}</button>
           <h2 class="panel-title">${ui.plotDevelopment}</h2>
           <div id="plot" class="plot"></div>
+        </aside>
+        <aside class="side-panel mobile-achievements-panel" data-mobile-panel-name="achievements">
+          <button class="mobile-panel-close" type="button">${ui.closeLog}</button>
+          <h2 class="panel-title">${ui.achievementsLabel}</h2>
+          <div id="mobile-achievements" class="plot"></div>
         </aside>
       </section>
       <section id="log-panel" class="embedded-log" hidden>
@@ -529,8 +549,10 @@
     bindAccountMenu();
     document.getElementById("sheet").innerHTML = sheetText();
     document.getElementById("plot").textContent = plotText();
+    document.getElementById("mobile-achievements").textContent = achievementsText();
     document.getElementById("log-content").innerHTML = state.logParts.length ? state.logParts.join("") : escapeHtml(ui.emptyLog);
     document.getElementById("log-button").onclick = toggleLog;
+    bindMobilePanels();
     document.getElementById("close-log").onclick = hideLog;
     document.getElementById("log-panel").hidden = !state.logVisible;
     document.getElementById("faq-content").innerHTML = faqHtml();
@@ -605,6 +627,42 @@
     if (panel) {
       panel.hidden = true;
     }
+  }
+
+  function bindMobilePanels() {
+    const infoMenu = document.getElementById("info-menu");
+    if (infoMenu) {
+      infoMenu.querySelectorAll("[data-mobile-panel]").forEach((button) => {
+        button.onclick = () => {
+          toggleMobilePanel(button.dataset.mobilePanel);
+          infoMenu.open = false;
+        };
+      });
+    }
+    document.querySelectorAll(".mobile-panel-close").forEach((button) => {
+      button.onclick = closeMobilePanels;
+    });
+    syncMobilePanels();
+  }
+
+  function toggleMobilePanel(name) {
+    state.activeMobilePanel = state.activeMobilePanel === name ? null : name;
+    syncMobilePanels();
+  }
+
+  function closeMobilePanels() {
+    state.activeMobilePanel = null;
+    syncMobilePanels();
+  }
+
+  function syncMobilePanels() {
+    document.body.classList.toggle("mobile-panel-open", Boolean(state.activeMobilePanel));
+    document.querySelectorAll("[data-mobile-panel-name]").forEach((panel) => {
+      panel.classList.toggle("is-open", panel.dataset.mobilePanelName === state.activeMobilePanel);
+    });
+    document.querySelectorAll("[data-mobile-panel]").forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.mobilePanel === state.activeMobilePanel);
+    });
   }
 
   function showFaq() {
@@ -2822,14 +2880,24 @@
       const stats = state.stats[key];
       lines.push(`${stats.name}: Runs ${stats.runs} | Endings ${stats.reached_end} | Deaths ${stats.died} | Forest attempts ${stats.forest_attempts}`);
     });
+    lines.push("", ...achievementLines());
+    return lines.join("\n");
+  }
+
+  function achievementsText() {
+    return achievementLines().join("\n");
+  }
+
+  function achievementLines() {
+    const lines = [t("ui.achievements_heading")];
     const unlocked = Object.keys(achievements).filter((key) => state.stats._achievements[key]);
-    lines.push("", t("ui.achievements_heading"), t("ui.achievements_progress", { unlocked: unlocked.length, total: Object.keys(achievements).length }));
+    lines.push(t("ui.achievements_progress", { unlocked: unlocked.length, total: Object.keys(achievements).length }));
     if (!unlocked.length) {
       lines.push(t("ui.no_achievements"));
     } else {
       unlocked.forEach((id) => lines.push(achievements[id]));
     }
-    return lines.join("\n");
+    return lines;
   }
 
   function choice(label, action, options = {}) {
