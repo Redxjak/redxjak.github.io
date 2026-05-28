@@ -933,7 +933,7 @@ window.HAZLENUTTS_STORY = {
 
 (function addStoryChoices() {
   const storyData = window.HAZLENUTTS_STORY;
-  storyData.version = "v1.1.4";
+  storyData.version = "v1.4";
   storyData.releaseNotes = [
     "Added five built-in branching adventures each for Melody, Callum, Ledger, and Millie.",
     "Added story selection after choosing a hero.",
