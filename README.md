@@ -6,6 +6,10 @@ Main site:
 
 https://redxjak.github.io/
 
+Discord:
+
+https://discord.gg/9C4npSfNQd
+
 Projects:
 
 - Password Generator: https://redxjak.github.io/PWGen/
