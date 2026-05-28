@@ -567,6 +567,10 @@
       button.type = "button";
       button.textContent = choice.label;
       button.addEventListener("click", () => {
+        if (state.combat && state.player && state.player.health <= 0) {
+          finishCombatDeath();
+          return;
+        }
         if (!choice.preserveScene) {
           beginVisibleScene();
         }
@@ -947,6 +951,7 @@
         hasDoll: false,
         hasThroneMap: false,
         hasPartialMap: false,
+        bridgeXpAwarded: false,
         bridgeRested: false,
         hasDwarvenAle: false,
         hasMagistoneOrb: false,
@@ -987,6 +992,8 @@
       dmIntro,
       dmGhost,
       dmDistricts,
+      dmBridgeEnd,
+      dmOrcCamps: dmOrcCampsPreview,
       caravan,
       escape,
       cave,
@@ -1172,7 +1179,168 @@
 
   function dmBridge() {
     writeKey("story.dm_bridge");
-    setChoices([choice(t("choice.chapter_complete"), () => continueChapter("complete"))]);
+    setChoices([
+      choice(t("choice.dm_watch_sneak"), dmBridgeSneak),
+      choice(t("choice.dm_skip_warehouse"), dmWarehouse)
+    ]);
+  }
+
+  function dmBridgeSneak() {
+    writeKey("story.dm_bridge_sneak_start");
+    const roll = rollD20("sneak");
+    const spotted = roll <= 10;
+    writeKey("story.dm_bridge_sneak_result", {
+      roll,
+      result: t(spotted ? "story.dm_bridge_sneak_low" : "story.dm_bridge_sneak_high")
+    });
+    setChoices([
+      spotted
+        ? choice(t("choice.dm_bridge_patrol"), dmBridgePatrol)
+        : choice(t("choice.dm_follow_warehouse"), dmWarehouse)
+    ]);
+  }
+
+  function dmBridgePatrol() {
+    writeKey("story.dm_bridge_patrol");
+    setChoices([
+      choice(t("choice.dm_if_win"), dmWarehouse),
+      choice(t("choice.dm_if_lose"), () => dmGameOver("combat"))
+    ]);
+  }
+
+  function dmWarehouse() {
+    writeKey("story.dm_warehouse");
+    setChoices([
+      choice(t("choice.dm_if_win"), dmWarehouseLeaderRage),
+      choice(t("choice.dm_if_lose"), () => dmGameOver("warehouse"))
+    ]);
+  }
+
+  function dmWarehouseLeaderRage() {
+    writeKey("story.dm_warehouse_leader_rage");
+    setChoices([
+      choice(t("choice.dm_if_win"), dmSilverMaskChoice),
+      choice(t("choice.dm_if_lose"), () => dmGameOver("warehouse"))
+    ]);
+  }
+
+  function dmSilverMaskChoice() {
+    writeKey("story.dm_silver_mask_choice");
+    setChoices([
+      choice(t("choice.dm_leave_mask"), () => {
+        state.player.flags.hasSilverMask = false;
+        state.player.flags.wearingSilverMask = false;
+        writeKey("story.dm_silver_mask_left");
+        dmRitualSurge();
+      }),
+      choice(t("choice.dm_store_mask"), () => {
+        state.player.flags.hasSilverMask = true;
+        state.player.flags.wearingSilverMask = false;
+        addItem("silver mask");
+        writeKey("story.dm_silver_mask_stored");
+        dmRitualSurge();
+      }),
+      choice(t("choice.dm_wear_mask"), () => {
+        state.player.flags.hasSilverMask = true;
+        state.player.flags.wearingSilverMask = true;
+        applySilverMaskPower();
+        addItem("silver mask");
+        writeKey("story.dm_silver_mask_worn");
+        dmRitualSurge();
+      })
+    ]);
+  }
+
+  function dmRitualSurge() {
+    writeKey("story.dm_ritual_surge");
+    setChoices([
+      choice(t("choice.dm_leave_warehouse"), dmWarehouseLeave),
+      choice(t("choice.dm_stop_ritual"), dmWarehouseStopRitual),
+      choice(t("choice.dm_jump_hole"), dmWarehouseJumpHole)
+    ]);
+  }
+
+  function dmWarehouseLeave() {
+    writeKey("story.dm_warehouse_leave");
+    setChoices([choice(t("choice.dm_order_arrive"), dmFalseHydraInterruption)]);
+  }
+
+  function dmFalseHydraInterruption() {
+    writeKey("story.dm_false_hydra_interruption");
+    setChoices([choice(t("choice.dm_listen_order"), dmOrderDialogue)]);
+  }
+
+  function dmOrderDialogue() {
+    writeKey("story.dm_order_dialogue");
+    dmBridgeEnd();
+  }
+
+  function dmWarehouseStopRitual() {
+    writeKey("story.dm_warehouse_stop_ritual");
+    dmBridgeEnd();
+  }
+
+  function dmWarehouseJumpHole() {
+    writeKey("story.dm_warehouse_jump_hole");
+    setChoices([choice(t("choice.dm_game_over"), () => dmGameOver("ritual_hole"))]);
+  }
+
+  function dmBridgeEnd() {
+    state.player.chapter = "dmBridgeEnd";
+    writeKey("story.dm_bridge_end");
+    unlock("warehouse_survived");
+    recordEnding();
+    saveGame();
+    showDmBridgeEndChoices();
+  }
+
+  function showDmBridgeEndChoices() {
+    const choices = [
+      choice(t("choice.dm_rest_bridge"), dmBridgeEndRest)
+    ];
+    if (state.player.flags.hasSilverMask && !state.player.flags.wearingSilverMask) {
+      choices.push(choice(t("choice.dm_put_mask_on"), dmSilverMaskReworn));
+    }
+    choices.push(
+      choice(t("choice.dm_move_orc_camps"), dmOrcCampsPreview),
+      choice(t("choice.current_status"), currentGameStatus)
+    );
+    setChoices(choices);
+  }
+
+  function dmSilverMaskReworn() {
+    state.player.flags.wearingSilverMask = true;
+    applySilverMaskPower();
+    writeKey("story.dm_silver_mask_reworn");
+    showDmBridgeEndChoices();
+  }
+
+  function dmBridgeEndRest() {
+    state.player.health = state.player.maxHealth;
+    writeKey("story.dm_bridge_end_rest");
+    showDmBridgeEndChoices();
+  }
+
+  function dmOrcCampsPreview() {
+    state.player.chapter = "dmOrcCamps";
+    writeKey("story.dm_orc_camps_preview");
+    recordEnding();
+    saveGame();
+    setChoices([
+      choice(t("choice.main_menu"), showStart),
+      choice(t("choice.current_status"), currentGameStatus)
+    ]);
+  }
+
+  function dmGameOver(reason) {
+    state.player.gameOverReason = reason;
+    state.player.health = 0;
+    gameOver();
+  }
+
+  function currentGameStatus() {
+    writeKey("story.current_status", { version: VERSION }, true);
+    setChoices([choice(t("choice.back_start"), showStart)]);
   }
 
   function caravan(clear = false) {
@@ -1702,7 +1870,10 @@
   }
 
   function goBridge() {
-    awardDecisionXp("bridge");
+    if (!state.player.flags.bridgeXpAwarded) {
+      state.player.flags.bridgeXpAwarded = true;
+      awardDecisionXp("bridge");
+    }
     continueChapter("bridge");
   }
 
@@ -1739,11 +1910,36 @@
 
   function warehouseRitual() {
     writeKey("story.warehouse_enter");
+    startWarehouseGuardCombat();
+  }
+
+  function startWarehouseGuardCombat() {
     startCombat(["orc", "orc", "orc", "orc", "orc", "cultist", "cultist", "cultist", "cultist"], "story.warehouse_cultists_defeated", {
       attackersPerRound: 3,
       deathReason: "warehouse",
-      onWin: ritualLeaderRage
+      onWin: ritualLeaderRage,
+      onRun: warehouseRunCaught
     });
+  }
+
+  function warehouseRunCaught() {
+    writeKey("story.warehouse_run_caught");
+    setChoices([
+      choice(t("choice.fight_back"), warehouseFightBack),
+      choice(t("choice.watch_ritual"), warehouseWatchRitual)
+    ]);
+  }
+
+  function warehouseFightBack() {
+    writeKey("story.warehouse_fight_back");
+    startWarehouseGuardCombat();
+  }
+
+  function warehouseWatchRitual() {
+    state.player.gameOverReason = "warehouse";
+    state.player.health = 0;
+    writeKey("story.warehouse_watch_ritual");
+    gameOver();
   }
 
   function ritualLeaderRage() {
@@ -1911,6 +2107,7 @@
     }
     choices.push(
       choice(t("choice.move_orc_camps"), moveToOrcCamps),
+      choice(t("choice.current_status"), currentGameStatus),
       choice(ui.submitScore, submitScore),
       choice(ui.leaderboard, showLeaderboard),
       choice(t("choice.main_menu"), showStart),
@@ -1946,6 +2143,7 @@
     setChoices([
       choice(ui.submitScore, submitScore),
       choice(ui.leaderboard, showLeaderboard),
+      choice(t("choice.current_status"), currentGameStatus),
       choice(t("choice.main_menu"), showStart),
       choice(t("choice.save"), saveGame)
     ]);
@@ -1958,6 +2156,7 @@
     setChoices([
       choice(ui.submitScore, submitScore),
       choice(ui.leaderboard, showLeaderboard),
+      choice(t("choice.current_status"), currentGameStatus),
       choice(t("choice.main_menu"), showStart)
     ]);
   }
@@ -1988,6 +2187,10 @@
     if (!state.combat) {
       return;
     }
+    if (state.player.health <= 0) {
+      finishCombatDeath();
+      return;
+    }
     const labels = [
       choice(t("choice.attack"), () => playerAttack(false)),
       choice(t("choice.heavy_attack"), () => playerAttack(true)),
@@ -2001,6 +2204,9 @@
   }
 
   function playerAttack(heavy) {
+    if (!state.combat || finishCombatDeath()) {
+      return;
+    }
     const stats = combatStats();
     const target = state.combat.enemies.find((enemy) => enemy.hp > 0);
     if (!target) {
@@ -2057,22 +2263,27 @@
       return;
     }
     enemyTurn();
-    if (state.player.health <= 0) {
-      state.player.gameOverReason = state.combat.deathReason;
-      gameOver();
-    } else {
+    if (!finishCombatDeath()) {
       showCombatChoices();
     }
   }
 
   function dodge() {
+    if (!state.combat || finishCombatDeath()) {
+      return;
+    }
     state.combat.guarding = true;
     writeKey("story.combat_dodge");
     enemyTurn();
-    showCombatChoices();
+    if (!finishCombatDeath()) {
+      showCombatChoices();
+    }
   }
 
   function runCombat() {
+    if (!state.combat || finishCombatDeath()) {
+      return;
+    }
     const roll = rollD20("sneak");
     if (roll >= 12) {
       writeKey("story.combat_run_success");
@@ -2086,22 +2297,30 @@
     } else {
       writeKey("story.combat_run_fail");
       enemyTurn();
-      showCombatChoices();
+      if (!finishCombatDeath()) {
+        showCombatChoices();
+      }
     }
   }
 
   function drinkPotion() {
+    if (!state.combat || finishCombatDeath()) {
+      return;
+    }
     removeItem("health potion");
     const healing = rollDie(4) + rollDie(4) + 6;
     state.player.health = Math.min(state.player.maxHealth, state.player.health + healing);
     writeKey("story.combat_potion", { healing });
     enemyTurn();
-    showCombatChoices();
+    if (!finishCombatDeath()) {
+      showCombatChoices();
+    }
   }
 
   function enemyTurn() {
     const playerAc = combatStats().ac + (state.combat.guarding ? 5 : 0);
-    state.combat.enemies.filter((enemy) => enemy.hp > 0).slice(0, state.combat.attackersPerRound).forEach((enemy) => {
+    const attackers = state.combat.enemies.filter((enemy) => enemy.hp > 0).slice(0, state.combat.attackersPerRound);
+    for (const enemy of attackers) {
       const natural = d20(false);
       const total = natural + enemy.attackBonus;
       if (natural === 1) {
@@ -2113,7 +2332,7 @@
         if (natural === 20) {
           damage += critDamageRoll;
         }
-        state.player.health -= damage;
+        state.player.health = Math.max(0, state.player.health - damage);
         writeKey("story.enemy_hit", {
           enemy: enemy.name,
           natural,
@@ -2125,8 +2344,22 @@
       } else {
         writeKey("story.enemy_miss", { enemy: enemy.name, natural, total, ac: playerAc });
       }
-    });
+      if (state.player.health <= 0) {
+        break;
+      }
+    }
     state.combat.guarding = false;
+    finishCombatDeath();
+  }
+
+  function finishCombatDeath() {
+    if (!state.combat || state.player.health > 0) {
+      return false;
+    }
+    state.player.gameOverReason = state.combat.deathReason;
+    state.combat = null;
+    gameOver();
+    return true;
   }
 
   function combatVictory() {
@@ -2168,7 +2401,7 @@
   }
 
   function awardDecisionXp(reason) {
-    if (state.player) {
+    if (state.player && !isPlayerDead()) {
       ensureScoreState();
       state.player.score.decisions += 1;
     }
@@ -2176,7 +2409,7 @@
   }
 
   function awardXp(amount, reason, continuation = null) {
-    if (!state.player || state.player.class === "dm" || amount <= 0) {
+    if (!state.player || state.player.class === "dm" || amount <= 0 || isPlayerDead()) {
       return false;
     }
     state.player.experience += amount;
@@ -2199,26 +2432,43 @@
   }
 
   function showLevelUpChoices() {
+    if (isPlayerDead()) {
+      clearLevelRewardState();
+      gameOver();
+      return;
+    }
     state.awaitingLevelReward = true;
     state.levelRewardChoices = [
       choice(t("choice.level_hp"), () => {
+        if (cancelLevelRewardIfDead()) {
+          return;
+        }
         state.player.maxHealth += 5;
         state.player.health += 5;
         writeKey("story.level_hp");
         continueAfterLevel();
       }),
       choice(t("choice.level_ac"), () => {
+        if (cancelLevelRewardIfDead()) {
+          return;
+        }
         state.player.upgrades.ac += 1;
         checkStatAchievements();
         writeKey("story.level_ac");
         continueAfterLevel();
       }),
       choice(t("choice.level_damage"), () => {
+        if (cancelLevelRewardIfDead()) {
+          return;
+        }
         state.player.upgrades.damage += 1;
         writeKey("story.level_damage");
         continueAfterLevel();
       }),
       choice(t("choice.level_heal"), () => {
+        if (cancelLevelRewardIfDead()) {
+          return;
+        }
         state.player.health = state.player.maxHealth;
         writeKey("story.level_heal");
         continueAfterLevel();
@@ -2228,6 +2478,11 @@
   }
 
   function continueAfterLevel() {
+    if (isPlayerDead()) {
+      clearLevelRewardState();
+      gameOver();
+      return;
+    }
     const continuation = state.pendingLevelContinuation;
     const pendingChoices = state.pendingChoices;
     state.awaitingLevelReward = false;
@@ -2244,6 +2499,26 @@
     } else {
       render();
     }
+  }
+
+  function cancelLevelRewardIfDead() {
+    if (!isPlayerDead()) {
+      return false;
+    }
+    clearLevelRewardState();
+    gameOver();
+    return true;
+  }
+
+  function clearLevelRewardState() {
+    state.awaitingLevelReward = false;
+    state.levelRewardChoices = [];
+    state.pendingLevelContinuation = null;
+    state.pendingChoices = null;
+  }
+
+  function isPlayerDead() {
+    return Boolean(state.player && (state.player.health <= 0 || (state.player.flags && state.player.flags.deathRecorded)));
   }
 
   function rollD20(skill) {
@@ -2311,6 +2586,7 @@
   }
 
   function gameOver() {
+    clearLevelRewardState();
     if (state.player && !state.player.flags.deathRecorded) {
       state.stats[state.player.class].died += 1;
       state.player.flags.deathRecorded = true;
@@ -2757,6 +3033,9 @@
     }
     if (state.player.flags.bridgeEndRested === undefined) {
       state.player.flags.bridgeEndRested = false;
+    }
+    if (state.player.flags.bridgeXpAwarded === undefined) {
+      state.player.flags.bridgeXpAwarded = false;
     }
     if (!state.player.upgrades) {
       state.player.upgrades = { ac: 0, damage: 0 };
