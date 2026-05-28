@@ -31,6 +31,8 @@ const spriteImages = Object.fromEntries(
 
 const state = {
   hero: null,
+  storyId: null,
+  story: null,
   scene: "character_select",
 };
 
@@ -49,8 +51,10 @@ characterCardsImage.addEventListener("load", () => {
 
 document.querySelector("#home-button").addEventListener("click", showCharacterSelect);
 document.querySelector("#restart-button").addEventListener("click", () => {
-  if (state.hero) {
+  if (state.story) {
     showScene("start");
+  } else if (state.hero) {
+    showStorySelect(state.hero);
   } else {
     showCharacterSelect();
   }
@@ -58,29 +62,67 @@ document.querySelector("#restart-button").addEventListener("click", () => {
 
 function showCharacterSelect() {
   state.hero = null;
+  state.storyId = null;
+  state.story = null;
   state.scene = "character_select";
   gameBoard.classList.add("is-character-select");
   heroLabel.textContent = "Choose your hero";
   sceneTitle.textContent = "Choose Your Hero";
   storyText.innerHTML = paragraphs(
-    "Pick who should lead this cozy adventure. The family will still help along the way."
+    `Pick who should lead this cozy adventure. The family will still help along the way.\n\nCurrent version: ${data.version}.`
   );
   choices.replaceChildren(
     ...Object.entries(data.characters).map(([key, character]) =>
       heroButton(key, character, () => {
-        state.hero = key;
-        showScene("start");
+        showStorySelect(key);
       })
     )
   );
   drawScene("character_select", null);
 }
 
+function showStorySelect(heroKey = state.hero) {
+  state.hero = heroKey;
+  state.storyId = null;
+  state.story = null;
+  state.scene = "story_select";
+  gameBoard.classList.add("is-character-select");
+  const character = data.characters[state.hero];
+
+  heroLabel.textContent = "Choose your story";
+  sceneTitle.textContent = `Choose ${character.name}'s Story`;
+  storyText.innerHTML = paragraphs(
+    "Pick which adventure to read and play together."
+  );
+  choices.replaceChildren(
+    ...data.storyOptions[state.hero].map((story) =>
+      storyButton(story, () => {
+        state.storyId = story.id;
+        state.story = story.scenes;
+        showScene("start");
+      })
+    )
+  );
+  drawScene("story_select", state.hero);
+}
+
 function showScene(sceneId) {
+  if (sceneId === "character_select") {
+    showCharacterSelect();
+    return;
+  }
+  if (sceneId === "story_select") {
+    showStorySelect();
+    return;
+  }
+  if (!state.story) {
+    showStorySelect(state.hero);
+    return;
+  }
+
   state.scene = sceneId;
   gameBoard.classList.remove("is-character-select");
-  const story = data.stories[state.hero];
-  const scene = story[sceneId];
+  const scene = state.story[sceneId];
   const character = data.characters[state.hero];
 
   heroLabel.textContent = `${character.name}'s story`;
@@ -88,11 +130,7 @@ function showScene(sceneId) {
   storyText.innerHTML = paragraphs(scene.text);
   choices.replaceChildren(
     ...scene.choices.map(([label, next]) => button(label, () => {
-      if (next === "character_select") {
-        showCharacterSelect();
-      } else {
-        showScene(next);
-      }
+      showScene(next);
     }))
   );
   drawScene(scene.image, state.hero, scene);
@@ -133,6 +171,24 @@ function heroButton(key, character, onClick) {
   image.decoding = "async";
 
   element.append(labelWrap, image);
+  return element;
+}
+
+function storyButton(story, onClick) {
+  const element = document.createElement("button");
+  element.className = "choice-button story-choice";
+  element.type = "button";
+  element.addEventListener("click", onClick);
+
+  const title = document.createElement("span");
+  title.className = "story-choice-title";
+  title.textContent = story.title;
+
+  const description = document.createElement("span");
+  description.className = "story-choice-description";
+  description.textContent = story.description;
+
+  element.append(title, description);
   return element;
 }
 
@@ -191,6 +247,15 @@ function drawScene(image, hero, scene = null) {
       ["gemma", 320, 455, 0.52],
       ["nora", 515, 455, 0.52],
     ].forEach(([character, x, y, scale]) => drawPlayable(character, x, y, scale));
+    return;
+  }
+
+  if (image === "story_select") {
+    background("#fff1a8", "#f8e4bb");
+    drawGround();
+    stars("#f2b84b", "#c6415d");
+    drawPlayable(hero, 320, 330, 1.05);
+    label("Which story today?", 320, 85, 32);
     return;
   }
 

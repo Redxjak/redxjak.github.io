@@ -930,3 +930,180 @@ window.HAZLENUTTS_STORY = {
     window.HAZLENUTTS_STORY.stories[key] = makeCousinStory(hero);
   }
 }());
+
+(function addStoryChoices() {
+  const storyData = window.HAZLENUTTS_STORY;
+  storyData.version = "v1.0.0";
+  storyData.releaseNotes = [
+    "Added story selection after choosing a hero.",
+    "Added a Family Map Quest that can star any hero.",
+    "Added end-of-story choices to pick another story or another hero."
+  ];
+
+  const heroDetails = {
+    melody: {
+      fullName: "Melody the Cat",
+      gift: "finding cozy clues with brave little paws",
+      tool: "a jingly adventure bell",
+      sound: "jingle-jingle-brave"
+    },
+    callum: {
+      fullName: "Callum the Dog",
+      gift: "sniffing out snack emergencies",
+      tool: "a backpack full of crackers",
+      sound: "ruff-rescue"
+    },
+    ledger: {
+      fullName: "Ledger the Dinosaur",
+      gift: "reading maps and naming important discoveries",
+      tool: "a crayon map",
+      sound: "rawr-research"
+    },
+    millie: {
+      fullName: "Millie the Bunny",
+      gift: "finding tiny clues in tiny places",
+      tool: "a blue ribbon",
+      sound: "hop-hop-found-it"
+    },
+    lily: {
+      fullName: "Lily the Beaver",
+      gift: "building stick bridges",
+      tool: "a bundle of smooth sticks",
+      sound: "tap-tap-build"
+    },
+    mason: {
+      fullName: "Mason the Dragon",
+      gift: "warming lanterns with gentle dragon breath",
+      tool: "a tiny lantern",
+      sound: "whoosh-glow"
+    },
+    oliver: {
+      fullName: "Oliver the Husky",
+      gift: "pulling sleds and sniffing snowy clues",
+      tool: "a blue scarf",
+      sound: "ruff-rush"
+    },
+    gemma: {
+      fullName: "Gemma the Hedgehog",
+      gift: "finding tiny clues in cozy corners",
+      tool: "a leaf notebook",
+      sound: "sniff-snuffle"
+    },
+    nora: {
+      fullName: "Nora the Kangaroo",
+      gift: "carrying helpful supplies in her pocket",
+      tool: "a pocket full of buttons",
+      sound: "hop-hop-hooray"
+    }
+  };
+
+  function makeFamilyMapStory(hero) {
+    const name = hero.fullName.split(" ")[0];
+    return {
+      start: {
+        title: `${name}'s Family Map Quest`,
+        image: "map",
+        text: `${hero.fullName} found a big family map spread across the living room rug. Some of the bright ribbon paths had slipped loose, and nobody could tell which way led to the snack table, the garden, or the cozy story blanket.\n\n${name} knew this was a job for ${hero.gift}.`,
+        choices: [
+          ["Follow the loose ribbon path", "ribbon_path"],
+          ["Ask the family for clues", "family_clues"]
+        ]
+      },
+      ribbon_path: {
+        title: "The Loose Ribbon Path",
+        image: "hallway",
+        text: `${name} followed the ribbon past the sofa, around the toy basket, and under one very wiggly blanket corner. Melody held one end, Callum guarded the snacks, and Ledger announced that the path was officially mysterious.\n\nAt the end of the ribbon sat ${hero.tool} with a note tucked beside it.`,
+        choices: [
+          ["Read the tucked-away note", "note_clue"],
+          ["Carry the tool to the garden", "garden_fix"]
+        ]
+      },
+      family_clues: {
+        title: "Everybody Helps",
+        image: "supplies",
+        text: `Mama Bear remembered the garden path. Daddy Monkey remembered the silly shortcut. Gigi and Papa Gecko remembered where the picnic blanket belonged.\n\n${name} listened carefully, then made the official helper sound: "${hero.sound}!"`,
+        choices: [
+          ["Add the clues to the map", "map_fix"],
+          ["Bring everyone to the garden", "garden_fix"]
+        ]
+      },
+      note_clue: {
+        title: "A Note From the Map",
+        image: "note",
+        text: `The note said, "A family map works best when everybody gets a place and every place gets a giggle."\n\n${name} smiled, because that sounded like exactly the kind of puzzle a family could solve together.`,
+        choices: [
+          ["Fix the family map", "map_fix"],
+          ["Test the path in the garden", "garden_fix"]
+        ]
+      },
+      map_fix: {
+        title: "The Map Comes Together",
+        image: "map",
+        text: `${name} placed every ribbon carefully. Melody got the sunbeam path, Callum got the snack path, Ledger got the discovery path, and Millie got the tiny clue path.\n\nThe map shimmered with happy colors. It was ready for a parade.`,
+        choices: [
+          ["Lead a map parade", "parade_ending"],
+          ["Save the map for story time", "story_blanket_ending"]
+        ]
+      },
+      garden_fix: {
+        title: "The Garden Path",
+        image: "garden",
+        text: `${name} carried the map outside, where the flowers leaned close to see. When the last ribbon path touched the garden gate, every flower gave a tiny giggle.\n\nThe family clapped, because the map had found its way home.`,
+        choices: [
+          ["Celebrate with flower giggles", "garden_ending"],
+          ["Take the map back inside", "story_blanket_ending"]
+        ]
+      },
+      parade_ending: {
+        title: `${name}'s Map Parade`,
+        image: "parade",
+        text: `${name} led the family around the whole map route: past Sofa Mountain, through the blanket tunnel, around the snack table, and all the way to the garden door.\n\nEvery ribbon stayed in place, and every helper got a cheer.`,
+        choices: [
+          ["Choose another story", "story_select"],
+          ["Choose another hero", "character_select"],
+          ["Play this story again", "start"]
+        ]
+      },
+      garden_ending: {
+        title: "The Giggle Path",
+        image: "garden",
+        text: `The flowers giggled so brightly that the whole garden seemed to sparkle. ${name} gave a proud little nod, and the family map became the official guide for all future cozy adventures.`,
+        choices: [
+          ["Choose another story", "story_select"],
+          ["Choose another hero", "character_select"],
+          ["Play this story again", "start"]
+        ]
+      },
+      story_blanket_ending: {
+        title: "The Story Blanket",
+        image: "nap",
+        text: `Back inside, Mama Bear spread the cozy story blanket over everyone. Daddy Monkey used the map to tell a very silly tale with three snack breaks.\n\n${name} rested beside the finished map, ready for the next adventure.`,
+        choices: [
+          ["Choose another story", "story_select"],
+          ["Choose another hero", "character_select"],
+          ["Play this story again", "start"]
+        ]
+      }
+    };
+  }
+
+  storyData.storyOptions = Object.fromEntries(
+    Object.keys(storyData.stories).map((key) => {
+      const hero = heroDetails[key];
+      return [key, [
+        {
+          id: "signature",
+          title: storyData.stories[key].start.title,
+          description: `A special adventure starring ${hero.fullName}.`,
+          scenes: storyData.stories[key]
+        },
+        {
+          id: "family_map",
+          title: `${hero.fullName.split(" ")[0]}'s Family Map Quest`,
+          description: "A family helper adventure about fixing the map and finding the giggle path.",
+          scenes: makeFamilyMapStory(hero)
+        }
+      ]];
+    })
+  );
+}());
