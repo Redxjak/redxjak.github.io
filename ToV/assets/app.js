@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.4";
+  const VERSION = "0.8.5";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -964,6 +964,7 @@
         hasSilverMask: false,
         wearingSilverMask: false,
         maskPowerClaimed: false,
+        warehouseStage: "not_started",
         bridgeEndMaskResolved: false,
         maskCorruption: 0,
         orderQuestionsAsked: [],
@@ -1007,6 +1008,7 @@
       districts,
       residential,
       bridge,
+      warehouse: warehouseRitual,
       bridgeEnd,
       orcCamps,
       complete
@@ -2024,15 +2026,35 @@
   }
 
   function warehouseRitual() {
+    state.player.chapter = "warehouse";
     writeKey("story.warehouse_enter");
+    if (state.player.flags.warehouseStage === "guards_defeated") {
+      ritualLeaderRage();
+      return;
+    }
+    if (state.player.flags.warehouseStage === "leader_defeated") {
+      silverMaskChoice();
+      return;
+    }
+    if (state.player.flags.warehouseStage === "mask_resolved") {
+      warehouseAfterMask();
+      return;
+    }
+    if (state.player.flags.warehouseStage === "cleared") {
+      bridgeEnd(true);
+      return;
+    }
     startWarehouseGuardCombat();
   }
 
   function startWarehouseGuardCombat() {
-    startCombat(["orc", "orc", "orc", "orc", "orc", "cultist", "cultist", "cultist", "cultist"], "story.warehouse_cultists_defeated", {
+    startCombat(["cultist", "cultist", "cultist", "cultist"], "story.warehouse_cultists_defeated", {
       attackersPerRound: 3,
       deathReason: "warehouse",
-      onWin: ritualLeaderRage,
+      onWin: () => {
+        state.player.flags.warehouseStage = "guards_defeated";
+        ritualLeaderRage();
+      },
       onRun: warehouseRunCaught
     });
   }
@@ -2062,7 +2084,10 @@
     startCombat(["ritualLeader"], "story.warehouse_leader_defeated", {
       attackersPerRound: 1,
       deathReason: "warehouse",
-      onWin: silverMaskChoice
+      onWin: () => {
+        state.player.flags.warehouseStage = "leader_defeated";
+        silverMaskChoice();
+      }
     });
   }
 
@@ -2087,6 +2112,7 @@
   function leaveSilverMask() {
     state.player.flags.hasSilverMask = false;
     state.player.flags.wearingSilverMask = false;
+    state.player.flags.warehouseStage = "mask_resolved";
     writeKey("story.silver_mask_left");
     warehouseAfterMask();
   }
@@ -2094,6 +2120,7 @@
   function storeSilverMask() {
     state.player.flags.hasSilverMask = true;
     state.player.flags.wearingSilverMask = false;
+    state.player.flags.warehouseStage = "mask_resolved";
     addItem("silver mask");
     writeKey("story.silver_mask_stored");
     warehouseAfterMask();
@@ -2102,6 +2129,7 @@
   function wearSilverMask() {
     state.player.flags.hasSilverMask = true;
     state.player.flags.wearingSilverMask = true;
+    state.player.flags.warehouseStage = "mask_resolved";
     applySilverMaskPower();
     addItem("silver mask");
     writeKey("story.silver_mask_worn");
@@ -2191,6 +2219,7 @@
   }
 
   function bridgeEnd(clear = false) {
+    state.player.flags.warehouseStage = "cleared";
     state.player.chapter = "bridgeEnd";
     writeKey("story.bridge_temp_end", {}, clear);
     resolveBridgeEndMask();
@@ -3144,6 +3173,9 @@
     }
     if (state.player.flags.maskPowerClaimed === undefined) {
       state.player.flags.maskPowerClaimed = state.player.flags.wearingSilverMask;
+    }
+    if (!state.player.flags.warehouseStage) {
+      state.player.flags.warehouseStage = "not_started";
     }
     if (state.player.flags.bridgeEndMaskResolved === undefined) {
       state.player.flags.bridgeEndMaskResolved = false;
