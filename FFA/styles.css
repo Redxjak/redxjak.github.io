@@ -76,18 +76,6 @@ a {
   gap: 10px;
 }
 
-.test-banner {
-  padding: 12px 18px;
-  color: #fffaf2;
-  background: #c6415d;
-  border-bottom: 1px solid rgba(117, 92, 59, 0.22);
-  font-family: "Nunito", Arial, sans-serif;
-  font-size: 1rem;
-  font-weight: 900;
-  letter-spacing: 0;
-  text-align: center;
-}
-
 .icon-button {
   width: 42px;
   height: 42px;
