@@ -1691,6 +1691,10 @@
   function residential(clear = false) {
     writeKey("story.residential_enter", {}, clear);
     writeKey("story.residential");
+    setChoices(residentialChoices());
+  }
+
+  function residentialChoices() {
     const choices = [
       choice(t("choice.large_manor"), () => {
         awardDecisionXp("residential_choice");
@@ -1711,17 +1715,17 @@
     choices.push(
       choice(t("choice.proceed_bridge"), () => goBridge())
     );
-    setChoices(choices);
+    if (state.player.flags.bridgeRested) {
+      choices.push(choice(t("choice.save"), saveGame));
+    }
+    return choices;
   }
 
   function restBeforeBridge() {
     state.player.flags.bridgeRested = true;
     state.player.health = state.player.maxHealth;
     writeKey("story.residential_rest");
-    setChoices([
-      choice(t("choice.proceed_bridge"), goBridge),
-      choice(t("choice.save"), saveGame)
-    ]);
+    setChoices(residentialChoices());
   }
 
   function largeManor() {

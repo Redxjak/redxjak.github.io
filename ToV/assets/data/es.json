@@ -342,7 +342,7 @@
   "story.barracks_combat_victory": "El último orco cae en el foso de combate.",
   "story.residential_enter": "Continúas hacia el distrito residencial.",
   "story.residential": "Ves una hilera de casas y oyes ruidos que vienen de algunas, pero no puedes saber cuántos enemigos hay dentro.\n\nTienes varias opciones:\n\nMansión grande - Oyes golpes y gritos.\nChoza pequeña - Parece tranquila, pero dudosa para encontrar algo de valor.\nCasa grande - Está en perfecto estado. No oyes nada, y por las ventanas solo ves algunos cofres. Sientes un leve poder viniendo de la casa.\nIgnorar las casas e ir directo al puente.",
-  "story.residential_rest": "Encuentras un rincón defendible cerca del camino al puente y tomas un último respiro.\n\nTu salud se restaura. Ya no queda tiempo para demorarte.",
+  "story.residential_rest": "Encuentras un rincón defendible cerca del camino al puente y tomas un último respiro.\n\nTu salud se restaura.",
   "story.large_manor": "Abres la puerta y encuentras a dos orcos dirigiendo a un grupo de cinco goblins para saquear el lugar y buscar algo.",
   "story.large_manor_seen": "Te ven entrar.",
   "story.large_manor_unseen": "Aún no te han visto. ¿Qué haces?",

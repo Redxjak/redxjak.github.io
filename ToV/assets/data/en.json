@@ -350,7 +350,7 @@
 
   "story.residential_enter": "You continue on to the residential district.",
   "story.residential": "You see a row of houses and hear noises coming from some of them, but you cannot tell how many enemies are inside.\n\nYou have a few choices:\n\nLarge Manor - You hear crashing and yelling.\nSmall Shack - It seems quiet, but doubtful to have anything of value.\nLarge House - It is in perfect condition. You do not hear anything, and through the windows you can only see a few chests. You feel a slight sense of power coming from the house.\nIgnore the houses and go straight to the bridge.",
-  "story.residential_rest": "You find a defensible corner near the road to the bridge and take a final breather.\n\nYour health is restored. There is no more time to linger.",
+  "story.residential_rest": "You find a defensible corner near the road to the bridge and take a final breather.\n\nYour health is restored.",
   "story.large_manor": "You open the door and find two orcs directing a squad of five goblins to ransack the place and look for something.",
   "story.large_manor_seen": "They see you enter.",
   "story.large_manor_unseen": "They have not seen you yet. What do you do?",
