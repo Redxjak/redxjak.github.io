@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.5";
+  const VERSION = "0.8.6";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -957,6 +957,7 @@
         bridgeRoute: randomBridgeRoute(),
         bridgeNavigationStep: 0,
         districtsRested: false,
+        smallShackCleared: false,
         bridgeXpAwarded: false,
         bridgeRested: false,
         hasDwarvenAle: false,
@@ -1702,15 +1703,17 @@
         awardDecisionXp("residential_choice");
         largeManor();
       }),
-      choice(t("choice.small_shack"), () => {
-        awardDecisionXp("residential_choice");
-        smallShack();
-      }),
       choice(t("choice.large_house"), () => {
         awardDecisionXp("residential_choice");
         mimicHouse();
       })
     ];
+    if (!state.player.flags.smallShackCleared) {
+      choices.splice(1, 0, choice(t("choice.small_shack"), () => {
+        awardDecisionXp("residential_choice");
+        smallShack();
+      }));
+    }
     if (!state.player.flags.bridgeRested) {
       choices.push(choice(t("choice.rest"), restBeforeBridge));
     }
@@ -1836,6 +1839,7 @@
     startCombat(["gremlin", "ghoul"], "story.small_shack_win", {
       attackersPerRound: 2,
       onWin: () => {
+        state.player.flags.smallShackCleared = true;
         setChoices([
           choice(t("choice.return_street"), () => continueChapter("residential", true)),
           choice(t("choice.proceed_bridge"), goBridge)
@@ -3194,6 +3198,9 @@
     }
     if (state.player.flags.districtsRested === undefined) {
       state.player.flags.districtsRested = false;
+    }
+    if (state.player.flags.smallShackCleared === undefined) {
+      state.player.flags.smallShackCleared = false;
     }
     if (!Array.isArray(state.player.flags.bridgeRoute) || state.player.flags.bridgeRoute.length !== BRIDGE_DIRECTIONS.length) {
       state.player.flags.bridgeRoute = randomBridgeRoute();
