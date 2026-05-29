@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.9";
+  const VERSION = "0.8.10";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -1298,7 +1298,7 @@
 
   function dmWarehouseStopRitual() {
     writeKey("story.dm_warehouse_stop_ritual");
-    dmBridgeEnd();
+    setChoices([choice(t("choice.next"), dmFalseHydraInterruption)]);
   }
 
   function dmWarehouseJumpHole() {
@@ -2223,7 +2223,7 @@
 
   function warehouseStopRitual() {
     writeKey("story.warehouse_stop_ritual");
-    bridgeEnd();
+    setChoices([choice(t("choice.next"), falseHydraInterruption)]);
   }
 
   function warehouseJumpHole() {
