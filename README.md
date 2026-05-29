@@ -14,7 +14,7 @@ Projects:
 
 - Password Generator: https://redxjak.github.io/PWGen/
 - Fun Family Adventures: https://redxjak.github.io/FFA/
-- Tales of Visteria: https://redxjak.github.io/ToV/
+- Tales of Visteria: https://redxjak.github.io/Tales-of-Visteria/
 
 ## Fun Family Adventures
 
@@ -22,4 +22,6 @@ Fun Family Adventures is maintained as a browser game only. Going forward, updat
 
 ## Tales of Visteria
 
-Tales of Visteria is maintained in the `Tales-of-Visteria` repository. The built browser site is published here under `ToV/` so the live URL can remain short.
+Tales of Visteria is maintained and published from the `Tales-of-Visteria` repository. The current public site is:
+
+https://redxjak.github.io/Tales-of-Visteria/
