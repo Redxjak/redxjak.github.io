@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.12";
+  const VERSION = "0.8.13";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -17,7 +17,7 @@
   const uiTextByLanguage = {
     en: {
       english: "English",
-      spanish: "Spanish",
+      spanish: "Español",
       language: "Language",
       characterSheet: "Character Sheet",
       plotDevelopment: "Plot Development",
@@ -39,7 +39,7 @@
       submitScore: "Submit Score",
       playerNamePrompt: "Name for the leaderboard:",
       scoreSubmitted: "Score submitted.",
-      scoreSubmitFailed: "Could not submit score. The leaderboard table may not be set up yet.",
+      scoreSubmitFailed: "Could not submit score. Please try again later",
       deathScorePrompt: "You have died. Click here to see your scores",
       leaderboardLoading: "Loading leaderboard...",
       leaderboardEmpty: "No scores yet.",
@@ -59,7 +59,7 @@
       playAsGuest: "Play as Guest",
       guest: "Guest",
       accountCreated: "Account created. If Supabase asks for email confirmation, check your email before signing in.",
-      loginFailed: "Sign in failed. Check your email and password.",
+      loginFailed: "Sign in failed. Check your email and password. Request a password reset through a Discord ticket:",
       signupFailed: "Account creation failed. The email may already be used, or Supabase may require a stronger password.",
       logoutDone: "Signed out.",
       cloudLoaded: "Cloud save loaded.",
@@ -79,7 +79,7 @@
       moveOn: "Move on"
     },
     es: {
-      english: "Inglés",
+      english: "English",
       spanish: "Español",
       language: "Idioma",
       characterSheet: "Hoja de personaje",
@@ -122,7 +122,7 @@
       playAsGuest: "Jugar como invitado",
       guest: "Invitado",
       accountCreated: "Cuenta creada. Si Supabase pide confirmacion por correo, revisa tu correo antes de iniciar sesion.",
-      loginFailed: "No se pudo iniciar sesion. Revisa tu correo y contrasena.",
+      loginFailed: "No se pudo iniciar sesion. Revisa tu correo y contrasena. Solicita un restablecimiento de contrasena con un ticket de Discord:",
       signupFailed: "No se pudo crear la cuenta. Puede que el correo ya exista o que la contrasena sea debil.",
       logoutDone: "Sesion cerrada.",
       cloudLoaded: "Guardado en la nube cargado.",
@@ -410,7 +410,7 @@
     } else {
       showLoginScreen();
       if (state.oauthLoginFailed) {
-        write(ui.loginFailed);
+        writeLoginFailed();
       }
     }
   }
@@ -528,6 +528,27 @@
     }
     state.logParts.push(escapedText);
     render();
+  }
+
+  function writeHtml(html, clear = false) {
+    if (clear) {
+      state.storyParts = [];
+      state.showGameOverImage = false;
+    }
+    if (state.storyParts.length) {
+      state.storyParts.push("<hr>");
+    }
+    state.storyParts.push(html);
+    if (state.logParts.length) {
+      state.logParts.push("<hr>");
+    }
+    state.logParts.push(html);
+    render();
+  }
+
+  function writeLoginFailed() {
+    const discordLink = `<a href="${escapeHtml(DISCORD_URL)}" target="_blank" rel="noopener noreferrer">${escapeHtml(ui.discord)}</a>`;
+    writeHtml(`${escapeHtml(ui.loginFailed)} ${discordLink}`);
   }
 
   function writeKey(key, vars = {}, clear = false) {
@@ -848,7 +869,7 @@
       await loadCloudData();
       showStart();
     } catch {
-      write(ui.loginFailed);
+      writeLoginFailed();
     }
   }
 
