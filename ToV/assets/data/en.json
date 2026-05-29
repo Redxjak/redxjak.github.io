@@ -178,7 +178,7 @@
   "story.dm_intro": "You look down from above at the puny mortals whose fate you ultimately control. You see them in a caravan and decide they need some excitement.\n\nWhat trouble do you send?",
   "story.dm_send_hydra": "You send the hydra.\n\nHaha! Did you see the way their eyeballs popped from their skulls? \nThen the smell of their burning flesh, ah that was great... \n\nI should make some popcorn.",
   "story.dm_send_orcs": "Wow, they ran like little bitches, but they survived. Fine, I guess I get to keep playing with their lives.\n\nDo I let them go to the caves of darkness and despair, or the forest of life, gifts, and power?",
-  "story.dm_choose_forest": "Forest it is. Gifts, power, probably psychological damage. The classics.",
+  "story.dm_choose_forest": "Let's be nice and send them to the Forest of Gifts, power, and healing...\n\nAh, I crack myself up. Cave of despair they go!",
   "story.dm_choose_caves": "Caves was always the option. The caves are really the whole story.",
   "story.dm_ghost": "Alright, what are these fuck tards going to do now? Let's give them this creepy-ass ring girl and see what they do.\n\nWho do I want to watch?",
   "story.dm_watch_result": "Roll D20: {roll}\n\n{result}",

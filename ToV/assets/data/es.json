@@ -176,7 +176,7 @@
   "story.dm_intro": "Miras desde arriba a los mortales insignificantes cuyo destino controlas por completo. Los ves en una caravana y decides que necesitan algo de emoción.\n\n¿Qué problema les mandas?",
   "story.dm_send_hydra": "Envías la hidra.\n\n¡Jaja! ¿Viste cómo se les salieron los ojos del cráneo?\nY luego el olor de su carne quemada, ah, eso fue genial...\n\nDebería preparar palomitas.",
   "story.dm_send_orcs": "Vaya, corrieron como cobardes, pero sobrevivieron. Bien, supongo que puedo seguir jugando con sus vidas.\n\n¿Los dejo ir a las cuevas de oscuridad y desesperación, o al bosque de vida, regalos y poder?",
-  "story.dm_choose_forest": "Bosque será. Regalos, poder, probablemente daño psicológico. Los clásicos.",
+  "story.dm_choose_forest": "Seamos buenos y mandémoslos al Bosque de Regalos, poder y sanación...\n\nAh, me hago reír. ¡A la cueva de la desesperación van!",
   "story.dm_choose_caves": "Las cuevas siempre fueron la opción. Las cuevas son realmente toda la historia.",
   "story.dm_ghost": "Muy bien, ¿qué van a hacer ahora estos idiotas? Les damos esta niña tipo película de terror y vemos qué hacen.\n\n¿A quién quiero mirar?",
   "story.dm_watch_result": "Tirada D20: {roll}\n\n{result}",
