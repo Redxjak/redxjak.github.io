@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.8";
+  const VERSION = "0.8.9";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -291,6 +291,7 @@
       mimic_nap: "Sleep Tight",
       played_everyone: "Full Party",
       mask_on: "I'm feeling good!",
+      bridge_cleared: "Bridge Burner",
       warehouse_survived: "Was it a dream?",
       high_ac: "Can't touch this",
       big_damage: "Unlimited powa",
@@ -313,6 +314,7 @@
       played_everyone: "Grupo completo",
       mask_on: "¡Me siento bien!",
       warehouse_survived: "¿Fue un sueño?",
+      bridge_cleared: "Puente superado",
       high_ac: "No puedes tocar esto",
       big_damage: "Powa ilimitado",
       maxed_out: "Al máximo",
@@ -2030,6 +2032,7 @@
     state.player.flags.bridgeNavigationStep = step + 1;
     if (state.player.flags.bridgeNavigationStep >= route.length) {
       writeKey("story.bridge_success");
+      unlock("bridge_cleared");
       warehouseRitual();
       return;
     }
