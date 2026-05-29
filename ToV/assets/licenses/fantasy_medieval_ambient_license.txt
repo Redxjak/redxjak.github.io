@@ -1,0 +1,9 @@
+Track: Fantasy Medieval Ambient
+Artist: DeusLower
+Source: https://pixabay.com/music/folk-fantasy-medieval-ambient-237371/
+Suggested audio file: ../audio/fantasy_medieval_ambient.mp3
+License: Pixabay Content License
+License summary: https://pixabay.com/service/license-summary/
+Use in game: character creation, village, tavern, peaceful travel, credits.
+
+Download the track directly from Pixabay and save the downloaded license certificate with the project before release.

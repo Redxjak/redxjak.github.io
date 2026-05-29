@@ -1,0 +1,9 @@
+Track: Fantasy Medieval Mystery Ambient
+Artist: DeusLower
+Source: https://pixabay.com/music/mystery-fantasy-medieval-mystery-ambient-292418/
+Suggested audio file: ../audio/fantasy_medieval_mystery_ambient.mp3
+License: Pixabay Content License
+License summary: https://pixabay.com/service/license-summary/
+Use in game: warehouse investigation, False Hydra buildup, mask scenes, sneaking, castle interior.
+
+Download the track directly from Pixabay and save the downloaded license certificate with the project before release.

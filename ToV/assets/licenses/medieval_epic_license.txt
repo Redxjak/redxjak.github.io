@@ -1,0 +1,10 @@
+Track: Medieval Epic
+Artist: SoundGalleryBy
+Source: https://pixabay.com/music/main-title-medieval-epic-117935/
+Suggested audio file: ../audio/medieval_epic.mp3
+License: Pixabay Content License
+License summary: https://pixabay.com/service/license-summary/
+Use in game: boss fights, high-action combat, major conflict scenes.
+Content ID note: This track is marked as Content ID Registered on Pixabay; keep the downloaded license certificate for any future platform claim.
+
+Download the track directly from Pixabay and save the downloaded license certificate with the project before release.

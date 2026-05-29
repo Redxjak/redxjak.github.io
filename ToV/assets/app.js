@@ -1,8 +1,8 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.13";
-  const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
+  const VERSION = "0.8.16";
+  const BRIDGE_DIRECTIONS = ["left", "up", "right", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
   const XP_PER_LEVEL = 50;
@@ -12,6 +12,58 @@
   const DISCORD_URL = "https://discord.gg/9C4npSfNQd";
   const SUGGESTION_URL = "https://github.com/Redxjak/Tales-of-Visteria/issues/new?template=suggestion.yml";
   const ISSUE_URL = "https://github.com/Redxjak/Tales-of-Visteria/issues/new?template=issue.yml";
+  const MUSIC_TRACKS = {
+    epic: "../assets/audio/fantasy_medieval_epic_music.mp3",
+    ambient: "../assets/audio/fantasy_medieval_ambient.mp3",
+    mystery: "../assets/audio/fantasy_medieval_mystery_ambient.mp3",
+    combat: "../assets/audio/medieval_epic.mp3"
+  };
+  const MUSIC_VOLUMES = {
+    normal: 0.42,
+    low: 0.24,
+    combat: 0.5
+  };
+  const CHAPTER_MUSIC = {
+    dmIntro: "epic",
+    dmGhost: "ambient",
+    dmDistricts: "ambient",
+    dmBridgeEnd: "ambient",
+    dmOrcCamps: "mystery",
+    caravan: "ambient",
+    escape: "ambient",
+    cave: "mystery",
+    ghostGirl: "mystery",
+    districts: "ambient",
+    residential: "ambient",
+    bridge: "mystery",
+    warehouse: "mystery",
+    bridgeEnd: "ambient",
+    orcCamps: "mystery",
+    complete: "ambient"
+  };
+  const MUSIC_CREDITS = [
+    {
+      title: "Fantasy Medieval Epic Music",
+      artist: "DeusLower",
+      source: "https://pixabay.com/music/main-title-fantasy-medieval-epic-music-239599/"
+    },
+    {
+      title: "Fantasy Medieval Ambient",
+      artist: "DeusLower",
+      source: "https://pixabay.com/music/folk-fantasy-medieval-ambient-237371/"
+    },
+    {
+      title: "Fantasy Medieval Mystery Ambient",
+      artist: "DeusLower",
+      source: "https://pixabay.com/music/mystery-fantasy-medieval-mystery-ambient-292418/"
+    },
+    {
+      title: "Medieval Epic",
+      artist: "SoundGalleryBy",
+      source: "https://pixabay.com/music/main-title-medieval-epic-117935/"
+    }
+  ];
+  const PIXABAY_LICENSE_URL = "https://pixabay.com/service/license-summary/";
   const lang = document.body.dataset.language || "en";
   const storagePrefix = "tov.web.";
   const uiTextByLanguage = {
@@ -70,13 +122,17 @@
       achievementsLabel: "Achievements",
       faq: "FAQ",
       closeFaq: "Close FAQ",
+      credits: "Credits",
+      closeCredits: "Close Credits",
       discord: "Discord",
       suggest: "Suggest",
       reportIssue: "Report Issue",
       log: "Log",
       closeLog: "Close",
       emptyLog: "No story log yet.",
-      moveOn: "Move on"
+      moveOn: "Move on",
+      musicOn: "Music: On",
+      musicOff: "Music: Off"
     },
     es: {
       english: "English",
@@ -133,13 +189,17 @@
       achievementsLabel: "Logros",
       faq: "FAQ",
       closeFaq: "Cerrar FAQ",
+      credits: "Creditos",
+      closeCredits: "Cerrar creditos",
       discord: "Discord",
       suggest: "Sugerir",
       reportIssue: "Reportar problema",
       log: "Registro",
       closeLog: "Cerrar",
       emptyLog: "Todavia no hay registro.",
-      moveOn: "Continuar"
+      moveOn: "Continuar",
+      musicOn: "Musica: Si",
+      musicOff: "Musica: No"
     }
   };
   const ui = uiTextByLanguage[lang] || uiTextByLanguage.en;
@@ -220,12 +280,12 @@
       name: "Jon",
       title: "DM",
       race: "God",
-      maxHealth: 999,
+      maxHealth: 420,
       gold: 0,
       supplies: 0,
       gear: ["DM screen", "loaded d20"],
       bonus: "fate",
-      ac: 99,
+      ac: 69,
       attackBonus: 99,
       damageDie: 20,
       damageBonus: 99,
@@ -272,7 +332,8 @@
     ghoul: { name: "Ghoul", ac: 12, hp: 18, attackBonus: 4, damageDie: 6, damageBonus: 2, xp: 25 },
     mimic: { name: "Mimic", ac: 12, hp: 35, attackBonus: 5, damageDie: 8, damageBonus: 3, xp: 45 },
     cultist: { name: "Masked Cultist", ac: 13, hp: 12, attackBonus: 4, damageDie: 6, damageBonus: 2, xp: 25 },
-    ritualLeader: { name: "Cultist Leader", ac: 15, hp: 42, attackBonus: 7, damageDie: 10, damageBonus: 4, xp: 90 }
+    ritualLeader: { name: "Cultist Leader", ac: 15, hp: 42, attackBonus: 7, damageDie: 10, damageBonus: 4, xp: 90 },
+    falseHydra: { name: "False Hydra", ac: 16, hp: 95, attackBonus: 8, damageDie: 12, damageBonus: 5, xp: 250 }
   };
 
   const achievementsByLanguage = {
@@ -296,7 +357,21 @@
       high_ac: "Can't touch this",
       big_damage: "Unlimited powa",
       maxed_out: "Maxed out",
-      all_day: "I can do this all day"
+      all_day: "I can do this all day",
+      map_goblin: "Map Goblin",
+      wrong_turn_right_lesson: "Wrong Turn, Right Lesson",
+      haunted_carry_on: "Haunted Carry-On",
+      this_is_mine_now: "This Is Mine Now",
+      union_violation: "Union Violation",
+      aggressively_educational: "Aggressively Educational",
+      free_wazetax: "Free Wazetax",
+      no_one_left_in_cage: "No One Gets Left in a Cage",
+      not_my_problem: "Not My Problem",
+      bridge_scholar: "Bridge Scholar",
+      blind_crossing: "Blind Crossing",
+      cult_breaker: "Cult Breaker",
+      customer_service: "Customer Service",
+      osha_incident: "OSHA Incident"
     },
     es: {
       first_fight: "Primera sangre",
@@ -318,7 +393,21 @@
       high_ac: "No puedes tocar esto",
       big_damage: "Powa ilimitado",
       maxed_out: "Al máximo",
-      all_day: "Puedo hacer esto todo el día"
+      all_day: "Puedo hacer esto todo el día",
+      map_goblin: "Goblin de mapas",
+      wrong_turn_right_lesson: "Giro equivocado, lección correcta",
+      haunted_carry_on: "Equipaje encantado",
+      this_is_mine_now: "Esto ahora es mío",
+      union_violation: "Violación sindical",
+      aggressively_educational: "Agresivamente educativo",
+      free_wazetax: "Liberen a Wazetax",
+      no_one_left_in_cage: "Nadie queda en una jaula",
+      not_my_problem: "No es mi problema",
+      bridge_scholar: "Erudito del puente",
+      blind_crossing: "Cruce a ciegas",
+      cult_breaker: "Rompecultos",
+      customer_service: "Servicio al cliente",
+      osha_incident: "Incidente laboral"
     }
   };
   const achievements = achievementsByLanguage[lang] || achievementsByLanguage.en;
@@ -375,6 +464,7 @@
     logParts: [],
     logVisible: false,
     faqVisible: false,
+    creditsVisible: false,
     showGameOverImage: false,
     awaitingLevelReward: false,
     levelRewardChoices: [],
@@ -384,6 +474,12 @@
     oauthLoginFailed: false,
     account: loadAccount(),
     leaderboard: [],
+    music: {
+      audio: null,
+      enabled: loadMusicEnabled(),
+      current: "silence",
+      volume: MUSIC_VOLUMES.normal
+    },
     choices: []
   };
 
@@ -437,13 +533,14 @@
               <button id="menu-load" type="button">${t("choice.load_game")}</button>
               <button id="menu-leaderboard" type="button">${ui.leaderboard}</button>
               <button id="menu-faq" type="button">${ui.faq}</button>
+              <button id="menu-credits" type="button">${ui.credits}</button>
               <button id="menu-discord" type="button">${ui.discord}</button>
               <button id="menu-suggest" type="button">${ui.suggest}</button>
               <button id="menu-issue" type="button">${ui.reportIssue}</button>
-              <button id="menu-quit" type="button">${t("choice.quit")}</button>
               <button id="menu-logout" type="button">${ui.logout}</button>
             </div>
           </details>
+          <button id="music-button" class="utility-button music-button" type="button"></button>
           <button id="log-button" class="utility-button" type="button">${ui.log}</button>
           <details id="info-menu" class="mobile-info-menu">
             <summary>${ui.info}</summary>
@@ -489,6 +586,13 @@
           <button id="close-faq" class="utility-button" type="button">${ui.closeFaq}</button>
         </div>
         <div id="faq-content" class="faq-content"></div>
+      </section>
+      <section id="credits-panel" class="faq-panel credits-panel" hidden>
+        <div class="log-header">
+          <h2>${ui.credits}</h2>
+          <button id="close-credits" class="utility-button" type="button">${ui.closeCredits}</button>
+        </div>
+        <div id="credits-content" class="faq-content"></div>
       </section>
       <nav id="choices" class="choices"></nav>
       <section id="level-modal" class="modal-overlay" hidden>
@@ -581,6 +685,7 @@
     document.getElementById("plot").textContent = plotText();
     document.getElementById("mobile-achievements").textContent = achievementsText();
     document.getElementById("log-content").innerHTML = state.logParts.length ? state.logParts.join("") : escapeHtml(ui.emptyLog);
+    syncMusicButton();
     document.getElementById("log-button").onclick = toggleLog;
     bindMobilePanels();
     document.getElementById("close-log").onclick = hideLog;
@@ -588,6 +693,9 @@
     document.getElementById("faq-content").innerHTML = faqHtml();
     document.getElementById("close-faq").onclick = hideFaq;
     document.getElementById("faq-panel").hidden = !state.faqVisible;
+    document.getElementById("credits-content").innerHTML = creditsHtml();
+    document.getElementById("close-credits").onclick = hideCredits;
+    document.getElementById("credits-panel").hidden = !state.creditsVisible;
     renderLevelModal();
     const choiceArea = document.getElementById("choices");
     choiceArea.innerHTML = "";
@@ -636,6 +744,73 @@
   function beginVisibleScene() {
     state.storyParts = [];
     state.showGameOverImage = false;
+  }
+
+  function setMusic(track, options = {}) {
+    const nextTrack = track || "silence";
+    const nextVolume = options.volume || MUSIC_VOLUMES.normal;
+    state.music.current = nextTrack;
+    state.music.volume = nextVolume;
+    if (nextTrack === "silence" || !state.music.enabled) {
+      stopMusic();
+      syncMusicButton();
+      return;
+    }
+    const src = MUSIC_TRACKS[nextTrack];
+    if (!src) {
+      stopMusic();
+      syncMusicButton();
+      return;
+    }
+    if (!state.music.audio || state.music.audio.dataset.track !== nextTrack) {
+      stopMusic();
+      state.music.audio = new Audio(src);
+      state.music.audio.dataset.track = nextTrack;
+      state.music.audio.loop = true;
+      state.music.audio.preload = "auto";
+    }
+    state.music.audio.volume = nextVolume;
+    const playAttempt = state.music.audio.play();
+    if (playAttempt && typeof playAttempt.catch === "function") {
+      playAttempt.catch(() => {});
+    }
+    syncMusicButton();
+  }
+
+  function stopMusic() {
+    if (!state.music.audio) {
+      return;
+    }
+    state.music.audio.pause();
+  }
+
+  function toggleMusic() {
+    state.music.enabled = !state.music.enabled;
+    localStorage.setItem(`${storagePrefix}musicEnabled`, JSON.stringify(state.music.enabled));
+    if (state.music.enabled) {
+      setMusic(state.music.current, { volume: state.music.volume });
+    } else {
+      stopMusic();
+      syncMusicButton();
+    }
+  }
+
+  function syncMusicButton() {
+    const button = document.getElementById("music-button");
+    if (!button) {
+      return;
+    }
+    button.textContent = state.music.enabled ? ui.musicOn : ui.musicOff;
+    button.classList.toggle("is-muted", !state.music.enabled);
+    button.onclick = toggleMusic;
+  }
+
+  function restoreChapterMusic(volume = MUSIC_VOLUMES.normal) {
+    if (!state.player) {
+      setMusic("epic");
+      return;
+    }
+    setMusic(CHAPTER_MUSIC[state.player.chapter] || "ambient", { volume });
   }
 
   function showLog() {
@@ -716,18 +891,35 @@
     }
   }
 
+  function showCredits() {
+    state.creditsVisible = true;
+    const panel = document.getElementById("credits-panel");
+    if (panel) {
+      panel.hidden = false;
+      panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }
+
+  function hideCredits() {
+    state.creditsVisible = false;
+    const panel = document.getElementById("credits-panel");
+    if (panel) {
+      panel.hidden = true;
+    }
+  }
+
   function bindAccountMenu() {
     const menu = document.getElementById("account-menu");
     const saveButton = document.getElementById("menu-save");
     const loadButton = document.getElementById("menu-load");
     const leaderboardButton = document.getElementById("menu-leaderboard");
     const faqButton = document.getElementById("menu-faq");
+    const creditsButton = document.getElementById("menu-credits");
     const discordButton = document.getElementById("menu-discord");
     const suggestButton = document.getElementById("menu-suggest");
     const issueButton = document.getElementById("menu-issue");
-    const quitButton = document.getElementById("menu-quit");
     const logoutButton = document.getElementById("menu-logout");
-    if (!saveButton || !loadButton || !leaderboardButton || !faqButton || !discordButton || !suggestButton || !issueButton || !quitButton || !logoutButton) {
+    if (!saveButton || !loadButton || !leaderboardButton || !faqButton || !creditsButton || !discordButton || !suggestButton || !issueButton || !logoutButton) {
       return;
     }
     if (menu) {
@@ -739,10 +931,10 @@
     loadButton.onclick = () => runAccountMenuAction(loadGame);
     leaderboardButton.onclick = () => runAccountMenuAction(showLeaderboard);
     faqButton.onclick = () => runAccountMenuAction(showFaq);
+    creditsButton.onclick = () => runAccountMenuAction(showCredits);
     discordButton.onclick = () => runAccountMenuAction(openDiscord);
     suggestButton.onclick = () => runAccountMenuAction(openSuggestionForm);
     issueButton.onclick = () => runAccountMenuAction(openIssueForm);
-    quitButton.onclick = () => runAccountMenuAction(quitGame);
     logoutButton.onclick = () => runAccountMenuAction(logout);
   }
 
@@ -822,7 +1014,33 @@
     `).join("");
   }
 
+  function creditsHtml() {
+    const intro = lang === "es"
+      ? "Tales of Visteria creado por Redxjak. Musica usada bajo la Pixabay Content License."
+      : "Tales of Visteria created by Redxjak. Music used under the Pixabay Content License.";
+    const musicHeading = lang === "es" ? "Musica" : "Music";
+    const licenseLabel = lang === "es" ? "Resumen de licencia de Pixabay" : "Pixabay license summary";
+    const trackHtml = MUSIC_CREDITS.map((track) => `
+      <article class="faq-entry">
+        <h3>${escapeHtml(track.title)}</h3>
+        <p>${escapeHtml(track.artist)} - <a href="${escapeHtml(track.source)}" target="_blank" rel="noopener noreferrer">Pixabay</a></p>
+      </article>
+    `).join("");
+    return `
+      <article class="faq-entry">
+        <h3>Tales of Visteria</h3>
+        <p>${escapeHtml(intro)}</p>
+      </article>
+      <article class="faq-entry">
+        <h3>${escapeHtml(musicHeading)}</h3>
+        <p><a href="${escapeHtml(PIXABAY_LICENSE_URL)}" target="_blank" rel="noopener noreferrer">${escapeHtml(licenseLabel)}</a></p>
+      </article>
+      ${trackHtml}
+    `;
+  }
+
   function showStart() {
+    setMusic("epic");
     const stats = plotText();
     write(t("story.start", { stats }), true);
     const choices = [
@@ -830,17 +1048,13 @@
       choice(t("choice.load_game"), loadGame),
       choice(ui.leaderboard, showLeaderboard),
       choice(ui.suggest, openSuggestionForm),
-      choice(ui.reportIssue, openIssueForm),
-      choice(t("choice.quit"), quitGame)
+      choice(ui.reportIssue, openIssueForm)
     ];
     setChoices(choices);
   }
 
-  function quitGame() {
-    write("You can close this browser tab whenever you are ready.");
-  }
-
   function showLoginScreen() {
+    setMusic("epic", { volume: MUSIC_VOLUMES.low });
     state.player = null;
     write(ui.loginScreen, true);
     setChoices([
@@ -946,6 +1160,7 @@
   }
 
   function showCharacterSelect() {
+    setMusic("ambient");
     const lines = [t("story.character_select"), ""];
     Object.keys(classes).forEach((key) => {
       const data = classes[key];
@@ -972,6 +1187,7 @@
       health: template.maxHealth,
       maxHealth: template.maxHealth,
       gold: template.gold,
+      healthPotions: 0,
       supplies: template.supplies,
       gear: [...template.gear],
       bonus: template.bonus,
@@ -985,6 +1201,9 @@
         girlHelped: false,
         monstersScattered: false,
         hasDoll: false,
+        pickedUpDoll: false,
+        dollInSack: false,
+        dollRevealed: false,
         hasThroneMap: false,
         hasPartialMap: false,
         bridgeRoute: randomBridgeRoute(),
@@ -1003,6 +1222,16 @@
         maskCorruption: 0,
         orderQuestionsAsked: [],
         bridgeEndRested: false,
+        castleSideRested: false,
+        hasCastleSupplies: false,
+        servantAmbushCleared: false,
+        orcCampOuterResolved: false,
+        orcCampPartyResolved: false,
+        aleBarrelUsed: false,
+        partyRockTried: false,
+        rescuedWazetax: false,
+        wazetaxHidden: false,
+        wazetaxQuestionsAsked: [],
         completedRecorded: false,
         deathRecorded: false
       },
@@ -1045,9 +1274,11 @@
       warehouse: warehouseRitual,
       bridgeEnd,
       orcCamps,
+      castleApproach,
       complete
     };
     state.player.chapter = chapter;
+    restoreChapterMusic();
     chapters[chapter](clear);
   }
 
@@ -1128,7 +1359,7 @@
   }
 
   function dmBarracksMap() {
-    writeKey("story.dm_barracks_map");
+    writeKey("story.dm_barracks_map", { directions: bridgeDirectionList() });
     setChoices([choice(t("choice.move_houses"), dmResidential)]);
   }
 
@@ -1168,7 +1399,7 @@
   }
 
   function dmMerchantMap() {
-    writeKey("story.dm_merchant_map");
+    writeKey("story.dm_merchant_map", { directions: bridgeDirectionList() });
     setChoices([choice(t("choice.move_houses"), dmResidential)]);
   }
 
@@ -1220,7 +1451,8 @@
   }
 
   function dmBridge() {
-    writeKey("story.dm_bridge");
+    setMusic("mystery");
+    writeKey("story.dm_bridge", { directions: bridgeDirectionList() });
     setChoices([
       choice(t("choice.dm_watch_sneak"), dmBridgeSneak),
       choice(t("choice.dm_skip_warehouse"), dmWarehouse)
@@ -1243,6 +1475,7 @@
   }
 
   function dmBridgePatrol() {
+    setMusic("combat", { volume: MUSIC_VOLUMES.combat });
     writeKey("story.dm_bridge_patrol");
     setChoices([
       choice(t("choice.dm_if_win"), dmWarehouse),
@@ -1251,6 +1484,7 @@
   }
 
   function dmWarehouse() {
+    setMusic("mystery");
     writeKey("story.dm_warehouse");
     setChoices([
       choice(t("choice.dm_if_win"), dmWarehouseLeaderRage),
@@ -1259,6 +1493,7 @@
   }
 
   function dmWarehouseLeaderRage() {
+    setMusic("combat", { volume: MUSIC_VOLUMES.combat });
     writeKey("story.dm_warehouse_leader_rage");
     setChoices([
       choice(t("choice.dm_if_win"), dmSilverMaskChoice),
@@ -1304,15 +1539,18 @@
 
   function dmWarehouseLeave() {
     writeKey("story.dm_warehouse_leave");
+    setMusic("silence");
     setChoices([choice(t("choice.dm_order_arrive"), dmFalseHydraInterruption)]);
   }
 
   function dmFalseHydraInterruption() {
+    setMusic("silence");
     writeKey("story.dm_false_hydra_interruption");
     setChoices([choice(t("choice.dm_listen_order"), dmOrderDialogue)]);
   }
 
   function dmOrderDialogue() {
+    setMusic("epic", { volume: MUSIC_VOLUMES.low });
     writeKey("story.dm_order_dialogue");
     dmBridgeEnd();
   }
@@ -1367,6 +1605,65 @@
     state.player.chapter = "dmOrcCamps";
     writeKey("story.dm_orc_camps_preview");
     recordEnding();
+    writeCurrentScore();
+    saveGame();
+    setChoices([
+      choice(ui.submitScore, submitScore),
+      choice(ui.leaderboard, showLeaderboard),
+      choice(t("choice.current_status"), currentGameStatus),
+      choice(t("choice.main_menu"), showStart),
+      choice(t("choice.save"), saveGame)
+    ]);
+  }
+
+  function dmCastleApproach() {
+    writeKey("story.dm_castle_approach");
+    const choices = [
+      choice(t("choice.dm_main_gate"), dmCastleMainGate),
+      choice(t("choice.dm_side_entrance"), dmCastleSideEntrance)
+    ];
+    if (state.player.flags.hasSilverMask && !state.player.flags.wearingSilverMask) {
+      choices.push(choice(t("choice.dm_put_mask_on"), () => {
+        state.player.flags.wearingSilverMask = true;
+        writeKey("story.dm_castle_put_on_mask");
+        dmCastleMainGate();
+      }));
+    }
+    setChoices(choices);
+  }
+
+  function dmCastleMainGate() {
+    if (state.player.flags.wearingSilverMask) {
+      writeKey("story.dm_castle_main_gate_mask");
+      setChoices([choice(t("choice.dm_side_entrance"), dmCastleSideEntrance)]);
+      return;
+    }
+    writeKey("story.dm_castle_main_gate_fight");
+    setChoices([
+      choice(t("choice.dm_if_win"), dmCastleSideEntrance),
+      choice(t("choice.dm_if_lose"), () => dmGameOver("castle_courtyard"))
+    ]);
+  }
+
+  function dmCastleSideEntrance() {
+    state.player.health = state.player.maxHealth;
+    writeKey("story.dm_castle_side_entrance");
+    setChoices([choice(t("choice.dm_servant_quarters"), dmServantQuarters)]);
+  }
+
+  function dmServantQuarters() {
+    writeKey("story.dm_servant_quarters");
+    setChoices([choice(t("choice.dm_throne_room"), dmThroneRoom)]);
+  }
+
+  function dmThroneRoom() {
+    writeKey("story.dm_doll_reveal");
+    writeKey("story.dm_throne_room");
+    if (state.player.flags.wearingSilverMask) {
+      writeKey("story.dm_crown_temptation");
+    }
+    writeKey("story.dm_false_hydra_final");
+    recordEnding();
     saveGame();
     setChoices([
       choice(t("choice.main_menu"), showStart),
@@ -1381,6 +1678,7 @@
   }
 
   function currentGameStatus() {
+    restoreChapterMusic(MUSIC_VOLUMES.low);
     writeKey("story.current_status", { version: VERSION }, true);
     setChoices([choice(t("choice.back_start"), showStart)]);
   }
@@ -1530,14 +1828,17 @@
     setChoices([
       choice(t("choice.grab_doll"), () => {
         state.player.flags.hasDoll = true;
+        state.player.flags.pickedUpDoll = true;
+        state.player.flags.dollInSack = true;
         addItem("cracked doll");
         writeKey("story.doll_grab");
         awardDecisionXp("doll_choice");
         continueChapter("districts");
       }),
       choice(t("choice.leave_doll"), () => {
-        addItem("cracked doll");
-        state.player.flags.hasDoll = true;
+        state.player.flags.hasDoll = false;
+        state.player.flags.pickedUpDoll = false;
+        state.player.flags.dollInSack = true;
         writeKey("story.doll_leave");
         awardDecisionXp("doll_choice");
         continueChapter("districts");
@@ -1572,6 +1873,7 @@
   }
 
   function barracks() {
+    setMusic("mystery");
     writeKey("story.barracks_enter");
     writeKey("story.barracks_description");
     setChoices([
@@ -1589,7 +1891,7 @@
       barracksCombat();
     } else {
       writeKey(type === "armory" ? "story.barracks_armory_success" : "story.barracks_quarters_success");
-      searchLoot(() => continueChapter("residential"));
+      searchLoot(() => continueChapter("residential"), "barracks");
     }
   }
 
@@ -1599,7 +1901,7 @@
       attackersPerRound: 1,
       onWin: () => {
         writeKey("story.combat_loot_map");
-        awardMap();
+        awardMap("barracks");
         continueChapter("residential");
       },
       onRun: () => continueChapter("residential")
@@ -1607,6 +1909,7 @@
   }
 
   function merchant() {
+    setMusic("mystery");
     writeKey("story.city_enter");
     if (state.player.flags.girlHint === "merchant_glowy_ball") {
       writeKey("story.city_girl_hint");
@@ -1627,7 +1930,7 @@
       merchantCombat();
     } else {
       writeKey("story.city_shop_success");
-      searchLoot(() => continueChapter("residential"));
+      searchLoot(() => continueChapter("residential"), "merchant");
     }
   }
 
@@ -1649,14 +1952,14 @@
       attackersPerRound: 1,
       onWin: () => {
         writeKey("story.combat_loot_map");
-        awardMap();
+        awardMap("merchant");
         continueChapter("residential");
       },
       onRun: () => continueChapter("residential")
     });
   }
 
-  function searchLoot(next) {
+  function searchLoot(next, source = "") {
     const roll = rollD20("search");
     awardDecisionXp("search");
     if (roll <= 7) {
@@ -1667,14 +1970,21 @@
     } else if (roll <= 14) {
       writeKey("story.search_potion");
       addItem("health potion");
+      if (source === "merchant") {
+        unlock("customer_service");
+      }
     } else {
-      awardMap();
+      awardMap(source);
     }
     setChoices([choice(ui.moveOn, next)]);
   }
 
-  function awardMap() {
+  function awardMap(source = "") {
     state.player.flags.hasThroneMap = true;
+    unlock("map_goblin");
+    if (source === "merchant") {
+      unlock("customer_service");
+    }
     writeKey("story.throne_map", { directions: bridgeDirectionList() });
   }
 
@@ -1687,11 +1997,19 @@
     return route;
   }
 
+  function isValidBridgeRoute(route) {
+    if (!Array.isArray(route) || route.length !== BRIDGE_DIRECTIONS.length) {
+      return false;
+    }
+    const expected = [...BRIDGE_DIRECTIONS].sort().join("|");
+    return [...route].sort().join("|") === expected;
+  }
+
   function bridgeRoute() {
     if (!state.player.flags) {
       state.player.flags = {};
     }
-    if (!Array.isArray(state.player.flags.bridgeRoute) || state.player.flags.bridgeRoute.length !== BRIDGE_DIRECTIONS.length) {
+    if (!isValidBridgeRoute(state.player.flags.bridgeRoute)) {
       state.player.flags.bridgeRoute = randomBridgeRoute();
     }
     return state.player.flags.bridgeRoute;
@@ -2000,6 +2318,7 @@
   }
 
   function bridge(clear = false) {
+    setMusic("epic");
     let text = t("story.bridge");
     if (state.player.flags.hasThroneMap) {
       text += t("story.bridge_has_map", { directions: bridgeDirectionList() });
@@ -2029,6 +2348,7 @@
   }
 
   function bridgeSneak() {
+    setMusic("mystery");
     writeKey("story.bridge_sneak_start");
     if (rollD20("sneak") >= 13) {
       writeKey("story.bridge_sneak_success");
@@ -2044,6 +2364,7 @@
   }
 
   function bridgeNavigationStart() {
+    setMusic("mystery");
     state.player.flags.bridgeNavigationStep = 0;
     fadeBridgeMapFromLog();
     writeKey("story.bridge_navigation_start", {}, true);
@@ -2064,6 +2385,7 @@
     const route = bridgeRoute();
     const step = state.player.flags.bridgeNavigationStep || 0;
     if (direction !== route[step]) {
+      unlock("wrong_turn_right_lesson");
       writeKey("story.bridge_wrong");
       state.player.gameOverReason = "bridge_trap";
       state.player.health = 0;
@@ -2074,6 +2396,11 @@
     if (state.player.flags.bridgeNavigationStep >= route.length) {
       writeKey("story.bridge_success");
       unlock("bridge_cleared");
+      if (state.player.flags.hasThroneMap) {
+        unlock("bridge_scholar");
+      } else {
+        unlock("blind_crossing");
+      }
       warehouseRitual();
       return;
     }
@@ -2083,6 +2410,7 @@
 
   function warehouseRitual() {
     state.player.chapter = "warehouse";
+    setMusic("mystery");
     writeKey("story.warehouse_enter");
     if (state.player.flags.warehouseStage === "guards_defeated") {
       ritualLeaderRage();
@@ -2104,8 +2432,8 @@
   }
 
   function startWarehouseGuardCombat() {
-    startCombat(["cultist", "cultist", "cultist", "cultist"], "story.warehouse_cultists_defeated", {
-      attackersPerRound: 3,
+    startCombat(["cultist", "cultist", "cultist"], "story.warehouse_cultists_defeated", {
+      attackersPerRound: 2,
       deathReason: "warehouse",
       onWin: () => {
         state.player.flags.warehouseStage = "guards_defeated";
@@ -2136,18 +2464,27 @@
   }
 
   function ritualLeaderRage() {
-    writeKey("story.warehouse_leader_rage");
+    setMusic("combat", { volume: MUSIC_VOLUMES.combat });
+    if (state.player.flags.hasDoll) {
+      writeKey("story.warehouse_leader_rage_known_doll");
+    } else if (state.player.flags.dollInSack) {
+      writeKey("story.warehouse_leader_rage_hidden_doll");
+    } else {
+      writeKey("story.warehouse_leader_rage_no_doll");
+    }
     startCombat(["ritualLeader"], "story.warehouse_leader_defeated", {
       attackersPerRound: 1,
       deathReason: "warehouse",
       onWin: () => {
         state.player.flags.warehouseStage = "leader_defeated";
+        unlock("cult_breaker");
         silverMaskChoice();
       }
     });
   }
 
   function silverMaskChoice() {
+    setMusic("mystery", { volume: MUSIC_VOLUMES.low });
     writeKey("story.silver_mask_choice");
     setChoices([
       choice(t("choice.leave_mask"), confirmLeaveMask),
@@ -2204,6 +2541,7 @@
   }
 
   function warehouseAfterMask() {
+    setMusic("mystery");
     writeKey("story.warehouse_ritual_surges");
     setChoices([
       choice(t("choice.leave_warehouse"), warehouseLeave),
@@ -2214,6 +2552,7 @@
 
   function warehouseLeave() {
     writeKey("story.warehouse_leave");
+    setMusic("silence");
     setChoices([
       choice(t("choice.stand_ground"), falseHydraInterruption),
       choice(t("choice.run_for_life"), falseHydraInterruption)
@@ -2221,9 +2560,13 @@
   }
 
   function falseHydraInterruption() {
+    setMusic("silence");
     writeKey("story.false_hydra_interruption");
     if (state.player.flags.wearingSilverMask) {
       writeKey("story.order_mask_warning");
+      state.player.flags.wearingSilverMask = false;
+      state.player.flags.hasSilverMask = true;
+      addItem("silver mask");
     }
     writeKey("story.order_arrival");
     state.player.flags.orderQuestionsAsked = [];
@@ -2245,6 +2588,7 @@
   }
 
   function orderDialogue(topic) {
+    setMusic("epic", { volume: MUSIC_VOLUMES.low });
     writeKey(`story.order_dialogue_${topic}`);
     const asked = state.player.flags.orderQuestionsAsked || [];
     if (!asked.includes(topic)) {
@@ -2263,6 +2607,7 @@
   }
 
   function warehouseStopRitual() {
+    setMusic("silence");
     writeKey("story.warehouse_stop_ritual");
     setChoices([choice(t("choice.next"), falseHydraInterruption)]);
   }
@@ -2275,9 +2620,15 @@
   }
 
   function bridgeEnd(clear = false) {
+    setMusic("ambient");
     state.player.flags.warehouseStage = "cleared";
     state.player.chapter = "bridgeEnd";
     writeKey("story.bridge_temp_end", {}, clear);
+    if (!state.player.flags.bridgeEndRested) {
+      state.player.flags.bridgeEndRested = true;
+      state.player.health = state.player.maxHealth;
+      writeKey("story.bridge_end_rest");
+    }
     resolveBridgeEndMask();
     unlock("warehouse_survived");
     recordEnding();
@@ -2328,6 +2679,7 @@
     state.player.flags.wearingSilverMask = true;
     state.player.flags.bridgeEndMaskResolved = true;
     applySilverMaskPower();
+    unlock("this_is_mine_now");
     writeKey("story.silver_mask_put_on_after_order");
     writeCurrentScore();
     showBridgeEndChoices();
@@ -2340,6 +2692,243 @@
   function orcCamps(clear = false) {
     state.player.chapter = "orcCamps";
     writeKey("story.orc_camps_preview", {}, clear);
+    setChoices([choice(t("choice.approach_camps"), orcCampsApproach)]);
+  }
+
+  function orcCampsApproach() {
+    setMusic("mystery");
+    writeKey("story.orc_camps_approach");
+    orcCampOuterChoice();
+  }
+
+  function orcCampOuterChoice() {
+    writeKey("story.orc_camp_outer_choice");
+    setChoices([
+      choice(t("choice.sneak_tents"), orcCampSneakTents),
+      choice(t("choice.sneak_barrels"), orcCampSneakBarrels),
+      choice(t("choice.fight_fire_orcs"), orcCampFireFight),
+      choice(t("choice.save"), saveGame)
+    ]);
+  }
+
+  function orcSceneRoll() {
+    const roll = d20();
+    writeKey("story.orc_camp_roll", { roll });
+    return roll;
+  }
+
+  function orcCampSneakTents() {
+    const roll = orcSceneRoll();
+    if (roll >= 9) {
+      writeKey("story.orc_tents_success");
+      orcCampInnerPath();
+      return;
+    }
+    writeKey("story.orc_tents_fail");
+    startCombat(["orc"], "story.orc_tent_orc_defeated", {
+      attackersPerRound: 1,
+      onWin: orcCampInnerPath,
+      onRun: orcCampInnerPath
+    });
+  }
+
+  function orcCampSneakBarrels() {
+    const roll = orcSceneRoll();
+    if (roll >= 15) {
+      writeKey("story.orc_barrels_success");
+      orcCampInnerPath();
+      return;
+    }
+    writeKey("story.orc_barrels_fail");
+    startCombat(["orc"], "story.orc_barrel_orc_defeated", {
+      attackersPerRound: 1,
+      onWin: orcCampInnerPath,
+      onRun: orcCampInnerPath
+    });
+  }
+
+  function orcCampFireFight() {
+    writeKey("story.orc_fire_fight_start");
+    startCombat(["orc", "orc", "orc"], "story.orc_fire_first_wave_defeated", {
+      attackersPerRound: 2,
+      onWin: orcCampFireReinforcements,
+      onRun: orcCampInnerPath
+    });
+  }
+
+  function orcCampFireReinforcements() {
+    startCombat(["orc"], "story.orc_fire_second_wave_defeated", {
+      attackersPerRound: 1,
+      onWin: orcCampInnerPath,
+      onRun: orcCampInnerPath
+    });
+  }
+
+  function orcCampInnerPath() {
+    state.player.flags.orcCampOuterResolved = true;
+    writeKey("story.orc_camp_inner_path");
+    orcPartyArea();
+  }
+
+  function orcPartyArea() {
+    writeKey("story.orc_party_area");
+    setChoices([
+      choice(t("choice.sneak_past"), orcPartySneak),
+      choice(t("choice.create_distraction"), orcPartyDistraction),
+      choice(t("choice.fight_party_orcs"), orcPartyFight),
+      choice(t("choice.save"), saveGame)
+    ]);
+  }
+
+  function orcPartySneak() {
+    writeKey("story.orc_party_sneak");
+    orcCages();
+  }
+
+  function orcPartyDistraction() {
+    writeKey("story.orc_party_distraction_choice");
+    const choices = [];
+    if (!state.player.flags.aleBarrelUsed) {
+      choices.push(choice(t("choice.light_ale_barrel"), orcPartyAleBarrel));
+    }
+    if (!state.player.flags.partyRockTried) {
+      choices.push(choice(t("choice.throw_rock"), orcPartyThrowRock));
+    }
+    choices.push(choice(t("choice.back"), orcPartyArea));
+    setChoices(choices);
+  }
+
+  function orcPartyAleBarrel() {
+    state.player.flags.aleBarrelUsed = true;
+    const roll = orcSceneRoll();
+    if (roll <= 4) {
+      const damage = rollDie(8) + 4;
+      state.player.health = Math.max(0, state.player.health - damage);
+      writeKey("story.orc_party_ale_hurt", { damage });
+      if (state.player.health <= 0) {
+        state.player.gameOverReason = "ale_explosion";
+        gameOver();
+        return;
+      }
+    }
+    if (roll >= 11) {
+      unlock("osha_incident");
+      writeKey("story.orc_party_ale_success");
+      orcCages();
+      return;
+    }
+    writeKey("story.orc_party_ale_fail");
+    orcPartyArea();
+  }
+
+  function orcPartyThrowRock() {
+    state.player.flags.partyRockTried = true;
+    writeKey("story.orc_party_rock_fail");
+    orcPartyArea();
+  }
+
+  function orcPartyFight() {
+    writeKey("story.orc_party_fight_start");
+    startCombat(["orc", "orc", "orc"], "story.orc_party_vanguard_win", {
+      attackersPerRound: 2,
+      deathReason: "orc_party",
+      onWin: orcPartyFightChoice,
+      onRun: orcCages
+    });
+  }
+
+  function orcPartyFightChoice() {
+    writeKey("story.orc_party_fight_warning");
+    setChoices([
+      choice(t("choice.fall_back_to_cages"), orcPartyFallBack),
+      choice(t("choice.keep_fighting_party"), orcPartyFightDisaster)
+    ]);
+  }
+
+  function orcPartyFallBack() {
+    unlock("union_violation");
+    orcCages();
+  }
+
+  function orcPartyFightDisaster() {
+    unlock("aggressively_educational");
+    writeKey("story.orc_party_fight_disaster");
+    startCombat(Array(30).fill("orc"), "story.orc_party_win", {
+      attackersPerRound: 6,
+      deathReason: "orc_party",
+      onWin: orcCages,
+      onRun: orcCages
+    });
+  }
+
+  function orcCages() {
+    state.player.flags.orcCampPartyResolved = true;
+    writeKey("story.orc_cages");
+    setChoices([
+      choice(t("choice.rescue_prisoner"), rescueWazetax),
+      choice(t("choice.leave_prisoner"), leaveWazetax)
+    ]);
+  }
+
+  function rescueWazetax() {
+    state.player.flags.rescuedWazetax = true;
+    state.player.flags.wazetaxHidden = false;
+    state.player.flags.wazetaxQuestionsAsked = [];
+    unlock("free_wazetax");
+    writeKey("story.wazetax_rescue");
+    castleFrontWithWazetax();
+  }
+
+  function leaveWazetax() {
+    state.player.flags.rescuedWazetax = false;
+    unlock("not_my_problem");
+    writeKey("story.wazetax_left");
+    castleExteriorEndpoint(true);
+  }
+
+  function castleFrontWithWazetax() {
+    state.player.chapter = "castleApproach";
+    writeKey("story.castle_front_wazetax");
+    showWazetaxChoices();
+  }
+
+  function showWazetaxChoices() {
+    const asked = state.player.flags.wazetaxQuestionsAsked || [];
+    const choices = [];
+    if (!asked.includes("who")) {
+      choices.push(choice(t("choice.ask_wazetax_who"), () => askWazetax("who")));
+    }
+    if (!asked.includes("happened")) {
+      choices.push(choice(t("choice.ask_wazetax_happened"), () => askWazetax("happened")));
+    }
+    if (!asked.includes("knows")) {
+      choices.push(choice(t("choice.ask_wazetax_knows"), () => askWazetax("knows")));
+    }
+    choices.push(choice(t("choice.wazetax_hide"), hideWazetax));
+    setChoices(choices);
+  }
+
+  function askWazetax(topic) {
+    writeKey(`story.wazetax_${topic}`);
+    const asked = state.player.flags.wazetaxQuestionsAsked || [];
+    if (!asked.includes(topic)) {
+      asked.push(topic);
+    }
+    state.player.flags.wazetaxQuestionsAsked = asked;
+    showWazetaxChoices();
+  }
+
+  function hideWazetax() {
+    state.player.flags.wazetaxHidden = true;
+    unlock("no_one_left_in_cage");
+    writeKey("story.wazetax_hide");
+    castleExteriorEndpoint(true);
+  }
+
+  function castleExteriorEndpoint(clear = false) {
+    state.player.chapter = "castleApproach";
+    setMusic("mystery", { volume: MUSIC_VOLUMES.low });
+    writeKey(state.player.flags.rescuedWazetax ? "story.castle_exterior_endpoint_wazetax" : "story.castle_exterior_endpoint", {}, clear);
     recordEnding();
     writeCurrentScore();
     saveGame();
@@ -2350,6 +2939,191 @@
       choice(t("choice.main_menu"), showStart),
       choice(t("choice.save"), saveGame)
     ]);
+  }
+
+  function castleApproach(clear = false) {
+    state.player.chapter = "castleApproach";
+    setMusic("mystery");
+    writeKey("story.castle_approach", {}, clear);
+    if (state.player.flags.hasSilverMask || state.player.flags.wearingSilverMask) {
+      writeKey("story.castle_approach_mask_whisper");
+    }
+    const choices = [
+      choice(t("choice.enter_main_gate"), castleMainGate),
+      choice(t("choice.look_other_way"), castleEntranceChoice)
+    ];
+    if (state.player.flags.hasSilverMask && !state.player.flags.wearingSilverMask) {
+      choices.push(choice(t("choice.put_mask_on"), castlePutOnMask));
+    }
+    choices.push(choice(t("choice.save"), saveGame));
+    setChoices(choices);
+  }
+
+  function castlePutOnMask() {
+    state.player.flags.wearingSilverMask = true;
+    applySilverMaskPower();
+    unlock("this_is_mine_now");
+    writeKey("story.castle_put_on_mask");
+    castleApproach();
+  }
+
+  function castleEntranceChoice() {
+    writeKey("story.castle_entrance_choice");
+    setChoices([
+      choice(t("choice.return_main_entrance"), castleApproach),
+      choice(t("choice.take_side_entrance"), castleSideEntrance)
+    ]);
+  }
+
+  function castleMainGate() {
+    if (state.player.flags.wearingSilverMask) {
+      writeKey("story.castle_main_gate_mask");
+      setChoices([choice(t("choice.order_aside"), castleMainGateMaskSuccess)]);
+      return;
+    }
+    writeKey("story.castle_main_gate_no_mask");
+    startCombat(["ritualLeader", "ritualLeader", "ritualLeader", "orc", "orc", "orc", "orc", "orc", "orc"], "story.castle_courtyard_win", {
+      attackersPerRound: 5,
+      deathReason: "castle_courtyard",
+      onWin: castleMainHall,
+      onRun: () => {
+        state.player.gameOverReason = "castle_courtyard";
+        state.player.health = 0;
+        gameOver();
+      }
+    });
+  }
+
+  function castleMainGateMaskSuccess() {
+    writeKey("story.castle_main_gate_mask_success");
+    castleMainHall();
+  }
+
+  function castleMainHall() {
+    writeKey("story.castle_main_hall");
+    setChoices([choice(t("choice.continue_servants"), castleServantQuarters)]);
+  }
+
+  function castleSideEntrance() {
+    state.player.flags.castleSideRested = true;
+    state.player.health = state.player.maxHealth;
+    writeKey("story.castle_side_entrance");
+    saveGame();
+    setChoices([choice(t("choice.enter_side_passage"), castleKitchen)]);
+  }
+
+  function castleKitchen() {
+    state.player.flags.hasCastleSupplies = true;
+    state.player.supplies += 2;
+    writeKey("story.castle_kitchen");
+    setChoices([choice(t("choice.continue_storage"), castleStorage)]);
+  }
+
+  function castleStorage() {
+    state.player.gold += 30;
+    addStackableItem("health potion", 2);
+    writeKey("story.castle_storage");
+    setChoices([choice(t("choice.leave_storage"), castleServantQuarters)]);
+  }
+
+  function castleServantQuarters() {
+    writeKey("story.castle_servant_quarters");
+    setChoices([
+      choice(t("choice.search_empty_room"), servantRoomEmpty),
+      choice(t("choice.inspect_bodies"), servantRoomBodies),
+      choice(t("choice.open_barred_door"), servantRoomAmbush),
+      choice(t("choice.study_portrait"), servantRoomPortrait),
+      choice(t("choice.follow_corridor"), castleInnerCorridor)
+    ]);
+  }
+
+  function servantRoomEmpty() {
+    writeKey("story.servant_room_empty");
+    setChoices([choice(t("choice.return_corridor"), castleServantQuarters)]);
+  }
+
+  function servantRoomBodies() {
+    writeKey("story.servant_room_bodies");
+    setChoices([choice(t("choice.return_corridor"), castleServantQuarters)]);
+  }
+
+  function servantRoomAmbush() {
+    if (state.player.flags.servantAmbushCleared) {
+      writeKey("story.servant_room_ambush_cleared");
+      setChoices([choice(t("choice.return_corridor"), castleServantQuarters)]);
+      return;
+    }
+    writeKey("story.servant_room_ambush");
+    startCombat(["goblin", "goblin", "orc"], "story.servant_room_ambush_win", {
+      attackersPerRound: 2,
+      onWin: () => {
+        state.player.flags.servantAmbushCleared = true;
+        castleServantQuarters();
+      },
+      onRun: castleInnerCorridor
+    });
+  }
+
+  function servantRoomPortrait() {
+    writeKey("story.servant_room_portrait");
+    setChoices([choice(t("choice.read_note"), servantNote)]);
+  }
+
+  function servantNote() {
+    writeKey("story.servant_note");
+    setChoices([choice(t("choice.return_corridor"), castleServantQuarters)]);
+  }
+
+  function castleInnerCorridor() {
+    writeKey("story.castle_inner_corridor");
+    setChoices([choice(t("choice.follow_doll_pull"), throneRoomPull)]);
+  }
+
+  function throneRoomPull() {
+    if (state.player.flags.hasDoll) {
+      state.player.flags.dollRevealed = true;
+      writeKey("story.throne_room_pull_known");
+    } else if (state.player.flags.dollInSack) {
+      state.player.flags.hasDoll = true;
+      state.player.flags.dollRevealed = true;
+      addItem("cracked doll");
+      unlock("haunted_carry_on");
+      writeKey("story.throne_room_pull_hidden");
+    } else {
+      writeKey("story.throne_room_pull_no_doll");
+    }
+    if (state.player.flags.hasSilverMask && !state.player.flags.wearingSilverMask) {
+      writeKey("story.throne_room_mask_whisper_stored");
+    } else if (state.player.flags.wearingSilverMask) {
+      writeKey("story.throne_room_mask_whisper_worn");
+    }
+    setChoices([choice(t("choice.follow_doll_pull"), throneRoom)]);
+  }
+
+  function throneRoom() {
+    writeKey("story.throne_room");
+    if (state.player.flags.wearingSilverMask) {
+      writeKey("story.throne_room_crown_temptation");
+    }
+    setChoices([choice(t("choice.approach_throne"), dollSummoning)]);
+  }
+
+  function dollSummoning() {
+    writeKey("story.doll_summoning");
+    setChoices([choice(t("choice.face_false_hydra"), falseHydraFinalBoss)]);
+  }
+
+  function falseHydraFinalBoss() {
+    startCombat(["falseHydra"], "story.false_hydra_final_win", {
+      attackersPerRound: 1,
+      deathReason: "false_hydra",
+      onWin: () => continueChapter("complete", true),
+      onRun: () => {
+        state.player.gameOverReason = "false_hydra";
+        state.player.health = 0;
+        gameOver();
+      }
+    });
   }
 
   function complete(clear = false) {
@@ -2366,6 +3140,7 @@
   }
 
   function startCombat(enemyTypes, victoryKey, options = {}) {
+    setMusic("combat", { volume: MUSIC_VOLUMES.combat });
     const typeCounts = {};
     const enemies = enemyTypes.map((type, index) => {
       const base = monsterStats[type];
@@ -2493,6 +3268,7 @@
       writeKey("story.combat_run_success");
       const onRun = state.combat.onRun;
       state.combat = null;
+      restoreChapterMusic();
       if (onRun) {
         onRun();
       } else {
@@ -2512,6 +3288,7 @@
       return;
     }
     removeItem("health potion");
+    state.player.healthPotions = Math.max(0, state.player.healthPotions - 1);
     const healing = rollDie(4) + rollDie(4) + 6;
     state.player.health = Math.min(state.player.maxHealth, state.player.health + healing);
     writeKey("story.combat_potion", { healing });
@@ -2562,6 +3339,7 @@
     }
     state.player.gameOverReason = state.combat.deathReason;
     state.combat = null;
+    setMusic("silence");
     gameOver();
     return true;
   }
@@ -2569,6 +3347,7 @@
   function combatVictory() {
     const combat = state.combat;
     state.combat = null;
+    restoreChapterMusic();
     writeKey(combat.victoryKey);
     ensureScoreState();
     state.player.score.fightsWon += 1;
@@ -2754,8 +3533,22 @@
   }
 
   function addItem(item) {
+    if (item === "health potion") {
+      state.player.gear.push(item);
+      state.player.healthPotions = (state.player.healthPotions || 0) + 1;
+      return;
+    }
     if (!state.player.gear.includes(item)) {
       state.player.gear.push(item);
+    }
+  }
+
+  function addStackableItem(item, count) {
+    for (let i = 0; i < count; i += 1) {
+      state.player.gear.push(item);
+    }
+    if (item === "health potion") {
+      state.player.healthPotions = (state.player.healthPotions || 0) + count;
     }
   }
 
@@ -2799,6 +3592,7 @@
   }
 
   function gameOver() {
+    setMusic("silence");
     clearLevelRewardState();
     if (state.player && !state.player.flags.deathRecorded) {
       state.stats[state.player.class].died += 1;
@@ -3237,6 +4031,18 @@
     if (state.player.flags.hasSilverMask === undefined) {
       state.player.flags.hasSilverMask = state.player.gear ? state.player.gear.includes("silver mask") : false;
     }
+    if (state.player.flags.hasDoll === undefined) {
+      state.player.flags.hasDoll = state.player.gear ? state.player.gear.includes("cracked doll") : false;
+    }
+    if (state.player.flags.pickedUpDoll === undefined) {
+      state.player.flags.pickedUpDoll = state.player.flags.hasDoll;
+    }
+    if (state.player.flags.dollInSack === undefined) {
+      state.player.flags.dollInSack = state.player.flags.hasDoll;
+    }
+    if (state.player.flags.dollRevealed === undefined) {
+      state.player.flags.dollRevealed = false;
+    }
     if (state.player.flags.wearingSilverMask === undefined) {
       state.player.flags.wearingSilverMask = false;
     }
@@ -3258,6 +4064,36 @@
     if (state.player.flags.bridgeEndRested === undefined) {
       state.player.flags.bridgeEndRested = false;
     }
+    if (state.player.flags.castleSideRested === undefined) {
+      state.player.flags.castleSideRested = false;
+    }
+    if (state.player.flags.hasCastleSupplies === undefined) {
+      state.player.flags.hasCastleSupplies = false;
+    }
+    if (state.player.flags.servantAmbushCleared === undefined) {
+      state.player.flags.servantAmbushCleared = false;
+    }
+    if (state.player.flags.orcCampOuterResolved === undefined) {
+      state.player.flags.orcCampOuterResolved = false;
+    }
+    if (state.player.flags.orcCampPartyResolved === undefined) {
+      state.player.flags.orcCampPartyResolved = false;
+    }
+    if (state.player.flags.aleBarrelUsed === undefined) {
+      state.player.flags.aleBarrelUsed = false;
+    }
+    if (state.player.flags.partyRockTried === undefined) {
+      state.player.flags.partyRockTried = false;
+    }
+    if (state.player.flags.rescuedWazetax === undefined) {
+      state.player.flags.rescuedWazetax = false;
+    }
+    if (state.player.flags.wazetaxHidden === undefined) {
+      state.player.flags.wazetaxHidden = false;
+    }
+    if (!Array.isArray(state.player.flags.wazetaxQuestionsAsked)) {
+      state.player.flags.wazetaxQuestionsAsked = [];
+    }
     if (state.player.flags.bridgeXpAwarded === undefined) {
       state.player.flags.bridgeXpAwarded = false;
     }
@@ -3267,7 +4103,7 @@
     if (state.player.flags.smallShackCleared === undefined) {
       state.player.flags.smallShackCleared = false;
     }
-    if (!Array.isArray(state.player.flags.bridgeRoute) || state.player.flags.bridgeRoute.length !== BRIDGE_DIRECTIONS.length) {
+    if (!isValidBridgeRoute(state.player.flags.bridgeRoute)) {
       state.player.flags.bridgeRoute = randomBridgeRoute();
     }
     if (state.player.flags.bridgeNavigationStep === undefined) {
@@ -3275,6 +4111,9 @@
     }
     if (!state.player.upgrades) {
       state.player.upgrades = { ac: 0, damage: 0 };
+    }
+    if (state.player.healthPotions === undefined) {
+      state.player.healthPotions = state.player.gear ? state.player.gear.filter((item) => item === "health potion").length : 0;
     }
     if (state.player.upgrades.ac === undefined) {
       state.player.upgrades.ac = 0;
@@ -3338,6 +4177,15 @@
       return JSON.parse(localStorage.getItem(`${storagePrefix}${key}`)) || fallback;
     } catch {
       return fallback;
+    }
+  }
+
+  function loadMusicEnabled() {
+    try {
+      const saved = localStorage.getItem(`${storagePrefix}musicEnabled`);
+      return saved === null ? true : JSON.parse(saved) !== false;
+    } catch {
+      return true;
     }
   }
 

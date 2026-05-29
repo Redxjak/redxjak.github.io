@@ -188,6 +188,10 @@ select {
   outline-offset: 2px;
 }
 
+.music-button.is-muted {
+  color: #9f8766;
+}
+
 .leaderboard-view {
   text-align: center;
 }
@@ -471,6 +475,10 @@ select {
   color: var(--muted);
   font-size: 16px;
   line-height: 1.5;
+}
+
+.faq-entry a {
+  color: #e3c37e;
 }
 
 .modal-overlay {
