@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.6";
+  const VERSION = "0.8.7";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -1718,11 +1718,9 @@
       choices.push(choice(t("choice.rest"), restBeforeBridge));
     }
     choices.push(
-      choice(t("choice.proceed_bridge"), () => goBridge())
+      choice(t("choice.proceed_bridge"), () => goBridge()),
+      choice(t("choice.save"), saveGame)
     );
-    if (state.player.flags.bridgeRested) {
-      choices.push(choice(t("choice.save"), saveGame));
-    }
     return choices;
   }
 
