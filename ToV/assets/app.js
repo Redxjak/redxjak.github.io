@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.10";
+  const VERSION = "0.8.11";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -2240,6 +2240,7 @@
     resolveBridgeEndMask();
     unlock("warehouse_survived");
     recordEnding();
+    writeCurrentScore();
     saveGame();
     showBridgeEndChoices();
   }
@@ -2287,6 +2288,7 @@
     state.player.flags.bridgeEndMaskResolved = true;
     applySilverMaskPower();
     writeKey("story.silver_mask_put_on_after_order");
+    writeCurrentScore();
     showBridgeEndChoices();
   }
 
@@ -2298,6 +2300,7 @@
     state.player.chapter = "orcCamps";
     writeKey("story.orc_camps_preview", {}, clear);
     recordEnding();
+    writeCurrentScore();
     saveGame();
     setChoices([
       choice(ui.submitScore, submitScore),
@@ -2311,6 +2314,7 @@
   function complete(clear = false) {
     writeKey("story.complete", {}, clear);
     recordEnding();
+    writeCurrentScore();
     saveGame();
     setChoices([
       choice(ui.submitScore, submitScore),
@@ -2742,6 +2746,15 @@
       state.player.flags.completedRecorded = true;
       saveStats();
     }
+  }
+
+  function writeCurrentScore() {
+    if (!state.player) {
+      return;
+    }
+    const achievementsUnlocked = Object.keys(state.stats._achievements || {}).filter((key) => state.stats._achievements[key]).length;
+    const scoreDetails = scoreBreakdown(achievementsUnlocked);
+    write(`${t("story.current_score", { score: scoreDetails.total })}\n\n${t("story.score_breakdown_heading")}\n${scoreDetails.lines.join("\n")}`);
   }
 
   function gameOver() {

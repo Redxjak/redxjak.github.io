@@ -435,6 +435,7 @@
   "story.complete": "Has completado este capítulo jugable de Tales of Visteria.",
   "story.game_over_header": "==================================\n             FIN DEL JUEGO\n==================================",
   "story.final_score": "Puntaje final: {score}",
+  "story.current_score": "Puntaje actual: {score}",
   "story.score_breakdown_heading": "Desglose del puntaje:",
   "story.score_raw_total": "Total bruto",
   "story.score_minimum": "Puntaje mínimo aplicado",

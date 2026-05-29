@@ -444,6 +444,7 @@
   "story.complete": "You have completed this playable chapter of Tales of Visteria.",
   "story.game_over_header": "==================================\n             GAME OVER\n==================================",
   "story.final_score": "Final Score: {score}",
+  "story.current_score": "Current Score: {score}",
   "story.score_breakdown_heading": "Score Breakdown:",
   "story.score_raw_total": "Raw total",
   "story.score_minimum": "Minimum score applied",
