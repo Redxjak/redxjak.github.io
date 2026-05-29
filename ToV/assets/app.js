@@ -9,6 +9,7 @@
   const SUPABASE_URL = "https://fojkijwketpzxsbikmsl.supabase.co";
   const SUPABASE_KEY = "sb_publishable_pxMr-7kXAoQ9gz0mTTWLew_FAIRtAio";
   const LEADERBOARD_TABLE = "leaderboard_scores";
+  const DISCORD_URL = "https://discord.gg/9C4npSfNQd";
   const SUGGESTION_URL = "https://github.com/Redxjak/Tales-of-Visteria/issues/new?template=suggestion.yml";
   const ISSUE_URL = "https://github.com/Redxjak/Tales-of-Visteria/issues/new?template=issue.yml";
   const lang = document.body.dataset.language || "en";
@@ -69,6 +70,7 @@
       achievementsLabel: "Achievements",
       faq: "FAQ",
       closeFaq: "Close FAQ",
+      discord: "Discord",
       suggest: "Suggest",
       reportIssue: "Report Issue",
       log: "Log",
@@ -131,6 +133,7 @@
       achievementsLabel: "Logros",
       faq: "FAQ",
       closeFaq: "Cerrar FAQ",
+      discord: "Discord",
       suggest: "Sugerir",
       reportIssue: "Reportar problema",
       log: "Registro",
@@ -432,6 +435,7 @@
               <button id="menu-load" type="button">${t("choice.load_game")}</button>
               <button id="menu-leaderboard" type="button">${ui.leaderboard}</button>
               <button id="menu-faq" type="button">${ui.faq}</button>
+              <button id="menu-discord" type="button">${ui.discord}</button>
               <button id="menu-suggest" type="button">${ui.suggest}</button>
               <button id="menu-issue" type="button">${ui.reportIssue}</button>
               <button id="menu-quit" type="button">${t("choice.quit")}</button>
@@ -695,11 +699,12 @@
     const loadButton = document.getElementById("menu-load");
     const leaderboardButton = document.getElementById("menu-leaderboard");
     const faqButton = document.getElementById("menu-faq");
+    const discordButton = document.getElementById("menu-discord");
     const suggestButton = document.getElementById("menu-suggest");
     const issueButton = document.getElementById("menu-issue");
     const quitButton = document.getElementById("menu-quit");
     const logoutButton = document.getElementById("menu-logout");
-    if (!saveButton || !loadButton || !leaderboardButton || !faqButton || !suggestButton || !issueButton || !quitButton || !logoutButton) {
+    if (!saveButton || !loadButton || !leaderboardButton || !faqButton || !discordButton || !suggestButton || !issueButton || !quitButton || !logoutButton) {
       return;
     }
     if (menu) {
@@ -711,6 +716,7 @@
     loadButton.onclick = () => runAccountMenuAction(loadGame);
     leaderboardButton.onclick = () => runAccountMenuAction(showLeaderboard);
     faqButton.onclick = () => runAccountMenuAction(showFaq);
+    discordButton.onclick = () => runAccountMenuAction(openDiscord);
     suggestButton.onclick = () => runAccountMenuAction(openSuggestionForm);
     issueButton.onclick = () => runAccountMenuAction(openIssueForm);
     quitButton.onclick = () => runAccountMenuAction(quitGame);
@@ -727,6 +733,10 @@
 
   function openSuggestionForm() {
     openExternal(SUGGESTION_URL);
+  }
+
+  function openDiscord() {
+    openExternal(DISCORD_URL);
   }
 
   function openIssueForm() {
