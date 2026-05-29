@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "0.8.11";
+  const VERSION = "0.8.12";
   const BRIDGE_DIRECTIONS = ["left", "right", "up", "down"];
   const BASE_LEVEL = 5;
   const BASE_XP_TO_NEXT = 100;
@@ -1914,10 +1914,30 @@
           first: bridgeDirectionLabel(bridgeRoute()[0]),
           second: bridgeDirectionLabel(bridgeRoute()[1])
         });
-        setChoices([choice(t("choice.proceed_bridge"), goBridge)]);
+        mimicHouseTongueCatch();
       },
       onRun: mimicFlee
     });
+  }
+
+  function mimicHouseTongueCatch() {
+    writeKey("story.mimic_house_tongue_catch");
+    setChoices([
+      choice(t("choice.cut_tongue"), () => resolveMimicTongueEscape("cut", 0.4)),
+      choice(t("choice.burn_tongue"), () => resolveMimicTongueEscape("burn", 0.6))
+    ]);
+  }
+
+  function resolveMimicTongueEscape(method, successChance) {
+    if (Math.random() < successChance) {
+      writeKey(`story.mimic_house_tongue_${method}_success`);
+      setChoices([choice(t("choice.proceed_bridge"), goBridge)]);
+      return;
+    }
+    writeKey(`story.mimic_house_tongue_${method}_fail`);
+    state.player.gameOverReason = "mimic";
+    state.player.health = 0;
+    gameOver();
   }
 
   function mimicFlee() {
