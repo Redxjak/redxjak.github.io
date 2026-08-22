@@ -1,6 +1,6 @@
 # Redxjak's Projects
 
-GitHub Pages home site for Redxjak's projects.
+GitHub Pages-hosted home site for Redxjak's projects, published at the custom domain `redxjak.com`.
 
 Main site:
 
@@ -12,10 +12,10 @@ https://discord.gg/9C4npSfNQd
 
 Projects:
 
-- GrubClique: https://grubclique.redxjak.chatgpt.site
-- Password Generator: https://redxjak.github.io/PWGen/
-- Fun Family Adventures: https://redxjak.github.io/FFA/
-- Tales of Visteria: https://redxjak.github.io/Tales-of-Visteria/
+- GrubClique: https://redxjak.com/GrubClique/
+- Password Generator: https://redxjak.com/PWGen/
+- Fun Family Adventures: https://redxjak.com/FFA/
+- Tales of Visteria: https://redxjak.com/Tales-of-Visteria/
 
 ## Fun Family Adventures
 
@@ -25,4 +25,4 @@ Fun Family Adventures is maintained as a browser game only. Going forward, updat
 
 Tales of Visteria is maintained and published from the `Tales-of-Visteria` repository. The current public site is:
 
-https://redxjak.github.io/Tales-of-Visteria/
+https://redxjak.com/Tales-of-Visteria/
