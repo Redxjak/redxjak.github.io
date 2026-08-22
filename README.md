@@ -12,6 +12,7 @@ https://discord.gg/9C4npSfNQd
 
 Projects:
 
+- GrubClique: https://grubclique.redxjak.chatgpt.site
 - Password Generator: https://redxjak.github.io/PWGen/
 - Fun Family Adventures: https://redxjak.github.io/FFA/
 - Tales of Visteria: https://redxjak.github.io/Tales-of-Visteria/

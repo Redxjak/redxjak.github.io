@@ -227,6 +227,16 @@ h1 {
   content: "\25c9";
 }
 
+.project-icon.grub {
+  background: rgba(240, 100, 73, 0.14);
+  border-color: rgba(240, 100, 73, 0.3);
+  color: #f47b63;
+}
+
+.project-icon.grub::before {
+  content: "\2665";
+}
+
 .project-icon.nut {
   background: rgba(242, 184, 75, 0.14);
   border-color: rgba(242, 184, 75, 0.26);
