@@ -14,7 +14,7 @@
     <main>
       <header class="nav">
         <a class="brand" href="../">GrubClique</a>
-        <nav aria-label="Legal"><a href="./" aria-current="page">Privacy Policy</a> · <a href="../delete-account/">Delete account</a></nav>
+        <nav aria-label="Support and legal"><a href="../report-issue/">Report an issue</a> · <a href="./" aria-current="page">Privacy Policy</a> · <a href="../delete-account/">Delete account</a></nav>
       </header>
       <article class="policy">
         <h1>GrubClique Privacy Policy</h1>
@@ -28,14 +28,19 @@
         <p>GrubClique uses account and profile information, clique codes and memberships, friend connections, restaurant preferences and swipe choices, matches, and chat content to provide account access, group matching, and communication. It does not display advertising and does not use advertising SDKs.</p>
 
         <h2>Contacts and profile choices</h2>
-        <p>If you choose “Find friends from contacts,” GrubClique requests access to your contacts. Phone numbers are normalized and converted to one-way hashes before contact matching; raw address-book entries are not uploaded. If you save a phone number for discovery, another signed-in user can find your profile by entering an exact matching number, which is hashed on that user’s device before lookup. Signed-in users can also find a profile by entering its exact username or account email address. Contact discovery is optional and can be disabled by revoking Contacts permission in Android settings or removing the saved discovery number. A profile image selected in the current app is stored as a device-local reference unless the app clearly tells you that an upload feature has been enabled.</p>
+        <p>If you choose “Find friends from contacts,” GrubClique requests access to your contacts. Valid phone numbers are normalized to the international E.164 format and converted to one-way hashes before contact matching; raw address-book entries are not uploaded. During a compatibility period, valid +1 numbers also produce a legacy last-ten-digit hash so users on an earlier app version can continue to match. If you save a phone number for discovery, another signed-in user can find your profile by entering an exact matching number, which is normalized and hashed on that user’s device before lookup. Signed-in users can also find a profile by entering its exact username or account email address. Contact discovery is optional and can be disabled by revoking Contacts permission in Android settings or removing the saved discovery number. A profile image selected in the current app is stored as a device-local reference unless the app clearly tells you that an upload feature has been enabled.</p>
 
         <h2>Location</h2>
         <p>GrubClique may request access to your approximate and precise device location while you use the app. Location is used to determine your general area and retrieve nearby restaurant results. Location access is optional: you may deny the permission or revoke it later in Android settings, although nearby restaurant features may not work correctly without it.</p>
         <p>When you use nearby search, location may be transmitted over an encrypted connection to service providers that return restaurant results. GrubClique processes location only as needed to complete the nearby-search request. It is not used for advertising, sold, or retained in your GrubClique profile or clique records.</p>
 
+        <h2>Issue reports and diagnostics</h2>
+        <p>If you submit an issue report in the Android app or on the public website, GrubClique processes the category, title, description, optional reproduction steps, optional contact email and follow-up choice, and any optional screenshot you select. Android reports also include the app version and code, device manufacturer and model, Android version, report source, and submission timestamp. The report does not automatically include your location, chat contents, credentials, or authentication tokens.</p>
+        <p>Issue-report text and receipt metadata, delivery status, and abuse-prevention records are processed through Supabase. Resend delivers the report to the GrubClique support mailbox. A selected screenshot is passed directly to the email service and is not saved in Supabase Storage. Public website reports use Cloudflare Turnstile and limited network information to identify automated abuse; authenticated app reports are throttled by a protected representation of the account identifier.</p>
+
         <h2>How information is shared and retained</h2>
-        <p>GrubClique does not sell personal information. Information is used to provide account and clique features and is visible only where needed for the group experience. Contracted service providers, including Supabase and restaurant-search providers, may process data to authenticate users, host app data, deliver chat messages, and return restaurant results. Account, profile, friendship, clique, preference, match, and chat information may be retained while your account is active and as needed to operate the group experience. Location is handled as described above and is not retained as part of those records.</p>
+        <p>GrubClique does not sell personal information. Information is used to provide account and clique features and is visible only where needed for the group experience. Contracted service providers, including Supabase, Resend, Cloudflare, and restaurant-search providers, may process data to authenticate users, host app data, deliver chat messages and issue reports, prevent abuse, and return restaurant results. Account, profile, friendship, clique, preference, match, and chat information may be retained while your account is active and as needed to operate the group experience. Location is handled as described above and is not retained as part of those records.</p>
+        <p>Issue-report metadata stored in Supabase is deleted after 180 days, and rate-limit records are deleted after 24 hours. Copies delivered to the receiving Gmail mailbox, including screenshots, are retained according to the mailbox owner’s support and deletion practices.</p>
 
         <h2>Children’s privacy</h2>
         <p>GrubClique is intended for adults and is not directed to children under 13. We do not knowingly collect personal information from children.</p>
@@ -50,9 +55,9 @@
         <p>We will update this policy when data practices, third-party services, or app functionality change. The effective date above identifies the latest revision.</p>
 
         <h2>Contact</h2>
-        <p>Questions about this policy can be sent to <a href="mailto:redxjak@gmail.com">redxjak@gmail.com</a>.</p>
+        <p>Questions about this policy can be sent to <a href="mailto:redxjak@gmail.com">redxjak@gmail.com</a>. Product problems and suggestions can also be submitted through the <a href="../report-issue/">GrubClique issue-report form</a>.</p>
       </article>
-      <footer><span>© 2026 GrubClique</span><nav aria-label="Footer"><a href="../">Home</a> · <a href="../delete-account/">Delete account</a></nav></footer>
+      <footer><span>© 2026 GrubClique</span><nav aria-label="Footer"><a href="../">Home</a> · <a href="../report-issue/">Report an issue</a> · <a href="../delete-account/">Delete account</a></nav></footer>
     </main>
   </body>
 </html>
