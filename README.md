@@ -4,7 +4,7 @@ GitHub Pages home site for Redxjak's projects.
 
 Main site:
 
-https://redxjak.github.io/
+https://redxjak.com/
 
 Discord:
 
