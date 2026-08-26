@@ -196,6 +196,7 @@ async function addNearbyRestaurants(items) {
 
 $("#create-clique").addEventListener("click", () => {
   setMessage("#home-message");
+  $("#clique-name").value = "";
   showPanel("setup");
 });
 $("#setup-radius").addEventListener("input", () => { $("#setup-radius-label").textContent = $("#setup-radius").value; });
@@ -213,6 +214,7 @@ $("#use-location").addEventListener("click", async () => {
 $("#search-area").addEventListener("input", () => { if ($("#search-area").value !== "Current location") selectedLocation = null; });
 $("#setup-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  const cliqueTitle = $("#clique-name").value.trim() || "Dinner Clique";
   const area = $("#search-area").value.trim();
   const radiusMiles = Number($("#setup-radius").value);
   if (!selectedLocation && !area) return setMessage("#setup-message", "Enter an area or choose your current location.");
@@ -224,7 +226,7 @@ $("#setup-form").addEventListener("submit", async (event) => {
     const location = search.searchCenter;
     const { data, error } = await supabase.rpc("create_clique", {
       display_name: profile.display_name || profile.username,
-      clique_title: "Dinner Clique",
+      clique_title: cliqueTitle,
       latitude: location.latitude,
       longitude: location.longitude,
       radius_m: Math.round(radiusMiles * 1609.344),
@@ -287,12 +289,22 @@ async function loadCliques() {
       localStorage.removeItem(`grubclique-session-cleared-${session.user.id}`);
       await loadClique(true);
     });
-    card.append(copy, open); return card;
+    const actions = document.createElement("div"); actions.className = "session-actions"; actions.append(open);
+    if (entry.host_id === session.user.id && entry.status !== "finished") {
+      const end = document.createElement("button"); end.className = "danger-text"; end.type = "button"; end.textContent = "End";
+      end.addEventListener("click", () => endClique(entry.id, entry.title || `Clique ${entry.invite_code}`));
+      actions.append(end);
+    } else if (entry.host_id !== session.user.id) {
+      const leave = document.createElement("button"); leave.className = "danger-text"; leave.type = "button"; leave.textContent = "Leave";
+      leave.addEventListener("click", () => leaveClique(entry.id, entry.title || `Clique ${entry.invite_code}`));
+      actions.append(leave);
+    }
+    card.append(copy, actions); return card;
   }));
   setMessage("#cliques-message");
 }
 
-$("#cliques-create").addEventListener("click", () => { selectedLocation = null; $("#search-area").value = ""; showPanel("setup"); });
+$("#cliques-create").addEventListener("click", () => { selectedLocation = null; $("#clique-name").value = ""; $("#search-area").value = ""; showPanel("setup"); });
 
 function renderMembers(members) {
   const list = $("#member-list");
@@ -364,11 +376,22 @@ async function loadClique(openPanel = false) {
   $("#clique-code").textContent = clique.code;
   renderMembers(state.members || []);
   $("#preference-summary").textContent = preferenceLabel();
-  $("#start-swiping").disabled = !clique.isHost || !filteredRestaurants().length;
-  $("#start-swiping").textContent = clique.isHost ? "Start swiping" : "Waiting for host…";
+  const swipeButton = $("#start-swiping");
+  const hasRestaurants = filteredRestaurants().length > 0;
+  if (state.status === "swiping") {
+    swipeButton.disabled = !hasRestaurants;
+    swipeButton.textContent = "Continue swiping";
+  } else if (state.status === "finished") {
+    swipeButton.disabled = true;
+    swipeButton.textContent = "Session completed";
+  } else {
+    swipeButton.disabled = !clique.isHost || !hasRestaurants;
+    swipeButton.textContent = clique.isHost ? "Start swiping" : "Waiting for host…";
+  }
+  $("#end-clique").classList.toggle("hidden", !clique.isHost || state.status === "finished");
+  $("#leave-clique").classList.toggle("hidden", clique.isHost);
   renderChat(state.messages || []);
-  if (openPanel) showPanel(state.status === "swiping" ? "swipe" : "clique");
-  if (state.status === "swiping" && !["swipe", "chat", "filters"].some((name) => !$(`#${name}-panel`).classList.contains("hidden"))) showPanel("swipe");
+  if (openPanel) showPanel("clique");
   if (!$("#swipe-panel").classList.contains("hidden")) renderRestaurant();
 }
 
@@ -385,11 +408,17 @@ $("#share-clique").addEventListener("click", async () => {
   else { await navigator.clipboard.writeText(`${data.text}: ${url}`); setMessage("#clique-message", "Invite copied to your clipboard.", true); }
 });
 $("#start-swiping").addEventListener("click", async () => {
-  const { error } = await supabase.rpc("start_clique", { target_clique: clique.id });
-  if (error) return setMessage("#clique-message", friendlyError(error, "We couldn't start swiping."));
-  swipeIndex = 0;
-  localStorage.setItem(`grubclique-index-${clique.id}`, "0");
-  await loadClique(true);
+  if (clique.status === "finished") return;
+  if (clique.status === "lobby") {
+    if (!clique.isHost) return;
+    const { error } = await supabase.rpc("start_clique", { target_clique: clique.id });
+    if (error) return setMessage("#clique-message", friendlyError(error, "We couldn't start swiping."));
+    swipeIndex = 0;
+    localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+    await loadClique(false);
+  }
+  showPanel("swipe");
+  renderRestaurant();
 });
 $("#start-over").addEventListener("click", () => {
   swipeIndex = 0;
@@ -401,9 +430,31 @@ $("#new-clique").addEventListener("click", () => {
   stopPolling();
   if (clique?.id) localStorage.removeItem(`grubclique-index-${clique.id}`);
   clique = null; restaurants = []; swipeIndex = 0; selectedLocation = null;
-  $("#search-area").value = "";
+  $("#clique-name").value = ""; $("#search-area").value = "";
   showPanel("setup");
 });
+async function endClique(targetClique, title) {
+  if (!confirm(`End ${title}? Members will no longer be able to continue swiping. Matches and chat history will be preserved.`)) return;
+  const { error } = await supabase.rpc("finish_clique", { target_clique: targetClique });
+  if (error) return alert(friendlyError(error, "We couldn't end that clique. Please try again."));
+  if (clique?.id === targetClique) { stopPolling(); clique.status = "finished"; }
+  await loadCliques();
+  showPanel("cliques");
+}
+$("#end-clique").addEventListener("click", () => endClique(clique.id, clique.state?.title || `Clique ${clique.code}`));
+async function leaveClique(targetClique, title) {
+  if (!confirm(`Leave ${title}? Your swipe progress in this clique will be removed. You can rejoin later with a valid invite code.`)) return;
+  const { error } = await supabase.rpc("leave_clique", { target_clique: targetClique });
+  if (error) return alert(friendlyError(error, "We couldn't leave that clique. Please try again."));
+  localStorage.removeItem(`grubclique-index-${targetClique}`);
+  if (clique?.id === targetClique) {
+    stopPolling();
+    clique = null; restaurants = []; swipeIndex = 0;
+  }
+  await loadCliques();
+  showPanel("cliques");
+}
+$("#leave-clique").addEventListener("click", () => leaveClique(clique.id, clique.state?.title || `Clique ${clique.code}`));
 $("#open-chat").addEventListener("click", () => showPanel("chat"));
 $("#open-filters").addEventListener("click", () => {
   $$("input[name=meal]").forEach((input) => { input.checked = preferences.meal_periods.includes(input.value); input.disabled = !clique.isHost; });
@@ -730,7 +781,7 @@ $$(".back-clique").forEach((button) => button.addEventListener("click", () => sh
 
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); installPrompt = event; $("#install-app").classList.remove("hidden"); });
 $("#install-app").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $("#install-app").classList.add("hidden"); });
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=5");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=11");
 
 supabase.auth.onAuthStateChange((_event, nextSession) => {
   const changed = session?.user?.id !== nextSession?.user?.id;

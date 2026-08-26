@@ -6,6 +6,7 @@
   const diagnosticsPreview = document.querySelector("#diagnostics-preview");
   const siteKey = document.querySelector('meta[name="turnstile-site-key"]')?.content.trim() || "";
   const loadedAt = new Date().toISOString();
+  const referenceStorageKey = "grubclique-report-reference";
   let turnstileWidget = null;
 
   diagnosticsPreview.textContent = `Source: website · Timestamp: ${loadedAt}`;
@@ -15,13 +16,16 @@
     status.className = `form-status ${kind}`.trim();
   }
 
+  const savedReference = sessionStorage.getItem(referenceStorageKey);
+  if (savedReference) show(`Report submitted. Your reference is ${savedReference}.`, "success");
+
   function renderTurnstile() {
     if (!siteKey || !window.turnstile || turnstileWidget !== null) return;
     turnstileWidget = window.turnstile.render("#turnstile-widget", {
       sitekey: siteKey,
       theme: "auto",
       action: "grubclique_issue_report",
-      callback: () => show(""),
+      callback: () => { if (!status.classList.contains("success")) show(""); },
       "expired-callback": () => show("Please complete the anti-bot check again.", "error"),
       "error-callback": () => show("The anti-bot check could not load. Please refresh and try again.", "error"),
     });
@@ -36,6 +40,7 @@
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    sessionStorage.removeItem(referenceStorageKey);
     show("");
     if (!form.reportValidity()) return;
     const screenshot = form.elements.screenshot.files[0];
@@ -65,6 +70,7 @@
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.error || "The report could not be submitted.");
       form.reset();
+      sessionStorage.setItem(referenceStorageKey, result.reference);
       show(`Report submitted. Your reference is ${result.reference}.`, "success");
       window.turnstile?.reset(turnstileWidget);
     } catch (error) {

@@ -8,7 +8,7 @@
     <title>GrubClique Web</title>
     <link rel="icon" href="../assets/app-icon.png">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="app.css?v=5">
+    <link rel="stylesheet" href="app.css?v=11">
   </head>
   <body>
     <header class="app-header">
@@ -84,9 +84,10 @@
         </section>
 
         <section id="setup-panel" class="panel hidden">
-          <div class="section-heading"><button class="icon-button back-home" type="button" aria-label="Back">←</button><div><p class="eyebrow">You are the host</p><h1>Choose your clique</h1></div></div>
+          <div class="section-heading centered-heading"><button class="icon-button back-home" type="button" aria-label="Back">←</button><div><p class="eyebrow">You are the host</p><h1>Create your Clique</h1></div></div>
           <form id="setup-form" class="feature-card form-stack">
             <p class="muted">Choose where this clique should search.</p>
+            <label>Clique name (optional)<input id="clique-name" maxlength="40" autocomplete="off" placeholder="Friday Food Crew"><small>Give your group a name that members will recognize.</small></label>
             <label>ZIP code, city, or area<input id="search-area" autocomplete="postal-code" placeholder="Omaha, NE"></label>
             <button id="use-location" class="secondary-button" type="button">Use my location</button>
             <label>Search radius: <strong><span id="setup-radius-label">25</span> miles</strong><input id="setup-radius" type="range" min="1" max="50" step="1" value="25"></label>
@@ -97,7 +98,7 @@
         </section>
 
         <section id="clique-panel" class="panel hidden">
-          <div class="section-heading"><button class="icon-button back-home" type="button" aria-label="Back">←</button><div><p class="eyebrow">Your Clique</p><h1 id="clique-code">------</h1></div></div>
+          <div class="section-heading centered-heading"><button class="icon-button back-home" type="button" aria-label="Back">←</button><div><p class="eyebrow">Your Clique</p><h1 id="clique-code">------</h1></div></div>
           <button id="share-clique" class="secondary-button" type="button">Share invite</button>
           <div class="content-grid">
             <article class="feature-card"><h2>Members</h2><ul id="member-list" class="member-list"></ul></article>
@@ -107,12 +108,14 @@
             <button id="open-chat" class="secondary-button" type="button">Open clique chat</button>
             <button id="start-swiping" class="primary-button" type="button">Start swiping</button>
             <div class="split-actions"><button id="start-over" class="secondary-button" type="button">Start over</button><button id="new-clique" class="secondary-button" type="button">New clique</button></div>
+            <button id="end-clique" class="danger-text hidden" type="button">End clique</button>
+            <button id="leave-clique" class="danger-text hidden" type="button">Leave clique</button>
           </div>
           <p id="clique-message" class="form-message" aria-live="polite"></p>
         </section>
 
         <section id="filters-panel" class="panel hidden">
-          <div class="section-heading"><button class="icon-button back-clique" type="button" aria-label="Back">←</button><div><p class="eyebrow">Shared settings</p><h1>Filters and sorting</h1></div></div>
+          <div class="section-heading centered-heading"><button class="icon-button back-clique" type="button" aria-label="Back">←</button><div><p class="eyebrow">Shared settings</p><h1>Filters and sorting</h1></div></div>
           <form id="filters-form" class="feature-card form-stack">
             <label>Cuisine<select id="cuisine-filter"><option value="Any">Any</option></select></label>
             <fieldset><legend>Maximum price</legend><label><input type="radio" name="max-price" value="1"> $</label><label><input type="radio" name="max-price" value="2"> $$</label><label><input type="radio" name="max-price" value="3"> $$$</label><label><input type="radio" name="max-price" value="4" checked> $$$$</label></fieldset>
@@ -127,14 +130,14 @@
         </section>
 
         <section id="swipe-panel" class="panel hidden">
-          <div class="section-heading"><button class="icon-button back-clique" type="button" aria-label="Back">←</button><div><p id="swipe-progress" class="eyebrow">0/0</p><h1>Everyone swipes</h1></div><button id="swipe-filters" class="secondary-button compact-button" type="button">Filters</button></div>
+          <div class="section-heading centered-heading heading-with-action"><button class="icon-button back-clique" type="button" aria-label="Back">←</button><div><p id="swipe-progress" class="eyebrow">0/0</p><h1>Everyone swipes</h1></div><button id="swipe-filters" class="secondary-button compact-button heading-action" type="button">Filters</button></div>
           <article id="restaurant-card" class="restaurant-card"><div id="restaurant-photo" class="restaurant-photo">🍽️</div><div class="restaurant-copy"><h2 id="restaurant-name">Restaurant</h2><p id="restaurant-meta" class="muted"></p><p id="restaurant-hours"></p><div id="restaurant-links" class="link-row"></div></div></article>
           <div class="swipe-actions"><button id="pass" class="pass-button" type="button" aria-label="Pass">✕</button><button id="like" class="like-button" type="button" aria-label="Like">♥</button></div>
           <div id="match-card" class="match-card hidden"><p class="eyebrow">It’s a match!</p><h2 id="match-name"></h2><p>Everyone in your clique liked this restaurant.</p><div class="bottom-actions"><button id="dismiss-match" class="primary-button" type="button">Let’s grub!</button><button id="match-chat" class="secondary-button" type="button">Chat with clique</button><button id="finish-session" class="text-button" type="button">Finish session</button></div></div>
         </section>
 
         <section id="chat-panel" class="panel hidden">
-          <div class="section-heading"><button class="icon-button back-clique" type="button" aria-label="Back">←</button><div><p class="eyebrow">Your Clique</p><h1>Chat</h1></div></div>
+          <div class="section-heading centered-heading"><button class="icon-button back-clique" type="button" aria-label="Back">←</button><div><p class="eyebrow">Your Clique</p><h1>Chat</h1></div></div>
           <div id="chat-list" class="chat-list" aria-live="polite"></div>
           <form id="chat-form" class="chat-form"><input id="chat-input" maxlength="2000" placeholder="Message your clique" aria-label="Message"><button class="primary-button" type="submit">Send</button></form>
         </section>
@@ -179,6 +182,6 @@
         </section>
       </section>
     </main>
-    <script type="module" src="app.js?v=5"></script>
+    <script type="module" src="app.js?v=11"></script>
   </body>
 </html>
