@@ -1,0 +1,13 @@
+{
+  "name": "GrubClique",
+  "short_name": "GrubClique",
+  "description": "Swipe separately and match on restaurants together.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d0f",
+  "theme_color": "#0b0d0f",
+  "icons": [
+    { "src": "../assets/app-icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
