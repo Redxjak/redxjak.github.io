@@ -10,7 +10,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
-const panels = ["home", "setup", "clique", "filters", "swipe", "chat", "friends", "history", "settings"];
+const panels = ["onboarding", "home", "cliques", "setup", "clique", "filters", "swipe", "chat", "friends", "history", "settings"];
 let session = null;
 let profile = null;
 let clique = null;
@@ -26,6 +26,7 @@ let installPrompt = null;
 
 function showPanel(name) {
   panels.forEach((panel) => $(`#${panel}-panel`)?.classList.toggle("hidden", panel !== name));
+  $(".tab-bar").classList.toggle("hidden", name === "onboarding");
   $$(".tab-bar button").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
   if (["clique", "swipe", "chat"].includes(name) && clique) startPolling(); else stopPolling();
   window.scrollTo({ top: 0, behavior: "smooth" });
@@ -64,6 +65,7 @@ function setAvatar(element, value) {
 
 function refreshAccountControls() {
   $("#username").value = profile?.username || "";
+  $("#display-name").value = profile?.display_name || "";
   $("#match-notifications").checked = localStorage.getItem("grubclique-match-notifications") !== "false";
   $("#contact-phone").value = localStorage.getItem("grubclique-contact-phone") || "";
   pendingAvatar = localStorage.getItem("grubclique-profile-picture") || profile?.avatar_url || null;
@@ -75,17 +77,12 @@ async function ensureProfile() {
   const { data, error } = await supabase.rpc("get_my_profile");
   if (error) throw error;
   profile = data?.[0] || null;
-  if (!profile) {
-    const emailStem = session.user.email?.split("@")[0]?.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 18) || "member";
-    const suffix = session.user.id.replaceAll("-", "").slice(0, 5);
-    const username = `${emailStem.length >= 3 ? emailStem : "member"}_${suffix}`.slice(0, 24);
-    const { error: saveError } = await supabase.rpc("set_profile_username", { new_username: username });
-    if (saveError) throw saveError;
-    profile = { username, display_name: username, avatar_url: null };
-  }
-  $("#profile-name").textContent = `@${profile.username}`;
+  if (!profile?.onboarding_completed) return false;
+  $("#profile-name").textContent = profile.display_name;
+  $("#profile-username").textContent = `@${profile.username}`;
   $("#account-email").textContent = session.user.email || "Google account";
   refreshAccountControls();
+  return true;
 }
 
 async function enterApp() {
@@ -93,13 +90,20 @@ async function enterApp() {
   $("#app-view").classList.remove("hidden");
   $("#sign-out").classList.remove("hidden");
   $("#connection-status").textContent = "Connected";
-  await ensureProfile();
+  const profileReady = await ensureProfile();
+  if (!profileReady) {
+    $("#onboarding-display-name").value = profile?.display_name || session.user.user_metadata?.full_name || session.user.user_metadata?.name || "";
+    $("#onboarding-username").value = "";
+    $("#onboarding-phone").value = "";
+    showPanel("onboarding");
+    return;
+  }
   const suppressed = localStorage.getItem(`grubclique-session-cleared-${session.user.id}`) === "true";
   const { data, error } = suppressed ? { data: null, error: null } : await supabase.rpc("resume_clique");
   if (!error && data?.[0]) {
     clique = { id: data[0].clique_id, code: data[0].invite_code, isHost: data[0].is_host, status: data[0].status };
     $("#resume-card").classList.remove("hidden");
-    $("#resume-title").textContent = `Clique ${clique.code}`;
+    $("#resume-title").textContent = "Past sessions";
   } else {
     $("#resume-card").classList.add("hidden");
   }
@@ -248,7 +252,47 @@ $("#join-form").addEventListener("submit", async (event) => {
   await loadClique(true);
 });
 
-$("#resume-clique").addEventListener("click", () => loadClique(true));
+$("#resume-clique").addEventListener("click", async () => { await loadCliques(); showPanel("cliques"); });
+
+function sessionStatusLabel(status) {
+  return { lobby: "Lobby", swiping: "In progress", finished: "Completed" }[status] || "Session";
+}
+
+async function loadCliques() {
+  setMessage("#cliques-message", "Loading sessions…", true);
+  const { data, error } = await supabase
+    .from("clique_members")
+    .select("joined_at, cliques(id, invite_code, title, status, host_id, created_at)")
+    .eq("user_id", session.user.id)
+    .order("joined_at", { ascending: false });
+  if (error) return setMessage("#cliques-message", "We couldn't load your cliques right now.");
+  const entries = (data || []).map((membership) => membership.cliques).filter(Boolean)
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const list = $("#cliques-list");
+  if (!entries.length) {
+    list.textContent = "You haven't joined a clique yet. Create one or use an invite code from Home.";
+    return setMessage("#cliques-message");
+  }
+  list.replaceChildren(...entries.map((entry) => {
+    const card = document.createElement("article"); card.className = "history-card session-card";
+    const copy = document.createElement("div");
+    const title = document.createElement("h2"); title.textContent = entry.title || `Clique ${entry.invite_code}`;
+    const meta = document.createElement("p"); meta.className = "muted";
+    meta.textContent = `${sessionStatusLabel(entry.status)} · ${entry.invite_code} · ${new Date(entry.created_at).toLocaleDateString()}`;
+    copy.append(title, meta);
+    const open = document.createElement("button"); open.className = "secondary-button compact-button"; open.type = "button";
+    open.textContent = entry.status === "finished" ? "View session" : "Resume";
+    open.addEventListener("click", async () => {
+      clique = { id: entry.id, code: entry.invite_code, isHost: entry.host_id === session.user.id, status: entry.status };
+      localStorage.removeItem(`grubclique-session-cleared-${session.user.id}`);
+      await loadClique(true);
+    });
+    card.append(copy, open); return card;
+  }));
+  setMessage("#cliques-message");
+}
+
+$("#cliques-create").addEventListener("click", () => { selectedLocation = null; $("#search-area").value = ""; showPanel("setup"); });
 
 function renderMembers(members) {
   const list = $("#member-list");
@@ -572,11 +616,50 @@ $("#friend-form").addEventListener("submit", async (event) => { event.preventDef
 function populateCountries() {
   const names = typeof Intl.DisplayNames === "function" ? new Intl.DisplayNames([navigator.language], { type: "region" }) : null;
   const options = getCountries().map((region) => ({ region, label: `${names?.of(region) || region} (+${getCountryCallingCode(region)})` })).sort((a, b) => a.label.localeCompare(b.label));
-  $("#phone-country").replaceChildren(...options.map(({ region, label }) => { const option = document.createElement("option"); option.value = region; option.textContent = label; return option; }));
   const region = navigator.language?.split("-")[1]?.toUpperCase();
-  $("#phone-country").value = getCountries().includes(region) ? region : "US";
+  ["#phone-country", "#onboarding-country"].forEach((selector) => {
+    $(selector).replaceChildren(...options.map(({ region: code, label }) => { const option = document.createElement("option"); option.value = code; option.textContent = label; return option; }));
+    $(selector).value = getCountries().includes(region) ? region : "US";
+  });
 }
 populateCountries();
+
+$("#onboarding-username").addEventListener("input", () => {
+  $("#onboarding-username").value = $("#onboarding-username").value.toLowerCase().replace(/^@/, "").slice(0, 24);
+});
+$("#onboarding-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const new_username = $("#onboarding-username").value.trim();
+  const new_display_name = $("#onboarding-display-name").value.trim();
+  const enteredPhone = $("#onboarding-phone").value.trim();
+  if (!/^[a-z0-9_]{3,24}$/.test(new_username)) return setMessage("#onboarding-message", "Username must be 3–24 lowercase letters, numbers, or underscores.");
+  if (!new_display_name || new_display_name.length > 40) return setMessage("#onboarding-message", "Display name must be 1–40 characters.");
+  const canonicalPhone = enteredPhone ? normalizePhone(enteredPhone, $("#onboarding-country").value) : null;
+  if (enteredPhone && !canonicalPhone) return setMessage("#onboarding-message", "Enter a valid phone number for the selected country, or leave it blank.");
+  const submit = $("#onboarding-form button[type=submit]");
+  submit.disabled = true; setMessage("#onboarding-message", "Creating your profile…", true);
+  const { data, error } = await supabase.rpc("complete_profile_onboarding", {
+    new_username,
+    new_display_name,
+    phone_hashes: canonicalPhone ? await phoneHashes(canonicalPhone) : [],
+  });
+  if (error) {
+    submit.disabled = false;
+    const details = String(error.message || "").toLowerCase();
+    const message = details.includes("username") && (details.includes("taken") || details.includes("unique"))
+      ? "That username is already taken. Choose another one."
+      : details.includes("phone number is already")
+        ? "That phone number is already linked to another account."
+        : "We couldn't create your profile. Check your connection and try again.";
+    return setMessage("#onboarding-message", message);
+  }
+  profile = data?.[0];
+  if (canonicalPhone) localStorage.setItem("grubclique-contact-phone", canonicalPhone);
+  setMessage("#onboarding-message");
+  submit.disabled = false;
+  await enterApp();
+});
+$("#onboarding-sign-out").addEventListener("click", () => supabase.auth.signOut());
 
 $("#profile-picture").addEventListener("change", () => {
   const file = $("#profile-picture").files?.[0];
@@ -587,17 +670,16 @@ $("#profile-picture").addEventListener("change", () => {
 $("#remove-picture").addEventListener("click", () => { pendingAvatar = null; setAvatar("#account-avatar", null); });
 
 $("#save-settings").addEventListener("click", async () => {
-  const username = $("#username").value.trim().replace(/^@/, "").toLowerCase();
-  if (!/^[a-z0-9_]{3,24}$/.test(username)) return setMessage("#settings-message", "Username must be 3–24 letters, numbers, or underscores.");
+  const displayName = $("#display-name").value.trim();
+  if (!displayName || displayName.length > 40) return setMessage("#settings-message", "Display name must be 1–40 characters.");
   $("#save-settings").disabled = true; setMessage("#settings-message", "Saving…", true);
-  const { error } = await supabase.rpc("set_profile_username", { new_username: username });
+  const { error } = await supabase.rpc("update_profile_display_name", { new_display_name: displayName });
   if (error) {
     $("#save-settings").disabled = false;
-    const duplicate = String(error.message).toLowerCase().includes("unique") || String(error.message).toLowerCase().includes("taken");
-    return setMessage("#settings-message", duplicate ? "That username is already taken." : "We couldn't save your changes. Please try again.");
+    return setMessage("#settings-message", "We couldn't save your display name. Please try again.");
   }
-  profile = { ...profile, username, display_name: username };
-  $("#profile-name").textContent = `@${username}`;
+  profile = { ...profile, display_name: displayName };
+  $("#profile-name").textContent = displayName;
   if (pendingAvatar) localStorage.setItem("grubclique-profile-picture", pendingAvatar); else localStorage.removeItem("grubclique-profile-picture");
   setAvatar(".welcome-row .avatar", pendingAvatar);
   const notifications = $("#match-notifications").checked;
@@ -637,6 +719,7 @@ $("#delete-account").addEventListener("click", async () => {
 
 $$(".tab-bar button").forEach((button) => button.addEventListener("click", async () => {
   const view = button.dataset.view;
+  if (view === "cliques") await loadCliques();
   if (view === "history") await loadHistory();
   if (view === "friends") await loadFriends();
   if (view === "settings") refreshAccountControls();
@@ -647,7 +730,7 @@ $$(".back-clique").forEach((button) => button.addEventListener("click", () => sh
 
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); installPrompt = event; $("#install-app").classList.remove("hidden"); });
 $("#install-app").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $("#install-app").classList.add("hidden"); });
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=2");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=4");
 
 supabase.auth.onAuthStateChange((_event, nextSession) => {
   const changed = session?.user?.id !== nextSession?.user?.id;
