@@ -344,6 +344,7 @@ async function loadGroup(openPanel = false) {
   $("#group-code").textContent = `Invite code ${group.code}`;
   renderGroupMembers(state.members || []);
   $("#manage-members-form").classList.toggle("hidden", !group.isAdmin);
+  $("#rename-clique").classList.toggle("hidden", !group.isAdmin);
   $("#leave-group").classList.toggle("hidden", group.isAdmin);
   const hunts = state.grub_hunts || [];
   const active = hunts.find((hunt) => hunt.status === "lobby" || hunt.status === "swiping");
@@ -369,6 +370,17 @@ $("#manage-members-form").addEventListener("submit", async (event) => {
   const { error } = await supabase.rpc("add_friend_to_clique", { target_friend_clique: group.id, target_username: username });
   if (error) return setMessage("#group-message", friendlyError(error, error.message || "We couldn't add that friend."));
   $("#clique-friend-username").value = ""; setMessage("#group-message", "Friend added to the Clique.", true); await loadGroup(false);
+});
+
+$("#rename-clique").addEventListener("click", async () => {
+  const name = prompt("Rename this Clique", group.name)?.trim();
+  if (!name || name === group.name) return;
+  if (name.length > 40) return setMessage("#group-message", "Clique names can be up to 40 characters.");
+  const { error } = await supabase.rpc("rename_friend_clique", { target_friend_clique: group.id, clique_name: name });
+  if (error) return setMessage("#group-message", friendlyError(error, "We couldn't rename that Clique."));
+  group.name = name;
+  setMessage("#group-message", "Clique renamed.", true);
+  await loadGroup(false);
 });
 
 $("#share-clique").addEventListener("click", async () => {
@@ -479,12 +491,14 @@ $("#start-swiping").addEventListener("click", async () => {
     localStorage.setItem(`grubclique-index-${clique.id}`, "0");
     await loadClique(false);
   }
+  $("#undo-swipe").disabled = Number(localStorage.getItem(`grubclique-index-${clique.id}`) || 0) < 1;
   showPanel("swipe");
   renderRestaurant();
 });
 $("#start-over").addEventListener("click", () => {
   swipeIndex = 0;
   localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+  $("#undo-swipe").disabled = true;
   showPanel("swipe");
   renderRestaurant();
 });
@@ -533,6 +547,7 @@ $("#filters-form").addEventListener("submit", async (event) => {
   };
   swipeIndex = 0;
   localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+  $("#undo-swipe").disabled = true;
   const mealPeriods = $$("input[name=meal]:checked").map((input) => input.value);
   const sortMode = $("#sort-mode").value;
   if (clique.isHost) {
@@ -583,6 +598,7 @@ async function recordSwipe(liked) {
   if (error) { $("#pass").disabled = false; $("#like").disabled = false; return alert("We couldn't save that swipe. Please try again."); }
   swipeIndex += 1;
   localStorage.setItem(`grubclique-index-${clique.id}`, String(swipeIndex));
+  $("#undo-swipe").disabled = false;
   if (data?.[0]?.matched) {
     $("#match-name").textContent = restaurant.name;
     $("#match-card").classList.remove("hidden");
@@ -594,6 +610,16 @@ async function recordSwipe(liked) {
 }
 $("#pass").addEventListener("click", () => recordSwipe(false));
 $("#like").addEventListener("click", () => recordSwipe(true));
+$("#undo-swipe").addEventListener("click", async () => {
+  $("#undo-swipe").disabled = true;
+  const { data, error } = await supabase.rpc("undo_last_swipe", { target_clique: clique.id });
+  if (error) { $("#undo-swipe").disabled = false; return alert("We couldn't undo that swipe. Please try again."); }
+  if (!data?.length) return;
+  swipeIndex = Math.max(0, swipeIndex - 1);
+  localStorage.setItem(`grubclique-index-${clique.id}`, String(swipeIndex));
+  $("#match-card").classList.add("hidden");
+  renderRestaurant();
+});
 $("#dismiss-match").addEventListener("click", () => $("#match-card").classList.add("hidden"));
 $("#swipe-filters").addEventListener("click", () => $("#open-filters").click());
 $("#match-chat").addEventListener("click", () => { $("#match-card").classList.add("hidden"); showPanel("chat"); });
