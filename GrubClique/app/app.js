@@ -345,7 +345,8 @@ async function loadGroup(openPanel = false) {
   renderGroupMembers(state.members || []);
   $("#manage-members-form").classList.toggle("hidden", !group.isAdmin);
   $("#rename-clique").classList.toggle("hidden", !group.isAdmin);
-  $("#leave-group").classList.toggle("hidden", group.isAdmin);
+  $("#leave-group").classList.remove("hidden");
+  $("#delete-group").classList.toggle("hidden", !group.isAdmin);
   const hunts = state.grub_hunts || [];
   const active = hunts.find((hunt) => hunt.status === "lobby" || hunt.status === "swiping");
   $("#active-hunt-summary").textContent = active ? `${grubHuntStatusLabel(active.status)} · started by ${active.started_by || "a member"}` : "No active GrubHunt.";
@@ -391,7 +392,8 @@ $("#share-clique").addEventListener("click", async () => {
 });
 
 $("#leave-group").addEventListener("click", async () => {
-  if (!confirm(`Leave ${group.name}? You will lose access to its active GrubHunt. Your earlier GrubHunt history will remain in Matches.`)) return;
+  const transfer = group.isAdmin && (group.state?.members?.length || 0) > 1 ? " The longest-standing remaining member will become the admin." : "";
+  if (!confirm(`Leave ${group.name}? You will lose access to its active GrubHunt. Your earlier GrubHunt history will remain in Matches.${transfer}`)) return;
   const { error } = await supabase.rpc("leave_friend_clique", { target_friend_clique: group.id });
   if (error) return setMessage("#group-message", friendlyError(error, "We couldn't leave this Clique."));
   group = null; clique = null; restaurants = []; await loadCliques(); showPanel("cliques");
@@ -619,6 +621,15 @@ $("#undo-swipe").addEventListener("click", async () => {
   localStorage.setItem(`grubclique-index-${clique.id}`, String(swipeIndex));
   $("#match-card").classList.add("hidden");
   renderRestaurant();
+});
+
+$("#delete-group").addEventListener("click", async () => {
+  if (!confirm(`Permanently delete ${group.name}? This removes the Clique and all of its GrubHunts, messages, swipes, and shared match history for every member. This cannot be undone.`)) return;
+  const typedName = prompt(`Type ${group.name} to confirm deletion.`);
+  if (typedName !== group.name) return setMessage("#group-message", "Clique deletion canceled. The name did not match.");
+  const { error } = await supabase.rpc("delete_friend_clique", { target_friend_clique: group.id });
+  if (error) return setMessage("#group-message", friendlyError(error, "We couldn't delete this Clique."));
+  group = null; clique = null; restaurants = []; await loadCliques(); showPanel("cliques");
 });
 $("#dismiss-match").addEventListener("click", () => $("#match-card").classList.add("hidden"));
 $("#swipe-filters").addEventListener("click", () => $("#open-filters").click());
