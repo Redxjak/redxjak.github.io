@@ -8,7 +8,7 @@
     <title>GrubClique Web</title>
     <link rel="icon" href="../assets/app-icon.png">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="app.css?v=4">
+    <link rel="stylesheet" href="app.css?v=5">
   </head>
   <body>
     <header class="app-header">
@@ -161,7 +161,7 @@
           <div class="feature-card form-stack">
             <div class="profile-editor"><span id="account-avatar" class="avatar">GC</span><label class="secondary-button file-button">Choose picture<input id="profile-picture" type="file" accept="image/*"></label><button id="remove-picture" class="text-button" type="button">Remove</button></div>
             <label>Display name<input id="display-name" maxlength="40" autocomplete="name"><small>Shown to friends and clique members. You can change this anytime.</small></label>
-            <label>Username<div class="input-prefix"><span>@</span><input id="username" maxlength="24" readonly></div><small>Your unique username is permanent and cannot be changed.</small></label>
+            <div><strong>Username</strong><div class="input-prefix readonly-value"><span>@</span><strong id="username-display"></strong></div><small>Your unique username is permanent and cannot be changed.</small></div>
             <label class="switch-row"><span><strong>Match notifications</strong><small>Alert me when my clique matches</small></span><input id="match-notifications" type="checkbox"></label>
             <section class="sub-card form-stack"><h2>Contact discovery</h2><p class="muted small">Add the number people already have in their contacts. It is stored as an international hash and is not verified.</p><label>Country<select id="phone-country"><option value="US">United States (+1)</option><option value="CA">Canada (+1)</option><option value="GB">United Kingdom (+44)</option><option value="DE">Germany (+49)</option><option value="IN">India (+91)</option></select></label><label>Phone number<input id="contact-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(402) 555-0123"></label><button id="save-phone" class="secondary-button" type="button">Save contact number</button></section>
             <button id="save-settings" class="primary-button" type="button">Save changes</button>
@@ -179,6 +179,6 @@
         </section>
       </section>
     </main>
-    <script type="module" src="app.js?v=4"></script>
+    <script type="module" src="app.js?v=5"></script>
   </body>
 </html>

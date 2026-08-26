@@ -64,7 +64,7 @@ function setAvatar(element, value) {
 }
 
 function refreshAccountControls() {
-  $("#username").value = profile?.username || "";
+  $("#username-display").textContent = profile?.username || "";
   $("#display-name").value = profile?.display_name || "";
   $("#match-notifications").checked = localStorage.getItem("grubclique-match-notifications") !== "false";
   $("#contact-phone").value = localStorage.getItem("grubclique-contact-phone") || "";
@@ -730,7 +730,7 @@ $$(".back-clique").forEach((button) => button.addEventListener("click", () => sh
 
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); installPrompt = event; $("#install-app").classList.remove("hidden"); });
 $("#install-app").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $("#install-app").classList.add("hidden"); });
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=4");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=5");
 
 supabase.auth.onAuthStateChange((_event, nextSession) => {
   const changed = session?.user?.id !== nextSession?.user?.id;
