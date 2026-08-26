@@ -1,5 +1,5 @@
-const CACHE = "grubclique-web-v073-parity-1";
-const SHELL = ["./", "app.css", "app.js", "manifest.webmanifest", "../assets/app-icon.png"];
+const CACHE = "grubclique-web-v073-parity-2";
+const SHELL = ["./", "app.css?v=2", "app.js?v=2", "manifest.webmanifest", "../assets/app-icon.png"];
 self.addEventListener("install", (event) => event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL))));
 self.addEventListener("activate", (event) => event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))));
 self.addEventListener("fetch", (event) => {
