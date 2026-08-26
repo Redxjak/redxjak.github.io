@@ -612,6 +612,7 @@ async function recordSwipe(liked) {
 }
 $("#pass").addEventListener("click", () => recordSwipe(false));
 $("#like").addEventListener("click", () => recordSwipe(true));
+$("#swipe-chat").addEventListener("click", () => showPanel("chat"));
 $("#undo-swipe").addEventListener("click", async () => {
   $("#undo-swipe").disabled = true;
   const { data, error } = await supabase.rpc("undo_last_swipe", { target_clique: clique.id });
