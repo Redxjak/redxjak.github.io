@@ -1,34 +1,52 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="theme-color" content="#0b0d0f">
-    <title>GrubClique Analytics</title>
-    <link rel="icon" href="../GrubClique/assets/app-icon.png">
-    <link rel="stylesheet" href="styles.css?v=2">
-  </head>
-  <body>
-    <header class="topbar"><a href="../" class="brand">Redxjak<span>.</span></a><div><span id="account-label"></span><button id="sign-out" class="text-button hidden" type="button">Sign out</button></div></header>
-    <main>
-      <section id="login-view" class="login-card">
-        <p class="eyebrow">Private reporting</p><h1>GrubClique analytics</h1>
-        <p class="muted">Sign in with the authorized GrubClique owner account.</p>
-        <form id="login-form"><label>Email<input id="email" type="email" autocomplete="email" required></label><label>Password<input id="password" type="password" autocomplete="current-password" required></label><button type="submit" class="primary">Sign in</button></form>
-        <button id="google-login" class="secondary" type="button">Continue with Google</button>
-        <p id="login-message" class="message" aria-live="polite"></p>
-      </section>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#0d0f0f">
+  <title>Redxjak Analytics</title>
+  <link rel="icon" href="../assets/site-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="analytics.css?v=1">
+</head>
+<body>
+  <main>
+    <section id="setup-view" class="auth-shell hidden" aria-labelledby="setup-title">
+      <div class="auth-card"><span class="brand-mark">R<span>X</span></span><p class="eyebrow">Private workspace</p><h1 id="setup-title">Analytics isn’t connected yet.</h1><p>Add the new Supabase project URL and publishable key to <code>assets/analytics-config.js</code> after deployment.</p><a href="../">Return to redxjak.com</a></div>
+    </section>
 
-      <section id="dashboard-view" class="hidden">
-        <div class="heading"><div><p class="eyebrow">GrubClique reporting</p><h1>Analytics</h1><p id="updated" class="muted"></p></div><div class="range" aria-label="Reporting range"><button data-days="7">7 days</button><button data-days="30" class="active">30 days</button><button data-days="90">90 days</button></div></div>
-        <p id="dashboard-message" class="message" aria-live="polite"></p>
-        <section><h2>Selected period</h2><div id="period-cards" class="card-grid"></div></section>
-        <section><h2>All time</h2><div id="total-cards" class="card-grid"></div></section>
-        <section class="panel"><div class="panel-heading"><div><h2>Daily activity</h2><p class="muted">Accounts, GrubHunts, swipes, matches, and chat messages.</p></div><label>Metric<select id="chart-metric"><option value="swipes">Swipes</option><option value="grub_hunts">GrubHunts</option><option value="matches">Matches</option><option value="messages">Chat messages</option><option value="accounts">New accounts</option></select></label></div><div id="chart" class="chart" role="img" aria-label="Daily activity chart"></div></section>
-        <p class="privacy-note">Aggregate operational reporting only. This dashboard does not display personal profiles, message contents, invite codes, restaurant choices, or location data.</p>
-      </section>
-    </main>
-    <script type="module" src="analytics.js?v=2"></script>
-  </body>
+    <section id="login-view" class="auth-shell hidden" aria-labelledby="login-title">
+      <form id="login-form" class="auth-card">
+        <span class="brand-mark">R<span>X</span></span><p class="eyebrow">Private workspace</p><h1 id="login-title">Sign in to analytics.</h1>
+        <label>Username<input id="username" name="username" autocomplete="username" required maxlength="32"></label>
+        <label>Password<input id="password" name="password" type="password" autocomplete="current-password" required minlength="8"></label>
+        <button type="submit">Sign in</button><p id="login-message" class="message" role="alert"></p>
+      </form>
+    </section>
+
+    <section id="dashboard-view" class="dashboard hidden" aria-labelledby="dashboard-title">
+      <header class="topbar"><a class="brand" href="../"><span class="brand-mark">R<span>X</span></span><span>REDXJAK</span></a><div><span id="owner-name"></span><button id="sign-out" class="quiet-button" type="button">Sign out</button></div></header>
+      <div class="dashboard-heading"><div><p class="eyebrow">Private analytics</p><h1 id="dashboard-title">Analytics for every project.</h1><p id="date-caption">Loading activity…</p></div><div class="filters"><label>Project<select id="app-filter"><option value="all">All projects</option></select></label><label>Range<select id="range-filter"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="90">Last 90 days</option><option value="365">Last year</option><option value="3650">All time</option></select></label></div></div>
+      <p id="dashboard-message" class="message" role="alert"></p>
+      <div class="stat-grid" aria-label="Key metrics">
+        <article><p>Page views</p><strong id="metric-visits">—</strong></article><article><p>Sessions</p><strong id="metric-sessions">—</strong></article><article><p>Events</p><strong id="metric-events">—</strong></article><article><p>Errors</p><strong id="metric-errors">—</strong></article>
+      </div>
+      <article class="panel trend-panel"><div class="panel-heading"><div><p class="eyebrow">Activity</p><h2>Events over time</h2></div><span class="legend"><i></i> Events</span></div><div id="trend-chart" class="trend-chart" aria-label="Event activity chart"></div></article>
+      <div class="panel-grid">
+        <article class="panel"><h2>Top events</h2><div id="top-events" class="rank-list"></div></article>
+        <article class="panel"><h2>Top screens</h2><div id="top-screens" class="rank-list"></div></article>
+        <article class="panel"><h2>All projects</h2><div id="app-totals" class="rank-list"></div></article>
+        <article class="panel"><h2>Referrers</h2><div id="referrers" class="rank-list"></div></article>
+        <article class="panel"><h2>Devices</h2><div id="devices" class="rank-list"></div></article>
+        <article class="panel"><h2>Countries</h2><div id="countries" class="rank-list"></div></article>
+      </div>
+      <article class="panel errors-panel"><div class="panel-heading"><div><p class="eyebrow">Diagnostics</p><h2>Recent sanitized errors</h2></div></div><div class="table-wrap"><table><thead><tr><th>Time</th><th>App</th><th>Screen</th><th>Type</th></tr></thead><tbody id="errors-body"></tbody></table></div></article>
+    </section>
+  </main>
+  <script src="../assets/analytics-config.js"></script>
+  <script src="analytics.js?v=2"></script>
+</body>
 </html>

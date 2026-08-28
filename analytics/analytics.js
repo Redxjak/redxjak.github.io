@@ -1,24 +1,120 @@
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.55.0/+esm";
+(() => {
+  "use strict";
+  const config = window.REDXJAK_ANALYTICS_CONFIG || {};
+  const base = String(config.supabaseUrl || "").replace(/\/$/, "");
+  const sessionKey = "redxjak-analytics-owner-session";
+  const setupView = document.querySelector("#setup-view");
+  const loginView = document.querySelector("#login-view");
+  const dashboardView = document.querySelector("#dashboard-view");
+  const message = document.querySelector("#dashboard-message");
+  let session = null;
 
-const SUPABASE_URL = "https://msowbrvpziigoqlpqfuu.supabase.co";
-const SUPABASE_KEY = "sb_publishable_P2OwC3HhT1lj75Lq7dQkDw_k6zDJGEb";
-const DASHBOARD_URL = "https://redxjak.com/analytics/?auth=20260828";
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-const $ = (selector) => document.querySelector(selector);
-let report = null;
-let selectedDays = 30;
+  const show = (view) => [setupView, loginView, dashboardView].forEach((item) => item.classList.toggle("hidden", item !== view));
+  const format = (value) => new Intl.NumberFormat().format(value || 0);
+  const escapeText = (value) => String(value ?? "Unknown");
 
-const labels = { active_users:"Active users",new_accounts:"New accounts",new_cliques:"New Cliques",grub_hunts:"GrubHunts",swipes:"Swipes",matches:"Matches",messages:"Chat messages",accounts:"Accounts",cliques:"Cliques",active_grub_hunts:"Active GrubHunts",completed_grub_hunts:"Completed GrubHunts",likes:"Likes",accepted_friendships:"Friendships" };
-function message(text=""){$("#login-message").textContent=text;$("#dashboard-message").textContent=text}
-function metricCards(values){return Object.entries(values).map(([key,value])=>{const card=document.createElement("article");card.className="metric-card";const number=document.createElement("strong");number.textContent=Number(value).toLocaleString();const label=document.createElement("span");label.textContent=labels[key]||key.replaceAll("_"," ");card.append(number,label);return card})}
-function renderChart(){const metric=$("#chart-metric").value;const values=report.daily.map(day=>Number(day[metric]||0));const max=Math.max(...values,1);$("#chart").replaceChildren(...report.daily.map((day,index)=>{const wrap=document.createElement("div");wrap.className="bar-wrap";const bar=document.createElement("div");bar.className="bar";bar.style.height=`${Math.max((values[index]/max)*100,values[index]?3:1)}%`;bar.title=`${new Date(`${day.date}T00:00:00`).toLocaleDateString()}: ${values[index].toLocaleString()} ${labels[metric]||metric}`;wrap.append(bar);return wrap}))}
-function render(){ $("#updated").textContent=`Updated ${new Date(report.generated_at).toLocaleString()} · ${report.days}-day view`;$("#period-cards").replaceChildren(...metricCards(report.period));$("#total-cards").replaceChildren(...metricCards(report.totals));renderChart() }
-async function loadReport(){message("Loading report…");const {data,error}=await supabase.rpc("get_reporting_analytics",{days_back:selectedDays});if(error){message(error.message?.includes("Analytics access")?"This account is not authorized to view analytics.":"The report could not be loaded.");return}report=data;message();render()}
-async function setSession(session){const signedIn=Boolean(session);$("#login-view").classList.toggle("hidden",signedIn);$("#dashboard-view").classList.toggle("hidden",!signedIn);$("#sign-out").classList.toggle("hidden",!signedIn);$("#account-label").textContent=signedIn?session.user.email||"Signed in":"";if(signedIn)await loadReport()}
-$("#login-form").addEventListener("submit",async(event)=>{event.preventDefault();message();const {error}=await supabase.auth.signInWithPassword({email:$("#email").value.trim(),password:$("#password").value});if(error)message("The email or password is incorrect.")});
-$("#google-login").addEventListener("click",async()=>{const {error}=await supabase.auth.signInWithOAuth({provider:"google",options:{redirectTo:DASHBOARD_URL}});if(error)message("Google sign-in could not be opened.")});
-$("#sign-out").addEventListener("click",()=>supabase.auth.signOut());
-document.querySelectorAll("[data-days]").forEach(button=>button.addEventListener("click",async()=>{selectedDays=Number(button.dataset.days);document.querySelectorAll("[data-days]").forEach(item=>item.classList.toggle("active",item===button));await loadReport()}));
-$("#chart-metric").addEventListener("change",renderChart);
-supabase.auth.onAuthStateChange((_event,session)=>setSession(session));
-const {data}=await supabase.auth.getSession();await setSession(data.session);
+  function saveSession(value) {
+    session = value;
+    if (value) sessionStorage.setItem(sessionKey, JSON.stringify(value)); else sessionStorage.removeItem(sessionKey);
+  }
+
+  async function api(path, options = {}) {
+    const response = await fetch(`${base}/functions/v1/${path}`, {
+      ...options,
+      headers: { apikey: config.publishableKey, "Content-Type": "application/json", ...(options.headers || {}) },
+      credentials: "omit",
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) { const error = new Error(result.error || "Request failed"); error.status = response.status; throw error; }
+    return result;
+  }
+
+  async function refreshSession() {
+    if (!session?.refresh_token) return false;
+    const response = await fetch(`${base}/auth/v1/token?grant_type=refresh_token`, {
+      method: "POST", headers: { apikey: config.publishableKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: session.refresh_token }),
+    });
+    if (!response.ok) return false;
+    const next = await response.json();
+    saveSession({ ...session, access_token: next.access_token, refresh_token: next.refresh_token || session.refresh_token });
+    return true;
+  }
+
+  function rankList(id, rows) {
+    const target = document.querySelector(id);
+    target.replaceChildren();
+    if (!rows.length) { const empty = document.createElement("p"); empty.className = "empty"; empty.textContent = "No data yet"; target.append(empty); return; }
+    const max = Math.max(...rows.map((row) => row.value), 1);
+    for (const row of rows) {
+      const wrapper = document.createElement("div"); wrapper.className = "rank-row";
+      const label = document.createElement("span"); label.textContent = escapeText(row.label); label.title = label.textContent;
+      const value = document.createElement("strong"); value.textContent = format(row.value);
+      const track = document.createElement("div"); track.className = "rank-track";
+      const bar = document.createElement("i"); bar.style.width = `${Math.max(2, row.value / max * 100)}%`;
+      track.append(bar); wrapper.append(label, value, track); target.append(wrapper);
+    }
+  }
+
+  function renderChart(rows) {
+    const chart = document.querySelector("#trend-chart"); chart.replaceChildren();
+    if (!rows.length) { const empty = document.createElement("p"); empty.className = "empty"; empty.textContent = "No activity in this range"; chart.append(empty); return; }
+    const max = Math.max(...rows.map((row) => row.events), 1);
+    for (const row of rows) {
+      const bar = document.createElement("div"); bar.className = "trend-bar";
+      bar.style.height = `${Math.max(2, row.events / max * 100)}%`;
+      bar.dataset.label = `${row.date}: ${format(row.events)} events`;
+      chart.append(bar);
+    }
+  }
+
+  function renderErrors(rows) {
+    const body = document.querySelector("#errors-body"); body.replaceChildren();
+    if (!rows.length) { const row = document.createElement("tr"); const cell = document.createElement("td"); cell.colSpan = 4; cell.className = "empty"; cell.textContent = "No errors in this range"; row.append(cell); body.append(row); return; }
+    for (const item of rows) {
+      const row = document.createElement("tr");
+      [new Date(item.occurred_at).toLocaleString(), item.app, item.screen, item.error_type].forEach((value) => { const cell = document.createElement("td"); cell.textContent = escapeText(value); row.append(cell); });
+      body.append(row);
+    }
+  }
+
+  async function loadDashboard(allowRefresh = true) {
+    message.textContent = "";
+    const app = document.querySelector("#app-filter").value;
+    const days = document.querySelector("#range-filter").value;
+    try {
+      const data = await api(`dashboard-data?app=${encodeURIComponent(app)}&days=${encodeURIComponent(days)}`, { headers: { Authorization: `Bearer ${session.access_token}` } });
+      message.textContent = data.truncated ? "This view reached 100,000 events. Choose a shorter range for exact totals." : "";
+      document.querySelector("#owner-name").textContent = `@${data.username}`;
+      document.querySelector("#dashboard-title").textContent = app === "all" ? "Analytics for every project." : `${document.querySelector("#app-filter").selectedOptions[0].textContent} analytics.`;
+      document.querySelector("#date-caption").textContent = `${app === "all" ? "All apps" : document.querySelector("#app-filter").selectedOptions[0].textContent} · last ${days === "3650" ? "all available days" : `${days} days`}`;
+      for (const key of ["visits", "sessions", "events", "errors"]) document.querySelector(`#metric-${key}`).textContent = format(data.totals[key]);
+      const selector = document.querySelector("#app-filter");
+      if (selector.options.length === 1) data.apps.forEach((item) => selector.add(new Option(item.name, item.id)));
+      renderChart(data.daily); rankList("#top-events", data.topEvents); rankList("#top-screens", data.topScreens);
+      rankList("#app-totals", data.appTotals); rankList("#referrers", data.referrers); rankList("#devices", data.devices); rankList("#countries", data.countries); renderErrors(data.recentErrors);
+      show(dashboardView);
+    } catch (error) {
+      if (error.status === 401 && allowRefresh && await refreshSession()) return loadDashboard(false);
+      if (error.status === 401 || error.status === 403) { saveSession(null); show(loginView); document.querySelector("#login-message").textContent = "Your session expired. Sign in again."; return; }
+      message.textContent = "Analytics could not be loaded. Try again in a moment.";
+    }
+  }
+
+  document.querySelector("#login-form").addEventListener("submit", async (event) => {
+    event.preventDefault(); const button = event.currentTarget.querySelector("button"); const loginMessage = document.querySelector("#login-message");
+    button.disabled = true; loginMessage.textContent = "";
+    try {
+      const result = await api("dashboard-login", { method: "POST", body: JSON.stringify({ username: document.querySelector("#username").value, password: document.querySelector("#password").value }) });
+      saveSession(result); document.querySelector("#password").value = ""; await loadDashboard();
+    } catch { loginMessage.textContent = "The username or password is incorrect."; }
+    finally { button.disabled = false; }
+  });
+  document.querySelector("#sign-out").addEventListener("click", () => { saveSession(null); show(loginView); });
+  document.querySelector("#app-filter").addEventListener("change", () => loadDashboard());
+  document.querySelector("#range-filter").addEventListener("change", () => loadDashboard());
+
+  if (!base || !config.publishableKey) { show(setupView); return; }
+  try { session = JSON.parse(sessionStorage.getItem(sessionKey) || "null"); } catch { session = null; }
+  if (session?.access_token) loadDashboard(); else show(loginView);
+})();

@@ -49,6 +49,7 @@ test("dashboard data requires an authenticated administrator", async () => {
   assert.match(source, /auth\.getUser\(token\)/);
   assert.match(source, /analytics_admins/);
   assert.match(source, /Forbidden/);
+  assert.match(source, /appTotals: \(app \? \[app\] : \(apps \|\| \[\]\)\)/, "all registered projects should appear even with zero events");
 });
 
 test("owner login is rate limited and returns generic failures", async () => {
@@ -56,4 +57,33 @@ test("owner login is rate limited and returns generic failures", async () => {
   assert.match(source, /count > 10/);
   assert.match(source, /Invalid username or password/);
   assert.doesNotMatch(source, /Unknown username|User not found/);
+});
+
+test("admin workspace reuses owner auth and protects content writes", async () => {
+  const page = await read("admin/index.html");
+  const client = await read("admin/admin.js");
+  const endpoint = await read("supabase/functions/admin-site/index.ts");
+  assert.match(page, /Site content/);
+  assert.match(page, /Analytics/);
+  assert.match(client, /dashboard-login/);
+  assert.match(client, /method: "PUT"/);
+  assert.match(endpoint, /auth\.getUser\(token\)/);
+  assert.match(endpoint, /analytics_admins/);
+  assert.match(endpoint, /announcementUrl/);
+});
+
+test("public managed content has a safe static fallback", async () => {
+  const page = await read("index.html");
+  const client = await read("assets/site-content.js");
+  assert.match(page, /id="hero-title-line-1">Useful tools\./);
+  assert.match(client, /functions\/v1\/site-content/);
+  assert.match(client, /\.catch\(\(\) => \{\}\)/);
+  assert.doesNotMatch(client, /innerHTML/);
+});
+
+test("managed content table is private from browser database roles", async () => {
+  const sql = await read("supabase/migrations/20260828233000_add_managed_site_content.sql");
+  assert.match(sql, /alter table public\.site_content enable row level security/i);
+  assert.match(sql, /revoke all on public\.site_content from anon, authenticated/i);
+  assert.doesNotMatch(sql, /grant\s+(select|insert|update|all).*site_content.*\b(anon|authenticated)\b/i);
 });

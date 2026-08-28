@@ -36,7 +36,7 @@ Deno.serve(async (request) => {
     if (!page || page.length < pageSize) break;
   }
 
-  const nameById = new Map((apps || []).map((item) => [item.id, item.public_id]));
+  const nameById = new Map((apps || []).map((item) => [item.id, item.name]));
   const countBy = (values: (string | null | undefined)[]) => Object.entries(values.reduce<Record<string, number>>((result, value) => {
     const key = value || "Unknown"; result[key] = (result[key] || 0) + 1; return result;
   }, {})).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([label, value]) => ({ label, value }));
@@ -58,7 +58,10 @@ Deno.serve(async (request) => {
     referrers: countBy(events.map((event) => event.referrer_domain)),
     devices: countBy(events.map((event) => event.device_category)),
     countries: countBy(events.map((event) => event.country_code)),
-    appTotals: countBy(events.map((event) => nameById.get(event.app_id))),
+    appTotals: (app ? [app] : (apps || [])).map((item) => ({
+      label: item.name,
+      value: events.filter((event) => event.app_id === item.id).length,
+    })).sort((a, b) => b.value - a.value || a.label.localeCompare(b.label)),
     recentErrors: errors.slice(-20).reverse().map((event) => ({ occurred_at: event.occurred_at, app: nameById.get(event.app_id), screen: event.screen, error_type: event.properties?.error_type || "Error" })),
   }, 200, origin);
 });
