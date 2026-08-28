@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-analytics-app="pwgen" data-app-version="2026.08">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -445,6 +445,8 @@
     </footer>
   </div>
 
+  <script src="../assets/analytics-config.js"></script>
+  <script src="../assets/analytics.js"></script>
   <script>
     const symbols = "!@#$%^&*()";
     const uppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -625,6 +627,7 @@
         togglePassword.title = "Show password";
         togglePassword.setAttribute("aria-label", "Show password");
         renderGeneratedList();
+        window.RedxjakAnalytics?.track("passwords_generated", { count: settings.count, category: "custom" });
       } catch (error) {
         errorMessage.textContent = error.message;
       }
@@ -709,6 +712,7 @@
         link.click();
         link.remove();
         URL.revokeObjectURL(url);
+        window.RedxjakAnalytics?.track("records_downloaded", { count: generatedRecords.length });
       } catch (error) {
         errorMessage.textContent = error.message;
       }
@@ -728,6 +732,7 @@
         passwordOutput.select();
         document.execCommand("copy");
       }
+      window.RedxjakAnalytics?.track("password_copied");
     }
 
     function togglePasswordVisibility() {

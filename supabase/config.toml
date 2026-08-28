@@ -1,0 +1,10 @@
+project_id = "redxjak-analytics"
+
+[functions.collect]
+verify_jwt = false
+
+[functions.dashboard-login]
+verify_jwt = false
+
+[functions.dashboard-data]
+verify_jwt = false

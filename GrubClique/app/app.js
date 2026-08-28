@@ -31,6 +31,7 @@ function showPanel(name) {
   $$(".tab-bar button").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
   if (["clique", "swipe", "chat"].includes(name) && clique) startPolling(); else stopPolling();
   window.scrollTo({ top: 0, behavior: "smooth" });
+  window.RedxjakAnalytics?.track("screen_viewed", {}, { screen: `/GrubClique/app/${name}` });
 }
 
 function setMessage(selector, message = "", success = false) {
@@ -134,7 +135,11 @@ $("#auth-form").addEventListener("submit", async (event) => {
   const result = creatingAccount
     ? await supabase.auth.signUp({ email, password, options: { emailRedirectTo: APP_URL } })
     : await supabase.auth.signInWithPassword({ email, password });
-  if (result.error) return setMessage("#auth-message", friendlyError(result.error, "We couldn't complete that request. Please try again."));
+  if (result.error) {
+    window.RedxjakAnalytics?.track("authentication_completed", { method: creatingAccount ? "email_signup" : "email", outcome: "failure" });
+    return setMessage("#auth-message", friendlyError(result.error, "We couldn't complete that request. Please try again."));
+  }
+  window.RedxjakAnalytics?.track("authentication_completed", { method: creatingAccount ? "email_signup" : "email", outcome: "success" });
   if (creatingAccount && !result.data.session) setMessage("#auth-message", "Account created. Check your email to confirm it, then return here.", true);
 });
 
@@ -246,6 +251,7 @@ $("#hunt-setup-form").addEventListener("submit", async (event) => {
     if (error) throw error;
     clique = { id: data[0].grub_hunt_id, isHost: true, status: "lobby" };
     await addNearbyRestaurants(search.items);
+    window.RedxjakAnalytics?.track("clique_created");
     setMessage("#hunt-setup-message");
     await loadClique(true);
   } catch (error) {
@@ -260,6 +266,7 @@ $("#join-form").addEventListener("submit", async (event) => {
   const { data, error } = await supabase.rpc("join_friend_clique", { target_invite_code: code });
   if (error) return setMessage("#home-message", friendlyError(error, "We couldn't join that clique."));
   group = { id: data[0].friend_clique_id, code, name: data[0].clique_name, isAdmin: false };
+  window.RedxjakAnalytics?.track("clique_joined");
   history.replaceState({}, "", `${location.pathname}?invite=${code}`);
   await loadGroup(true);
 });
@@ -491,6 +498,7 @@ $("#start-swiping").addEventListener("click", async () => {
     if (error) return setMessage("#clique-message", friendlyError(error, "We couldn't start swiping."));
     swipeIndex = 0;
     localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+    window.RedxjakAnalytics?.track("clique_started");
     await loadClique(false);
   }
   $("#undo-swipe").disabled = Number(localStorage.getItem(`grubclique-index-${clique.id}`) || 0) < 1;
@@ -509,6 +517,7 @@ async function endClique(targetClique, title) {
   const { error } = await supabase.rpc("finish_clique", { target_clique: targetClique });
   if (error) return alert(friendlyError(error, "We couldn't complete that GrubHunt. Please try again."));
   if (clique?.id === targetClique) { stopPolling(); clique.status = "finished"; }
+  window.RedxjakAnalytics?.track("clique_finished");
   await loadGroup(true);
 }
 $("#end-clique").addEventListener("click", () => endClique(clique.id));
@@ -598,10 +607,12 @@ async function recordSwipe(liked) {
   $("#pass").disabled = true; $("#like").disabled = true;
   const { data, error } = await supabase.rpc("record_swipe", { target_clique: clique.id, target_restaurant: restaurant.id, liked });
   if (error) { $("#pass").disabled = false; $("#like").disabled = false; return alert("We couldn't save that swipe. Please try again."); }
+  window.RedxjakAnalytics?.track("swipe_recorded", { liked });
   swipeIndex += 1;
   localStorage.setItem(`grubclique-index-${clique.id}`, String(swipeIndex));
   $("#undo-swipe").disabled = false;
   if (data?.[0]?.matched) {
+    window.RedxjakAnalytics?.track("match_found");
     $("#match-name").textContent = restaurant.name;
     $("#match-card").classList.remove("hidden");
     if ("Notification" in window && localStorage.getItem("grubclique-match-notifications") !== "false" && Notification.permission === "granted") {
@@ -861,7 +872,7 @@ $$(".back-clique").forEach((button) => button.addEventListener("click", () => sh
 
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); installPrompt = event; $("#install-app").classList.remove("hidden"); });
 $("#install-app").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $("#install-app").classList.add("hidden"); });
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=13");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=17");
 
 supabase.auth.onAuthStateChange((_event, nextSession) => {
   const changed = session?.user?.id !== nextSession?.user?.id;

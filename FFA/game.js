@@ -51,6 +51,7 @@ characterCardsImage.addEventListener("load", () => {
 
 document.querySelector("#home-button").addEventListener("click", showCharacterSelect);
 document.querySelector("#restart-button").addEventListener("click", () => {
+  window.RedxjakAnalytics?.track("story_restarted");
   if (state.story) {
     showScene("start");
   } else if (state.hero) {
@@ -82,6 +83,7 @@ function showCharacterSelect() {
 }
 
 function showStorySelect(heroKey = state.hero) {
+  if (heroKey !== state.hero || state.scene === "character_select") window.RedxjakAnalytics?.track("character_selected", { hero: heroKey });
   state.hero = heroKey;
   state.storyId = null;
   state.story = null;
@@ -99,6 +101,7 @@ function showStorySelect(heroKey = state.hero) {
       storyButton(story, () => {
         state.storyId = story.id;
         state.story = story.scenes;
+        window.RedxjakAnalytics?.track("story_started", { story: story.id });
         showScene("start");
       })
     )
@@ -124,12 +127,14 @@ function showScene(sceneId) {
   gameBoard.classList.remove("is-character-select");
   const scene = state.story[sceneId];
   const character = data.characters[state.hero];
+  if (!scene.choices.length) window.RedxjakAnalytics?.track("story_completed", { story: state.storyId });
 
   heroLabel.textContent = `${character.name}'s story`;
   sceneTitle.textContent = scene.title;
   storyText.innerHTML = paragraphs(scene.text);
   choices.replaceChildren(
-    ...scene.choices.map(([label, next]) => button(label, () => {
+    ...scene.choices.map(([label, next], index) => button(label, () => {
+      window.RedxjakAnalytics?.track("choice_made", { choice_index: index });
       showScene(next);
     }))
   );
