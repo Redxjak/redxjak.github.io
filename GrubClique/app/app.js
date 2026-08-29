@@ -20,6 +20,7 @@ let localFilters = { cuisine: "Any", maxPrice: 4, maxDistance: 50, minimumRating
 let restaurants = [];
 let swipeIndex = 0;
 let selectedLocation = null;
+let editingHuntLocation = false;
 let pendingAvatar = null;
 let pollTimer = null;
 let creatingAccount = false;
@@ -47,6 +48,7 @@ function friendlyError(error, fallback) {
   if (value.includes("clique not found") || value.includes("invite")) return "We couldn't find that invite code.";
   if (value.includes("only the clique admin")) return "Only the Clique admin can make that change.";
   if (value.includes("only accepted friends")) return "Add and accept this person as a friend before adding them to the Clique.";
+  if (value.includes("two active GrubHunts")) return "This Clique already has the maximum of two active GrubHunts.";
   if (value.includes("already has an active")) return "This Clique already has an active GrubHunt.";
   if (value.includes("authentication")) return "Your session expired. Please sign in again.";
   return fallback;
@@ -225,9 +227,24 @@ $("#setup-form").addEventListener("submit", async (event) => {
   await loadGroup(true);
 });
 
-$("#new-grub-hunt").addEventListener("click", () => {
+function prepareHuntLocationForm(editing = false) {
+  editingHuntLocation = editing;
   selectedLocation = null; $("#search-area").value = ""; $("#setup-radius").value = "25"; $("#setup-radius-label").textContent = "25";
+  if (editing) {
+    $("#search-area").value = clique.state?.search_area || "";
+    const miles = Math.max(1, Math.min(50, Math.round(Number(clique.state?.radius_m || 40234) / 1609.344)));
+    $("#setup-radius").value = String(miles); $("#setup-radius-label").textContent = String(miles);
+  }
+  $("#hunt-setup-eyebrow").textContent = editing ? "Current GrubHunt" : "New GrubHunt";
+  $("#hunt-setup-title").textContent = editing ? "Edit location" : "Choose where to hunt";
+  $("#hunt-setup-submit").textContent = editing ? "Update location" : "Create GrubHunt";
   setMessage("#hunt-setup-message"); showPanel("huntsetup");
+}
+
+$("#new-grub-hunt").addEventListener("click", async () => {
+  const activeCount = (group.state?.grub_hunts || []).filter((hunt) => hunt.status === "lobby" || hunt.status === "swiping").length;
+  if (activeCount >= 2) return;
+  prepareHuntLocationForm(false);
 });
 
 $("#hunt-setup-form").addEventListener("submit", async (event) => {
@@ -241,6 +258,22 @@ $("#hunt-setup-form").addEventListener("submit", async (event) => {
   try {
     const search = await searchNearbyRestaurants(selectedLocation || { searchArea: area }, radiusMiles);
     const location = search.searchCenter;
+    if (editingHuntLocation) {
+      if (clique.status === "swiping" && !confirm("Changing the location will clear everyone's current swipes and matches and return this GrubHunt to the lobby. Continue?")) return;
+      const { error } = await supabase.rpc("replace_grub_hunt_location", {
+        target_clique: clique.id, latitude: location.latitude, longitude: location.longitude,
+        radius_m: Math.round(radiusMiles * 1609.344), search_area: area === "Current location" ? null : area,
+        items: search.items,
+      });
+      if (error) throw error;
+      swipeIndex = 0;
+      localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+      clique.status = "lobby";
+      editingHuntLocation = false;
+      setMessage("#hunt-setup-message");
+      await loadClique(true);
+      return;
+    }
     const { data, error } = await supabase.rpc("create_grub_hunt", {
       target_friend_clique: group.id,
       latitude: location.latitude,
@@ -355,10 +388,10 @@ async function loadGroup(openPanel = false) {
   $("#leave-group").classList.remove("hidden");
   $("#delete-group").classList.toggle("hidden", !group.isAdmin);
   const hunts = state.grub_hunts || [];
-  const active = hunts.find((hunt) => hunt.status === "lobby" || hunt.status === "swiping");
-  $("#active-hunt-summary").textContent = active ? `${grubHuntStatusLabel(active.status)} · started by ${active.started_by || "a member"}` : "No active GrubHunt.";
-  $("#new-grub-hunt").disabled = Boolean(active);
-  $("#new-grub-hunt").textContent = active ? (active.status === "swiping" ? "GrubHunt in progress" : "GrubHunt lobby open") : "Start a GrubHunt";
+  const active = hunts.filter((hunt) => hunt.status === "lobby" || hunt.status === "swiping");
+  $("#active-hunt-summary").textContent = active.length ? `${active.length} of 2 active GrubHunts` : "No active GrubHunt.";
+  $("#new-grub-hunt").disabled = active.length >= 2;
+  $("#new-grub-hunt").textContent = active.length >= 2 ? "Two active GrubHunts (maximum)" : "Start a new GrubHunt";
   const list = $("#grub-hunts-list");
   if (!hunts.length) list.textContent = "No GrubHunts yet. Any member can start the first one.";
   else list.replaceChildren(...hunts.map((hunt) => {
@@ -463,6 +496,15 @@ async function loadClique(openPanel = false) {
   clique = { ...clique, code: state.invite_code, isHost: state.is_host, status: state.status, state };
   preferences = prefResult.data?.[0] || preferences;
   restaurants = state.restaurants || [];
+  const poolKey = `grubclique-pool-${clique.id}`;
+  const poolFingerprint = `${restaurants.length}:${restaurants[0]?.id || 0}:${restaurants.at(-1)?.id || 0}`;
+  const previousPool = localStorage.getItem(poolKey);
+  if (previousPool && previousPool !== poolFingerprint) {
+    swipeIndex = 0;
+    localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+    $("#undo-swipe").disabled = true;
+  }
+  localStorage.setItem(poolKey, poolFingerprint);
   refreshCuisineOptions();
   $("#clique-code").textContent = `${group?.name || "Clique"} GrubHunt`;
   renderMembers(state.members || []);
@@ -480,6 +522,7 @@ async function loadClique(openPanel = false) {
     swipeButton.textContent = "Start swiping";
   }
   $("#end-clique").classList.toggle("hidden", state.status === "finished");
+  $("#edit-hunt-location").classList.toggle("hidden", state.status === "finished" || !state.is_host);
   renderChat(state.messages || []);
   if (openPanel) showPanel("clique");
   if (!$("#swipe-panel").classList.contains("hidden")) renderRestaurant();
@@ -513,7 +556,7 @@ $("#start-over").addEventListener("click", () => {
   renderRestaurant();
 });
 async function endClique(targetClique, title) {
-  if (!confirm(`Complete this GrubHunt? Members will no longer be able to continue swiping. Matches and chat history will be preserved.`)) return;
+  if (!confirm(`End this GrubHunt? Members will no longer be able to continue swiping. Matches and chat history will be preserved.`)) return;
   const { error } = await supabase.rpc("finish_clique", { target_clique: targetClique });
   if (error) return alert(friendlyError(error, "We couldn't complete that GrubHunt. Please try again."));
   if (clique?.id === targetClique) { stopPolling(); clique.status = "finished"; }
@@ -521,6 +564,7 @@ async function endClique(targetClique, title) {
   await loadGroup(true);
 }
 $("#end-clique").addEventListener("click", () => endClique(clique.id));
+$("#edit-hunt-location").addEventListener("click", () => prepareHuntLocationForm(true));
 $("#open-chat").addEventListener("click", () => showPanel("chat"));
 $("#open-filters").addEventListener("click", () => {
   $$("input[name=meal]").forEach((input) => { input.checked = preferences.meal_periods.includes(input.value); input.disabled = !clique.isHost; });

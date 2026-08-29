@@ -1,5 +1,5 @@
-const CACHE = "grubclique-web-v074-grubhunts-analytics-17";
-const SHELL = ["./", "app.css?v=16", "app.js?v=17", "../../assets/analytics-config.js", "../../assets/analytics.js", "manifest.webmanifest", "../assets/app-icon.png"];
+const CACHE = "grubclique-web-v074-two-active-grubhunts-19";
+const SHELL = ["./", "app.css?v=19", "app.js?v=19", "../../assets/analytics-config.js", "../../assets/analytics.js", "manifest.webmanifest", "../assets/app-icon.png"];
 self.addEventListener("install", (event) => event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL))));
 self.addEventListener("activate", (event) => event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))));
 self.addEventListener("fetch", (event) => {
