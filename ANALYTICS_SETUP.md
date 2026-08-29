@@ -8,7 +8,7 @@ The repository contains a privacy-first analytics client, private dashboard, dat
 2. Install and authenticate the current Supabase CLI, then link this repository to that new project. Check commands with `supabase --help` before running them because the CLI changes frequently.
 3. Apply `supabase/migrations/20260828000000_private_cross_app_analytics.sql` to the new project.
 4. Generate a high-entropy rate-limit salt and save it as the Edge Function secret `ANALYTICS_RATE_LIMIT_SALT`. Never place it in this repository.
-5. Deploy `collect`, `dashboard-login`, and `dashboard-data` using `supabase/config.toml`.
+5. Deploy `collect`, `dashboard-login`, `dashboard-data`, `site-content`, and `admin-site` using `supabase/config.toml`.
 6. Run the database security and performance advisors and resolve any findings before enabling collection.
 
 ## Recreate the owner login
@@ -25,7 +25,7 @@ The public dashboard asks only for `redxjak` and the password. The private email
 
 ## Connect the website
 
-The production project URL and browser-safe publishable key are stored in `assets/analytics-config.js`. Never put a secret or service-role key there. Deploy the website, open `/analytics/`, and verify login before testing collection.
+The production project URL and browser-safe publishable key are stored in `assets/analytics-config.js`. Never put a secret or service-role key there. Deploy the website, open `/admin/`, and verify login, homepage editing, and analytics before testing collection. The legacy `/analytics/` dashboard can remain available, but `/admin/` is the primary owner workspace.
 
 ## Event contract for other apps
 

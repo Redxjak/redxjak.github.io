@@ -1,6 +1,6 @@
 export const baseHeaders = {
   "Access-Control-Allow-Headers": "authorization, apikey, content-type",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
   "Content-Type": "application/json; charset=utf-8",
 };
 

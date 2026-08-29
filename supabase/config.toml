@@ -8,3 +8,9 @@ verify_jwt = false
 
 [functions.dashboard-data]
 verify_jwt = false
+
+[functions.site-content]
+verify_jwt = false
+
+[functions.admin-site]
+verify_jwt = false
