@@ -111,6 +111,22 @@
     for (const item of rows) { const row = document.createElement("tr"); [new Date(item.occurred_at).toLocaleString(), item.app, item.screen, item.error_type].forEach((value) => { const cell = document.createElement("td"); cell.textContent = safe(value); row.append(cell); }); body.append(row); }
   }
 
+  function renderAppTabs(apps) {
+    const tabs = document.querySelector("#app-tabs");
+    const selector = document.querySelector("#app-filter");
+    if (selector.options.length === 1) apps.forEach((item) => selector.add(new Option(item.name, item.id)));
+    if (tabs.children.length === 1) for (const item of apps) {
+      const button = document.createElement("button"); button.type = "button"; button.className = "app-tab"; button.dataset.app = item.id; button.setAttribute("role", "listitem"); button.setAttribute("aria-pressed", "false");
+      const name = document.createElement("span"); name.textContent = item.name;
+      const status = document.createElement("small"); status.textContent = "Analytics connected";
+      button.append(name, status); tabs.append(button);
+    }
+    tabs.querySelectorAll(".app-tab").forEach((button) => {
+      const active = button.dataset.app === selector.value;
+      button.classList.toggle("active", active); button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
   async function loadAnalytics() {
     const message = document.querySelector("#analytics-message"); message.textContent = "";
     const app = document.querySelector("#app-filter").value; const days = document.querySelector("#range-filter").value;
@@ -120,7 +136,7 @@
       document.querySelector("#date-caption").textContent = `${app === "all" ? "All apps" : document.querySelector("#app-filter").selectedOptions[0].textContent} · ${days === "3650" ? "all available days" : `last ${days} days`}`;
       for (const key of ["visits", "sessions", "events", "errors"]) document.querySelector(`#metric-${key}`).textContent = format(data.totals[key]);
       document.querySelector("#overview-visits").textContent = format(data.totals.visits); document.querySelector("#overview-sessions").textContent = format(data.totals.sessions); document.querySelector("#overview-errors").textContent = format(data.totals.errors);
-      const selector = document.querySelector("#app-filter"); if (selector.options.length === 1) data.apps.forEach((item) => selector.add(new Option(item.name, item.id)));
+      renderAppTabs(data.apps);
       renderChart(data.daily); rankList("#top-events", data.topEvents); rankList("#top-screens", data.topScreens); rankList("#app-totals", data.appTotals); rankList("#referrers", data.referrers); rankList("#devices", data.devices); rankList("#countries", data.countries); renderErrors(data.recentErrors);
     } catch (error) { if (![401, 403].includes(error.status)) message.textContent = "Analytics could not be loaded. Try again in a moment."; }
   }
@@ -146,6 +162,10 @@
   document.querySelectorAll(".nav-item").forEach((button) => button.addEventListener("click", () => navigate(button.dataset.panel)));
   document.querySelectorAll("[data-go]").forEach((button) => button.addEventListener("click", () => navigate(button.dataset.go)));
   document.querySelector("#app-filter").addEventListener("change", loadAnalytics); document.querySelector("#range-filter").addEventListener("change", loadAnalytics);
+  document.querySelector("#app-tabs").addEventListener("click", (event) => {
+    const button = event.target.closest(".app-tab"); if (!button) return;
+    document.querySelector("#app-filter").value = button.dataset.app; loadAnalytics();
+  });
   document.querySelector("#menu-button").addEventListener("click", () => document.querySelector("#admin-view").classList.toggle("menu-open"));
   document.querySelector("#sign-out").addEventListener("click", () => { saveSession(null); show(document.querySelector("#login-view")); });
 

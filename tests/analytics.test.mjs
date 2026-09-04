@@ -67,6 +67,9 @@ test("admin workspace reuses owner auth and protects content writes", async () =
   assert.match(page, /Analytics/);
   assert.match(client, /dashboard-login/);
   assert.match(client, /method: "PUT"/);
+  assert.match(page, /id="app-tabs"/);
+  assert.match(page, /data-app="all"/);
+  assert.match(client, /renderAppTabs\(data\.apps\)/);
   assert.match(endpoint, /auth\.getUser\(token\)/);
   assert.match(endpoint, /analytics_admins/);
   assert.match(endpoint, /announcementUrl/);

@@ -1,0 +1,8 @@
+.source-switcher{display:flex;align-items:center;gap:22px;margin:-10px 0 22px;padding:16px 0;border-block:1px solid var(--line)}
+.source-switcher h2{margin:0;font-size:16px}.source-switcher .eyebrow{margin-bottom:4px}.source-switcher>div:first-child{flex:0 0 145px}
+.source-switcher select{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.app-tabs{display:flex;min-width:0;gap:8px;overflow-x:auto;padding:3px 3px 7px;scrollbar-color:var(--line) transparent}
+.app-tab{display:grid;min-width:150px;gap:3px;padding:11px 13px;color:var(--text);background:#111412;border:1px solid var(--line);border-radius:10px;text-align:left;white-space:nowrap}
+.app-tab span{font-size:12px;font-weight:700}.app-tab small{color:var(--muted);font:9px "DM Mono"}.app-tab:hover{border-color:#56615b}
+.app-tab.active{color:#10130f;background:var(--lime);border-color:var(--lime)}.app-tab.active small{color:rgba(16,19,15,.7)}
+@media(max-width:580px){.source-switcher{align-items:flex-start;flex-direction:column;gap:10px}.source-switcher>div:first-child{flex-basis:auto;width:100%}.app-tabs{width:100%}.app-tab{min-width:138px}}
