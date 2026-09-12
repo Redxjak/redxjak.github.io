@@ -25,12 +25,17 @@ let pendingAvatar = null;
 let pollTimer = null;
 let creatingAccount = false;
 let installPrompt = null;
+let chatMode = "hunt";
+let chatOrigin = "clique";
+let completionProgress = null;
 
 function showPanel(name) {
   panels.forEach((panel) => $(`#${panel}-panel`)?.classList.toggle("hidden", panel !== name));
   $(".tab-bar").classList.toggle("hidden", name === "onboarding");
   $$(".tab-bar button").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
-  if (["clique", "swipe", "chat"].includes(name) && clique) startPolling(); else stopPolling();
+  if (name === "chat" && chatMode === "group" && group) startGroupPolling();
+  else if (["clique", "swipe", "chat"].includes(name) && clique) startPolling();
+  else stopPolling();
   window.scrollTo({ top: 0, behavior: "smooth" });
   window.RedxjakAnalytics?.track("screen_viewed", {}, { screen: `/GrubClique/app/${name}` });
 }
@@ -376,13 +381,18 @@ async function openGrubHunt(entry) {
 
 async function loadGroup(openPanel = false) {
   if (!group?.id) return;
-  const { data, error } = await supabase.rpc("get_friend_clique_state", { target_friend_clique: group.id });
+  const [{ data, error }, messagesResult] = await Promise.all([
+    supabase.rpc("get_friend_clique_state", { target_friend_clique: group.id }),
+    supabase.rpc("get_friend_clique_messages", { target_friend_clique: group.id }),
+  ]);
   if (error) return setMessage("#group-message", friendlyError(error, "We couldn't refresh this Clique."));
   const state = data?.[0]; if (!state) return;
+  state.messages = messagesResult.error ? (group.state?.messages || []) : (messagesResult.data || []);
   group = { ...group, id: state.friend_clique_id, code: state.invite_code, name: state.clique_name, isAdmin: state.is_admin, state };
   $("#group-name").textContent = group.name;
   $("#group-code").textContent = `Invite code ${group.code}`;
   renderGroupMembers(state.members || []);
+  if (chatMode === "group") renderChat(state.messages || []);
   $("#manage-members-form").classList.toggle("hidden", !group.isAdmin);
   $("#rename-clique").classList.toggle("hidden", !group.isAdmin);
   $("#leave-group").classList.remove("hidden");
@@ -392,6 +402,7 @@ async function loadGroup(openPanel = false) {
   $("#active-hunt-summary").textContent = active.length ? `${active.length} of 2 active GrubHunts` : "No active GrubHunt.";
   $("#new-grub-hunt").disabled = active.length >= 2;
   $("#new-grub-hunt").textContent = active.length >= 2 ? "Two active GrubHunts (maximum)" : "Start a new GrubHunt";
+  if (group.isAdmin) await loadCliqueFriendPicker(state.members || []);
   const list = $("#grub-hunts-list");
   if (!hunts.length) list.textContent = "No GrubHunts yet. Any member can start the first one.";
   else list.replaceChildren(...hunts.map((hunt) => {
@@ -406,12 +417,21 @@ async function loadGroup(openPanel = false) {
 }
 
 $("#manage-members-form").addEventListener("submit", async (event) => {
-  event.preventDefault(); const username = $("#clique-friend-username").value.trim().replace(/^@/, "").toLowerCase();
+  event.preventDefault(); const username = ($("#clique-friend-picker").value || $("#clique-friend-username").value).trim().replace(/^@/, "").toLowerCase();
   if (!username) return setMessage("#group-message", "Enter a friend's username.");
   const { error } = await supabase.rpc("add_friend_to_clique", { target_friend_clique: group.id, target_username: username });
   if (error) return setMessage("#group-message", friendlyError(error, error.message || "We couldn't add that friend."));
-  $("#clique-friend-username").value = ""; setMessage("#group-message", "Friend added to the Clique.", true); await loadGroup(false);
+  $("#clique-friend-username").value = ""; $("#clique-friend-picker").value = ""; setMessage("#group-message", "Friend added to the Clique.", true); await loadGroup(false);
 });
+
+async function loadCliqueFriendPicker(members) {
+  const picker = $("#clique-friend-picker");
+  const memberIds = new Set(members.map((member) => member.user_id));
+  const { data, error } = await supabase.rpc("list_friends");
+  const friends = error ? [] : (data || []).filter((friend) => friend.status === "accepted" && !memberIds.has(friend.user_id));
+  picker.replaceChildren(new Option(friends.length ? "Select a friend" : "No other accepted friends", ""), ...friends.map((friend) => new Option(`${friend.display_name} (@${friend.username})`, friend.username)));
+  picker.disabled = !friends.length;
+}
 
 $("#rename-clique").addEventListener("click", async () => {
   const name = prompt("Rename this Clique", group.name)?.trim();
@@ -486,16 +506,29 @@ function refreshCuisineOptions() {
 
 async function loadClique(openPanel = false) {
   if (!clique?.id) return;
-  const [{ data, error }, prefResult] = await Promise.all([
+  const [{ data, error }, prefResult, progressResult, hiddenResult] = await Promise.all([
     supabase.rpc("get_clique_state", { target_clique: clique.id }),
     supabase.rpc("get_clique_preferences", { target_clique: clique.id }),
+    supabase.rpc("get_grub_hunt_progress", { target_clique: clique.id }),
+    supabase.rpc("list_hidden_restaurants_v2"),
   ]);
   if (error) return setMessage("#clique-message", friendlyError(error, "We couldn't refresh this clique."));
   const state = data?.[0];
   if (!state) return;
   clique = { ...clique, code: state.invite_code, isHost: state.is_host, status: state.status, state };
   preferences = prefResult.data?.[0] || preferences;
-  restaurants = state.restaurants || [];
+  completionProgress = progressResult.error ? null : progressResult.data?.[0] || null;
+  const everyoneFinished = Number(completionProgress?.total_members || 0) > 0
+    && Number(completionProgress.finished_members) === Number(completionProgress.total_members);
+  const completionKey = `grubclique-complete-notified-${clique.id}`;
+  if (everyoneFinished && !localStorage.getItem(completionKey)) {
+    localStorage.setItem(completionKey, "true");
+    if ("Notification" in window && localStorage.getItem("grubclique-match-notifications") !== "false" && Notification.permission === "granted") {
+      new Notification("GrubHunt complete", { body: "Everyone has finished swiping. Check your matches!", icon: "../assets/app-icon.png" });
+    }
+  }
+  const hiddenBrands = new Set((hiddenResult.data || []).map((entry) => entry.brand_key));
+  restaurants = (state.restaurants || []).filter((restaurant) => !hiddenBrands.has(restaurantBrandKey(restaurant.name)));
   const poolKey = `grubclique-pool-${clique.id}`;
   const poolFingerprint = `${restaurants.length}:${restaurants[0]?.id || 0}:${restaurants.at(-1)?.id || 0}`;
   const previousPool = localStorage.getItem(poolKey);
@@ -532,6 +565,10 @@ function startPolling() {
   stopPolling();
   pollTimer = setInterval(() => loadClique(false), 2500);
 }
+function startGroupPolling() {
+  stopPolling();
+  pollTimer = setInterval(() => loadGroup(false), 2500);
+}
 function stopPolling() { if (pollTimer) clearInterval(pollTimer); pollTimer = null; }
 
 $("#start-swiping").addEventListener("click", async () => {
@@ -565,7 +602,24 @@ async function endClique(targetClique, title) {
 }
 $("#end-clique").addEventListener("click", () => endClique(clique.id));
 $("#edit-hunt-location").addEventListener("click", () => prepareHuntLocationForm(true));
-$("#open-chat").addEventListener("click", () => showPanel("chat"));
+function openHuntChat(origin) {
+  chatMode = "hunt"; chatOrigin = origin;
+  $("#chat-eyebrow").textContent = "Your GrubHunt";
+  $("#chat-title").textContent = "Chat";
+  $("#chat-input").placeholder = "Message your GrubHunt";
+  renderChat(clique?.state?.messages || []);
+  showPanel("chat");
+}
+
+$("#open-chat").addEventListener("click", () => openHuntChat("clique"));
+$("#open-group-chat").addEventListener("click", () => {
+  chatMode = "group"; chatOrigin = "group";
+  $("#chat-eyebrow").textContent = group.name;
+  $("#chat-title").textContent = "Clique chat";
+  $("#chat-input").placeholder = "Message your Clique";
+  renderChat(group.state?.messages || []);
+  showPanel("chat");
+});
 $("#open-filters").addEventListener("click", () => {
   $$("input[name=meal]").forEach((input) => { input.checked = preferences.meal_periods.includes(input.value); input.disabled = !clique.isHost; });
   $("#sort-mode").value = preferences.sort_mode;
@@ -618,6 +672,7 @@ $("#filters-form").addEventListener("submit", async (event) => {
 function priceLabel(value) {
   return { PRICE_LEVEL_FREE: "Free", PRICE_LEVEL_INEXPENSIVE: "$", PRICE_LEVEL_MODERATE: "$$", PRICE_LEVEL_EXPENSIVE: "$$$", PRICE_LEVEL_VERY_EXPENSIVE: "$$$$" }[value] || "Price unavailable";
 }
+function restaurantBrandKey(value) { return String(value || "").trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim(); }
 function distanceLabel(meters) { return Number.isFinite(meters) ? `${(meters / 1609.344).toFixed(1)} mi` : "Distance unavailable"; }
 function renderRestaurant() {
   const visibleRestaurants = filteredRestaurants();
@@ -626,14 +681,24 @@ function renderRestaurant() {
   $("#swipe-progress").textContent = `${Math.min(swipeIndex + 1, visibleRestaurants.length)}/${visibleRestaurants.length}`;
   if (!restaurant) {
     $("#restaurant-name").textContent = "You're all caught up";
-    $("#restaurant-meta").textContent = visibleRestaurants.length ? "Wait for your clique's matches or return to the lobby." : "No restaurants match those filters. Change your filters to see more.";
+    const completeSharedList = visibleRestaurants.length === restaurants.length;
+    $("#restaurant-meta").textContent = visibleRestaurants.length
+      ? (completeSharedList ? "Wait for your Clique's matches or return to the GrubHunt overview." : "You finished this filtered list. Change your filters to see the remaining restaurants.")
+      : "No restaurants match those filters. Change your filters to see more.";
     $("#restaurant-hours").textContent = "";
     $("#restaurant-photo").textContent = "✓";
     $("#restaurant-links").replaceChildren();
+    $("#hide-restaurant").classList.add("hidden");
+    const finished = Number(completionProgress?.finished_members || 0);
+    const total = Number(completionProgress?.total_members || 0);
+    $("#completion-progress").textContent = total ? `${finished} of ${total} members finished swiping` : "";
+    $("#completion-progress").classList.toggle("hidden", !total || !completeSharedList);
     $("#pass").disabled = true; $("#like").disabled = true;
     return;
   }
   $("#pass").disabled = false; $("#like").disabled = false;
+  $("#hide-restaurant").classList.remove("hidden");
+  $("#completion-progress").classList.add("hidden");
   $("#restaurant-photo").textContent = "🍽️";
   $("#restaurant-name").textContent = restaurant.name;
   $("#restaurant-meta").textContent = `${restaurant.cuisine || "Restaurant"} · ${priceLabel(restaurant.price_level)} · ${distanceLabel(restaurant.distance_m)}`;
@@ -667,7 +732,16 @@ async function recordSwipe(liked) {
 }
 $("#pass").addEventListener("click", () => recordSwipe(false));
 $("#like").addEventListener("click", () => recordSwipe(true));
-$("#swipe-chat").addEventListener("click", () => showPanel("chat"));
+$("#swipe-chat").addEventListener("click", () => openHuntChat("swipe"));
+$("#hide-restaurant").addEventListener("click", async () => {
+  const restaurant = filteredRestaurants()[swipeIndex];
+  if (!restaurant || !confirm(`Never suggest ${restaurant.name} again? This hides the restaurant across future GrubHunts until you restore it in Account.`)) return;
+  const { error } = await supabase.rpc("hide_restaurant", { target_place_id: restaurant.place_id, target_name: restaurant.name, target_cuisine: restaurant.cuisine || null, target_maps_url: restaurant.maps_url || null });
+  if (error) return alert(friendlyError(error, "We couldn't hide that restaurant."));
+  const brandKey = restaurantBrandKey(restaurant.name);
+  restaurants = restaurants.filter((item) => restaurantBrandKey(item.name) !== brandKey);
+  renderRestaurant();
+});
 $("#undo-swipe").addEventListener("click", async () => {
   $("#undo-swipe").disabled = true;
   const { data, error } = await supabase.rpc("undo_last_swipe", { target_clique: clique.id });
@@ -679,17 +753,21 @@ $("#undo-swipe").addEventListener("click", async () => {
   renderRestaurant();
 });
 
-$("#delete-group").addEventListener("click", async () => {
-  if (!confirm(`Permanently delete ${group.name}? This removes the Clique and all of its GrubHunts, messages, swipes, and shared match history for every member. This cannot be undone.`)) return;
-  const typedName = prompt(`Type ${group.name} to confirm deletion.`);
-  if (typedName !== group.name) return setMessage("#group-message", "Clique deletion canceled. The name did not match.");
+$("#delete-group").addEventListener("click", () => {
+  $("#delete-clique-title").textContent = `Delete ${group.name}?`;
+  $("#delete-clique-warning").textContent = `Deleting “${group.name}” permanently removes this Clique and all of its GrubHunts, messages, swipes, matches, and related History for every member. This cannot be undone.`;
+  $("#delete-clique-dialog").showModal();
+});
+
+$("#delete-clique-dialog").addEventListener("close", async (event) => {
+  if (event.currentTarget.returnValue !== "delete" || !group) return;
   const { error } = await supabase.rpc("delete_friend_clique", { target_friend_clique: group.id });
   if (error) return setMessage("#group-message", friendlyError(error, "We couldn't delete this Clique."));
   group = null; clique = null; restaurants = []; await loadCliques(); showPanel("cliques");
 });
 $("#dismiss-match").addEventListener("click", () => $("#match-card").classList.add("hidden"));
 $("#swipe-filters").addEventListener("click", () => $("#open-filters").click());
-$("#match-chat").addEventListener("click", () => { $("#match-card").classList.add("hidden"); showPanel("chat"); });
+$("#match-chat").addEventListener("click", () => { $("#match-card").classList.add("hidden"); openHuntChat("match"); });
 $("#finish-session").addEventListener("click", () => { $("#match-card").classList.add("hidden"); showPanel("clique"); });
 
 function renderChat(messages) {
@@ -705,9 +783,19 @@ function renderChat(messages) {
 $("#chat-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const body = $("#chat-input").value.trim(); if (!body) return;
-  const { error } = await supabase.rpc("send_clique_message", { target_clique: clique.id, message_body: body });
+  const { error } = chatMode === "group"
+    ? await supabase.rpc("send_friend_clique_message", { target_friend_clique: group.id, message_body: body })
+    : await supabase.rpc("send_clique_message", { target_clique: clique.id, message_body: body });
   if (error) return alert("We couldn't send that message.");
-  $("#chat-input").value = ""; await loadClique(false);
+  $("#chat-input").value = "";
+  if (chatMode === "group") await loadGroup(false); else await loadClique(false);
+});
+
+$("#chat-back").addEventListener("click", async () => {
+  if (chatMode === "group" || chatOrigin === "group") { await loadGroup(false); return showPanel("group"); }
+  if (chatOrigin === "match") { await loadClique(false); showPanel("swipe"); renderRestaurant(); return $("#match-card").classList.remove("hidden"); }
+  if (chatOrigin === "swipe") { await loadClique(false); showPanel("swipe"); return renderRestaurant(); }
+  await loadClique(false); showPanel(chatOrigin === "filters" ? "filters" : "clique");
 });
 
 async function loadHistory() {
@@ -744,14 +832,27 @@ function renderFriends(friends) {
     const title = document.createElement("h2"); title.textContent = friend.display_name;
     const meta = document.createElement("p"); meta.className = "muted"; meta.textContent = `@${friend.username}`;
     copy.append(title, meta);
-    const status = document.createElement(friend.status === "accepted" ? "span" : friend.incoming ? "button" : "span");
-    status.textContent = friend.status === "accepted" ? "Friend ✓" : friend.incoming ? "Accept" : "Requested";
-    if (status.tagName === "BUTTON") {
-      status.type = "button"; status.className = "text-button";
-      status.addEventListener("click", async () => { await sendFriendRequest(friend.username); });
-    } else status.className = friend.status === "accepted" ? "success-label" : "muted";
-    card.append(copy, status); return card;
+    const actions = document.createElement("div"); actions.className = "friend-actions";
+    if (friend.status === "accepted") {
+      const label = document.createElement("span"); label.className = "success-label"; label.textContent = "Friend ✓";
+      actions.append(label, friendshipButton("Remove", "remove", friend));
+    } else if (friend.incoming) {
+      actions.append(friendshipButton("Accept", "accept", friend, "secondary-button"), friendshipButton("Decline", "decline", friend));
+    } else actions.append(friendshipButton("Cancel request", "cancel", friend));
+    card.append(copy, actions); return card;
   }));
+}
+
+function friendshipButton(label, action, friend, style = "danger-text") {
+  const button = document.createElement("button"); button.type = "button"; button.className = `${style} compact-button`; button.textContent = label;
+  button.addEventListener("click", async () => {
+    if (action === "remove" && !confirm(`Remove ${friend.display_name} from your friends?`)) return;
+    const { error } = await supabase.rpc("manage_friendship", { target_user: friend.user_id, requested_action: action });
+    if (error) return setMessage("#friends-message", friendlyError(error, "We couldn't update that friend request."));
+    setMessage("#friends-message", action === "accept" ? "Friend request accepted." : "Friends updated.", true);
+    await loadFriends();
+  });
+  return button;
 }
 
 async function loadFriends() {
@@ -884,6 +985,24 @@ $("#save-phone").addEventListener("click", async () => {
   setMessage("#settings-message", "Contact number saved for discovery.", true);
 });
 
+async function loadHiddenRestaurants() {
+  const list = $("#hidden-restaurants-list");
+  const { data, error } = await supabase.rpc("list_hidden_restaurants_v2");
+  if (error) { list.textContent = "Hidden restaurants couldn't be loaded."; return; }
+  if (!data?.length) { list.textContent = "No hidden restaurants."; return; }
+  list.replaceChildren(...data.map((entry) => {
+    const card = document.createElement("article"); card.className = "history-card";
+    const copy = document.createElement("div"); const title = document.createElement("strong"); title.textContent = entry.restaurant_name; copy.append(title);
+    const restore = document.createElement("button"); restore.type = "button"; restore.className = "secondary-button compact-button"; restore.textContent = "Restore";
+    restore.addEventListener("click", async () => {
+      const result = await supabase.rpc("restore_hidden_restaurant_v2", { target_brand_key: entry.brand_key });
+      if (result.error) return setMessage("#settings-message", "We couldn't restore that restaurant.");
+      setMessage("#settings-message", "Restaurant restored.", true); await loadHiddenRestaurants();
+    });
+    card.append(copy, restore); return card;
+  }));
+}
+
 $("#clear-session").addEventListener("click", () => {
   stopPolling();
   if (clique?.id) localStorage.removeItem(`grubclique-index-${clique.id}`);
@@ -906,7 +1025,7 @@ $$(".tab-bar button").forEach((button) => button.addEventListener("click", async
   if (view === "cliques") await loadCliques();
   if (view === "history") await loadHistory();
   if (view === "friends") await loadFriends();
-  if (view === "settings") refreshAccountControls();
+  if (view === "settings") { refreshAccountControls(); await loadHiddenRestaurants(); }
   showPanel(view);
 }));
 $$(".back-home").forEach((button) => button.addEventListener("click", () => showPanel("home")));
@@ -916,7 +1035,7 @@ $$(".back-clique").forEach((button) => button.addEventListener("click", () => sh
 
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); installPrompt = event; $("#install-app").classList.remove("hidden"); });
 $("#install-app").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $("#install-app").classList.add("hidden"); });
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=17");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=21");
 
 supabase.auth.onAuthStateChange((_event, nextSession) => {
   const changed = session?.user?.id !== nextSession?.user?.id;

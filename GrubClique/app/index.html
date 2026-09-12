@@ -8,7 +8,7 @@
     <title>GrubClique Web</title>
     <link rel="icon" href="../assets/app-icon.png">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="app.css?v=19">
+    <link rel="stylesheet" href="app.css?v=21">
   </head>
   <body>
     <header class="app-header">
@@ -91,12 +91,12 @@
 
         <section id="group-panel" class="panel hidden">
           <div class="section-heading centered-heading"><button class="icon-button back-cliques" type="button" aria-label="Back">←</button><div><p class="eyebrow">Your Clique</p><h1 id="group-name">Clique</h1><p id="group-code" class="muted"></p></div></div>
-          <div class="button-row"><button id="share-clique" class="secondary-button" type="button">Share Clique invite</button><button id="rename-clique" class="secondary-button hidden" type="button">Rename Clique</button></div>
+          <div class="button-row"><button id="share-clique" class="secondary-button" type="button">Share Clique invite</button><button id="open-group-chat" class="secondary-button" type="button">Open Clique chat</button><button id="rename-clique" class="secondary-button hidden" type="button">Rename Clique</button></div>
           <div class="content-grid">
             <article class="feature-card"><h2>Members</h2><ul id="group-member-list" class="member-list"></ul></article>
             <article class="feature-card"><h2>GrubHunts</h2><p id="active-hunt-summary" class="muted">No active GrubHunt.</p><button id="new-grub-hunt" class="primary-button" type="button">Start a GrubHunt</button></article>
           </div>
-          <form id="manage-members-form" class="feature-card form-stack hidden"><h2>Manage members</h2><label>Friend's username<input id="clique-friend-username" autocomplete="off" placeholder="@username"></label><button class="secondary-button" type="submit">Add friend to Clique</button><p class="muted small">Only accepted friends can be added. Use Remove beside a member to take them out of the Clique.</p></form>
+          <form id="manage-members-form" class="feature-card form-stack hidden"><h2>Manage members</h2><label>Choose a friend<select id="clique-friend-picker"><option value="">Select a friend</option></select></label><p class="muted small centered">or</p><label>Friend's username<input id="clique-friend-username" autocomplete="off" placeholder="@username"></label><button class="secondary-button" type="submit">Add friend to Clique</button><p class="muted small">Accepted friends who are not already members appear first. You can also enter an exact username.</p></form>
           <h2>GrubHunt history</h2><div id="grub-hunts-list" class="history-list"></div>
           <div class="button-row danger-actions"><button id="leave-group" class="danger-text" type="button">Leave Clique</button><button id="delete-group" class="danger-button hidden" type="button">Delete Clique</button></div>
           <p id="group-message" class="form-message" aria-live="polite"></p>
@@ -147,15 +147,15 @@
 
         <section id="swipe-panel" class="panel hidden">
           <div class="section-heading centered-heading heading-with-action"><button class="icon-button back-group" type="button" aria-label="Back to Clique">←</button><div><p id="swipe-progress" class="eyebrow">0/0</p><h1>Everyone swipes</h1></div><button id="swipe-filters" class="secondary-button compact-button heading-action" type="button">Filters</button></div>
-          <article id="restaurant-card" class="restaurant-card"><div id="restaurant-photo" class="restaurant-photo">🍽️</div><div class="restaurant-copy"><h2 id="restaurant-name">Restaurant</h2><p id="restaurant-meta" class="muted"></p><p id="restaurant-hours"></p><div id="restaurant-links" class="link-row"></div></div></article>
+          <article id="restaurant-card" class="restaurant-card"><div id="restaurant-photo" class="restaurant-photo">🍽️</div><div class="restaurant-copy"><h2 id="restaurant-name">Restaurant</h2><p id="restaurant-meta" class="muted"></p><p id="restaurant-hours"></p><p id="completion-progress" class="muted centered hidden"></p><div id="restaurant-links" class="link-row"></div><button id="hide-restaurant" class="danger-text" type="button">Don’t suggest this restaurant again</button></div></article>
           <div class="swipe-actions"><button id="pass" class="pass-button" type="button" aria-label="Pass">✕</button><button id="undo-swipe" class="secondary-button undo-button" type="button" disabled>↶ Undo</button><button id="like" class="like-button" type="button" aria-label="Like">♥</button><button id="swipe-chat" class="chat-button" type="button" aria-label="Open GrubHunt chat" title="Open GrubHunt chat">💬</button></div>
           <div id="match-card" class="match-card hidden"><p class="eyebrow">It’s a match!</p><h2 id="match-name"></h2><p>Everyone in your GrubHunt liked this restaurant.</p><div class="bottom-actions"><button id="dismiss-match" class="primary-button" type="button">Let’s grub!</button><button id="match-chat" class="secondary-button" type="button">Chat with GrubHunt</button><button id="finish-session" class="text-button" type="button">Back to GrubHunt</button></div></div>
         </section>
 
         <section id="chat-panel" class="panel hidden">
-          <div class="section-heading centered-heading"><button class="icon-button back-group" type="button" aria-label="Back to Clique">←</button><div><p class="eyebrow">Your GrubHunt</p><h1>Chat</h1></div></div>
+          <div class="section-heading centered-heading"><button id="chat-back" class="icon-button" type="button" aria-label="Back">←</button><div><p id="chat-eyebrow" class="eyebrow">Your GrubHunt</p><h1 id="chat-title">Chat</h1></div></div>
           <div id="chat-list" class="chat-list" aria-live="polite"></div>
-          <form id="chat-form" class="chat-form"><input id="chat-input" maxlength="2000" placeholder="Message your clique" aria-label="Message"><button class="primary-button" type="submit">Send</button></form>
+          <form id="chat-form" class="chat-form"><input id="chat-input" maxlength="2000" placeholder="Message your GrubHunt" aria-label="Message"><button class="primary-button" type="submit">Send</button></form>
         </section>
 
         <section id="history-panel" class="panel hidden">
@@ -183,6 +183,7 @@
             <div><strong>Username</strong><div class="input-prefix readonly-value"><span>@</span><strong id="username-display"></strong></div><small>Your unique username is permanent and cannot be changed.</small></div>
             <label class="switch-row"><span><strong>Match notifications</strong><small>Alert me when my clique matches</small></span><input id="match-notifications" type="checkbox"></label>
             <section class="sub-card form-stack"><h2>Contact discovery</h2><p class="muted small">Add the number people already have in their contacts. It is stored as an international hash and is not verified.</p><label>Country<select id="phone-country"><option value="US">United States (+1)</option><option value="CA">Canada (+1)</option><option value="GB">United Kingdom (+44)</option><option value="DE">Germany (+49)</option><option value="IN">India (+91)</option></select></label><label>Phone number<input id="contact-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(402) 555-0123"></label><button id="save-phone" class="secondary-button" type="button">Save contact number</button></section>
+            <section class="sub-card form-stack"><h2>Hidden restaurants</h2><p class="muted small">Restaurants you permanently hide will not appear in future GrubHunts. Restore one here to see it again.</p><div id="hidden-restaurants-list" class="history-list compact-list"></div></section>
             <button id="save-settings" class="primary-button" type="button">Save changes</button>
             <p id="account-email" class="muted"></p>
             <a class="secondary-button center-link" href="../report-issue/">Report an issue</a>
@@ -198,8 +199,18 @@
         </section>
       </section>
     </main>
+    <dialog id="delete-clique-dialog" class="confirmation-dialog" aria-labelledby="delete-clique-title">
+      <form method="dialog" class="confirmation-card">
+        <h2 id="delete-clique-title">Delete this Clique?</h2>
+        <p id="delete-clique-warning"></p>
+        <div class="button-row">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button id="confirm-delete-clique" class="danger-button" value="delete" type="submit">Delete</button>
+        </div>
+      </form>
+    </dialog>
     <script src="../../assets/analytics-config.js"></script>
     <script src="../../assets/analytics.js"></script>
-    <script type="module" src="app.js?v=19"></script>
+    <script type="module" src="app.js?v=21"></script>
   </body>
 </html>
