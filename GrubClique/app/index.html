@@ -8,7 +8,7 @@
     <title>GrubClique Web</title>
     <link rel="icon" href="../assets/app-icon.png">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="app.css?v=21">
+    <link rel="stylesheet" href="app.css?v=22">
   </head>
   <body>
     <header class="app-header">
@@ -84,6 +84,7 @@
           <form id="setup-form" class="feature-card form-stack">
             <label>Clique name<input id="clique-name" maxlength="40" autocomplete="off" placeholder="Work Friends" required><small>Give your group a name that members will recognize.</small></label>
             <p class="muted small">After creating the Clique, its admin can add friends. Any member can start a GrubHunt.</p>
+            <fieldset id="setup-friends"><legend>Add friends (optional)</legend><div id="setup-friends-list" class="form-stack">Loading friends…</div></fieldset>
             <button class="primary-button" type="submit">Create Clique</button>
           </form>
           <p id="setup-message" class="form-message" aria-live="polite"></p>
@@ -106,6 +107,7 @@
           <div class="section-heading centered-heading"><button class="icon-button back-group" type="button" aria-label="Back to Clique">←</button><div><p id="hunt-setup-eyebrow" class="eyebrow">New GrubHunt</p><h1 id="hunt-setup-title">Choose where to hunt</h1></div></div>
           <form id="hunt-setup-form" class="feature-card form-stack">
             <p class="muted">Choose where this GrubHunt should search.</p>
+            <label id="hunt-name-label">GrubHunt name (optional)<input id="hunt-name" maxlength="60" placeholder="Friday lunch" autocomplete="off"><small>Leave blank to use GrubHunt.</small></label>
             <label>ZIP code, city, or area<input id="search-area" autocomplete="postal-code" placeholder="Omaha, NE"></label>
             <button id="use-location" class="secondary-button" type="button">Use my location</button>
             <label>Search radius: <strong><span id="setup-radius-label">25</span> miles</strong><input id="setup-radius" type="range" min="1" max="50" step="1" value="25"></label>
@@ -117,7 +119,7 @@
         <section id="clique-panel" class="panel hidden">
           <div class="section-heading centered-heading"><button class="icon-button back-group" type="button" aria-label="Back to Clique">←</button><div><p class="eyebrow">GrubHunt</p><h1 id="clique-code">Restaurant hunt</h1></div></div>
           <div class="content-grid">
-            <article class="feature-card"><h2>Participants</h2><ul id="member-list" class="member-list"></ul></article>
+            <article class="feature-card"><h2>Participants</h2><p id="overview-progress" class="muted" aria-live="polite"></p><ul id="member-list" class="member-list"></ul></article>
             <article class="feature-card"><h2>Shared preferences</h2><p id="preference-summary" class="muted">Any meal · Recommended</p><button id="open-filters" class="text-button" type="button">Filters and sorting</button></article>
           </div>
           <div class="bottom-actions">
@@ -146,6 +148,7 @@
         </section>
 
         <section id="swipe-panel" class="panel hidden">
+          <p id="swipe-group-progress" class="muted centered" aria-live="polite"></p>
           <div class="section-heading centered-heading heading-with-action"><button class="icon-button back-group" type="button" aria-label="Back to Clique">←</button><div><p id="swipe-progress" class="eyebrow">0/0</p><h1>Everyone swipes</h1></div><button id="swipe-filters" class="secondary-button compact-button heading-action" type="button">Filters</button></div>
           <article id="restaurant-card" class="restaurant-card"><div id="restaurant-photo" class="restaurant-photo">🍽️</div><div class="restaurant-copy"><h2 id="restaurant-name">Restaurant</h2><p id="restaurant-meta" class="muted"></p><p id="restaurant-hours"></p><p id="completion-progress" class="muted centered hidden"></p><div id="restaurant-links" class="link-row"></div><button id="hide-restaurant" class="danger-text" type="button">Don’t suggest this restaurant again</button></div></article>
           <div class="swipe-actions"><button id="pass" class="pass-button" type="button" aria-label="Pass">✕</button><button id="undo-swipe" class="secondary-button undo-button" type="button" disabled>↶ Undo</button><button id="like" class="like-button" type="button" aria-label="Like">♥</button><button id="swipe-chat" class="chat-button" type="button" aria-label="Open GrubHunt chat" title="Open GrubHunt chat">💬</button></div>
@@ -185,6 +188,7 @@
             <section class="sub-card form-stack"><h2>Contact discovery</h2><p class="muted small">Add the number people already have in their contacts. It is stored as an international hash and is not verified.</p><label>Country<select id="phone-country"><option value="US">United States (+1)</option><option value="CA">Canada (+1)</option><option value="GB">United Kingdom (+44)</option><option value="DE">Germany (+49)</option><option value="IN">India (+91)</option></select></label><label>Phone number<input id="contact-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(402) 555-0123"></label><button id="save-phone" class="secondary-button" type="button">Save contact number</button></section>
             <section class="sub-card form-stack"><h2>Hidden restaurants</h2><p class="muted small">Restaurants you permanently hide will not appear in future GrubHunts. Restore one here to see it again.</p><div id="hidden-restaurants-list" class="history-list compact-list"></div></section>
             <button id="save-settings" class="primary-button" type="button">Save changes</button>
+            <section class="sub-card form-stack"><h2>Background notifications</h2><p class="muted small">Get alerts for messages, friend requests, and matches when this website is closed. Enable separately on each device. On iPhone or iPad, install this web app on your Home Screen first.</p><button id="enable-push" class="secondary-button" type="button">Enable on this device</button><button id="disable-push" class="text-button hidden" type="button">Disable on this device</button><p id="push-status" class="muted small" aria-live="polite"></p></section>
             <p id="account-email" class="muted"></p>
             <a class="secondary-button center-link" href="../report-issue/">Report an issue</a>
             <a class="secondary-button center-link" href="https://paypal.me/redxjak" target="_blank" rel="noopener">Support GrubClique on PayPal</a>
@@ -211,6 +215,6 @@
     </dialog>
     <script src="../../assets/analytics-config.js"></script>
     <script src="../../assets/analytics.js"></script>
-    <script type="module" src="app.js?v=21"></script>
+    <script type="module" src="app.js?v=22"></script>
   </body>
 </html>

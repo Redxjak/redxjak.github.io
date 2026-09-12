@@ -28,8 +28,97 @@ let installPrompt = null;
 let chatMode = "hunt";
 let chatOrigin = "clique";
 let completionProgress = null;
+let currentPanel = "home";
+let activity = [];
+let activityTimer = null;
+let readRequest = null;
+let participantProgress = [];
+let pushEnabled = false;
+
+async function refreshPushState() {
+  const supported='serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  $("#enable-push").disabled=!supported;
+  if(!supported) { $("#push-status").textContent='This browser does not support background notifications.'; return; }
+  const registration=await navigator.serviceWorker.ready;
+  let subscription=await registration.pushManager.getSubscription();
+  const owner=localStorage.getItem('grubclique-push-owner');
+  if(subscription && owner!==session?.user.id) { await subscription.unsubscribe(); subscription=null; localStorage.removeItem('grubclique-push-owner'); }
+  pushEnabled=Boolean(subscription);
+  $("#enable-push").classList.toggle('hidden',pushEnabled);
+  $("#disable-push").classList.toggle('hidden',!pushEnabled);
+  $("#push-status").textContent=pushEnabled?'Enabled for this account on this device.':Notification.permission==='denied'?'Notifications are blocked in your browser’s site settings.':'Background notifications are off on this device.';
+}
+async function disablePush() {
+  if(!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  const registration=await navigator.serviceWorker.ready;
+  const subscription=await registration.pushManager.getSubscription();
+  if(subscription) {
+    await subscription.unsubscribe();
+    if(session) await supabase.from('web_push_subscriptions').delete().eq('user_id',session.user.id).eq('endpoint',subscription.endpoint);
+  }
+  localStorage.removeItem('grubclique-push-owner'); pushEnabled=false;
+}
+async function signOut() { await disablePush(); await supabase.auth.signOut(); }
+
+$("#enable-push").addEventListener('click',async()=>{
+  const button=$("#enable-push"); button.disabled=true;
+  let subscription;
+  try {
+    const permission=await Notification.requestPermission();
+    if(permission!=='granted') throw new Error('Allow notifications in your browser to enable alerts.');
+    const {data:key,error}=await supabase.rpc('get_web_push_key');
+    if(error || !key) throw new Error('Notifications are not ready yet. Please try again shortly.');
+    const raw=atob(key.replace(/-/g,'+').replace(/_/g,'/'));
+    const applicationServerKey=Uint8Array.from(raw,c=>c.charCodeAt(0));
+    const registration=await navigator.serviceWorker.ready;
+    subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey});
+    const saved=await supabase.from('web_push_subscriptions').upsert({user_id:session.user.id,endpoint:subscription.endpoint,subscription:subscription.toJSON()},{onConflict:'user_id,endpoint'});
+    if(saved.error) throw new Error('Could not save notification settings. Please try again.');
+    localStorage.setItem('grubclique-push-owner',session.user.id); await refreshPushState();
+  } catch(error) { if(subscription) await subscription.unsubscribe(); $("#push-status").textContent=error.message || 'Notifications could not be enabled.'; }
+  finally {button.disabled=false;}
+});
+$("#disable-push").addEventListener('click',async()=>{
+  try { await disablePush(); await refreshPushState(); } catch { $("#push-status").textContent='Could not disable notifications. Please try again.'; }
+});
+
+function unreadBadge(count) {
+  const badge = document.createElement("span"); badge.className = "unread-badge";
+  badge.textContent = Number(count) > 99 ? "99+" : String(count);
+  badge.setAttribute("aria-label", `${count} unread messages`); return badge;
+}
+function unreadCount(scope,id) { return Number(activity.find((item) => item.chat_scope === scope && item.target_id === id)?.unread_count || 0); }
+async function refreshActivity() {
+  if (!session || document.hidden) return;
+  const userId = session.user.id;
+  const { data, error } = await supabase.rpc("get_chat_activity");
+  if (error || session?.user.id !== userId) return;
+  activity = data || [];
+  const count = activity.reduce((sum,item) => sum + Number(item.unread_count),0);
+  const tab = $('.tab-bar button[data-view="cliques"]');
+  tab.querySelector('.unread-badge')?.remove(); if(count) tab.append(unreadBadge(count));
+  for (const button of [$("#open-group-chat"),$("#open-chat"),$("#swipe-chat")]) {
+    button.querySelector('.unread-badge')?.remove();
+    const unread = button.id === "open-group-chat" ? unreadCount("group",group?.id) : unreadCount("hunt",clique?.id);
+    if(unread) button.append(unreadBadge(unread));
+  }
+  $$("[data-unread-group]").forEach((el) => { el.querySelector('.unread-badge')?.remove(); const unread=activity.filter((a)=>a.group_id===el.dataset.unreadGroup).reduce((sum,a)=>sum+Number(a.unread_count),0); if(unread) el.append(unreadBadge(unread)); });
+  $$("[data-unread-hunt]").forEach((el) => { el.querySelector('.unread-badge')?.remove(); const unread=unreadCount('hunt',el.dataset.unreadHunt); if(unread) el.append(unreadBadge(unread)); });
+}
+
+async function acknowledgeChat() {
+  if (currentPanel !== 'chat' || document.hidden || readRequest) return;
+  const scope = chatMode === 'group' ? 'group' : 'hunt';
+  const target = scope === 'group' ? group : clique;
+  const messages = target?.state?.messages || [];
+  const through = messages.map(m=>m.created_at).filter(Boolean).sort().at(-1);
+  if(!through || !target) return;
+  readRequest = supabase.rpc('mark_chat_read',{chat_scope:scope,target_id:target.id,through_time:through});
+  try { await readRequest; await refreshActivity(); } finally { readRequest=null; }
+}
 
 function showPanel(name) {
+  currentPanel = name;
   panels.forEach((panel) => $(`#${panel}-panel`)?.classList.toggle("hidden", panel !== name));
   $(".tab-bar").classList.toggle("hidden", name === "onboarding");
   $$(".tab-bar button").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
@@ -38,6 +127,7 @@ function showPanel(name) {
   else stopPolling();
   window.scrollTo({ top: 0, behavior: "smooth" });
   window.RedxjakAnalytics?.track("screen_viewed", {}, { screen: `/GrubClique/app/${name}` });
+  if(name === 'chat') void acknowledgeChat();
 }
 
 function setMessage(selector, message = "", success = false) {
@@ -116,9 +206,13 @@ async function enterApp() {
     $("#invite-banner").classList.remove("hidden");
   }
   showPanel("home");
+  clearInterval(activityTimer); void refreshActivity();
+  activityTimer = setInterval(refreshActivity,10000);
+  void refreshPushState().catch(() => { $("#push-status").textContent='Notification settings are temporarily unavailable.'; });
 }
 
 async function leaveApp() {
+  clearInterval(activityTimer); activityTimer=null; activity=[]; group=null;
   stopPolling();
   clique = null;
   profile = null;
@@ -162,7 +256,7 @@ $("#google-auth").addEventListener("click", async () => {
   const { error } = await supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: APP_URL } });
   if (error) setMessage("#auth-message", "We couldn't open Google sign-in. Please try again.");
 });
-$("#sign-out").addEventListener("click", () => supabase.auth.signOut());
+$("#sign-out").addEventListener("click", signOut);
 
 function browserLocation() {
   return new Promise((resolve, reject) => {
@@ -200,11 +294,22 @@ async function addNearbyRestaurants(items) {
   if (error) throw error;
 }
 
-$("#create-clique").addEventListener("click", () => {
+async function prepareCliqueCreation() {
   setMessage("#home-message");
   $("#clique-name").value = "";
+  const list = $("#setup-friends-list"); list.textContent="Loading friends…";
   showPanel("setup");
-});
+  const {data,error}=await supabase.rpc('list_friends');
+  if(error) { list.textContent='Friends could not be loaded. You can add them after creating your Clique.'; return; }
+  const friends=(data||[]).filter(f=>f.status==='accepted');
+  list.replaceChildren(...friends.map(friend=>{
+    const label=document.createElement('label'); const input=document.createElement('input');
+    input.type='checkbox'; input.name='setup-friend'; input.value=friend.username;
+    label.append(input,document.createTextNode(`${friend.display_name} (@${friend.username})`)); return label;
+  }));
+  if(!friends.length) list.textContent='No accepted friends yet. You can invite people after creating your Clique.';
+}
+$("#create-clique").addEventListener("click", prepareCliqueCreation);
 $("#setup-radius").addEventListener("input", () => { $("#setup-radius-label").textContent = $("#setup-radius").value; });
 $("#use-location").addEventListener("click", async () => {
   setMessage("#hunt-setup-message", "Finding your location…", true);
@@ -224,7 +329,8 @@ $("#setup-form").addEventListener("submit", async (event) => {
   if (!cliqueName) return setMessage("#setup-message", "Enter a name for your Clique.");
   const submit = $("#setup-form button[type=submit]");
   submit.disabled = true; setMessage("#setup-message", "Creating Clique…", true);
-  const { data, error } = await supabase.rpc("create_friend_clique", { clique_name: cliqueName });
+  const friend_usernames=$$('input[name="setup-friend"]:checked').map(input=>input.value);
+  const { data, error } = await supabase.rpc("create_friend_clique_with_members", { clique_name: cliqueName, friend_usernames });
   submit.disabled = false;
   if (error) return setMessage("#setup-message", friendlyError(error, "We couldn't create the Clique."));
   group = { id: data[0].friend_clique_id, code: data[0].invite_code, name: cliqueName, isAdmin: true };
@@ -233,6 +339,8 @@ $("#setup-form").addEventListener("submit", async (event) => {
 });
 
 function prepareHuntLocationForm(editing = false) {
+  $("#hunt-name").value = "";
+  $("#hunt-name-label").classList.toggle('hidden',editing);
   editingHuntLocation = editing;
   selectedLocation = null; $("#search-area").value = ""; $("#setup-radius").value = "25"; $("#setup-radius-label").textContent = "25";
   if (editing) {
@@ -279,7 +387,8 @@ $("#hunt-setup-form").addEventListener("submit", async (event) => {
       await loadClique(true);
       return;
     }
-    const { data, error } = await supabase.rpc("create_grub_hunt", {
+    const { data, error } = await supabase.rpc("create_named_grub_hunt", {
+      hunt_name: $("#hunt-name").value.trim() || null,
       target_friend_clique: group.id,
       latitude: location.latitude,
       longitude: location.longitude,
@@ -314,6 +423,7 @@ function grubHuntStatusLabel(status) {
 }
 
 async function loadCliques() {
+  await refreshActivity();
   setMessage("#cliques-message", "Loading Cliques…", true);
   const { data, error } = await supabase.rpc("list_friend_cliques");
   if (error) return setMessage("#cliques-message", "We couldn't load your cliques right now.");
@@ -327,6 +437,9 @@ async function loadCliques() {
     const card = document.createElement("article"); card.className = "history-card session-card";
     const copy = document.createElement("div");
     const title = document.createElement("h2"); title.textContent = entry.clique_name;
+    title.dataset.unreadGroup=entry.friend_clique_id;
+    const unread=activity.filter(a=>a.group_id===entry.friend_clique_id).reduce((sum,a)=>sum+Number(a.unread_count),0);
+    if(unread) title.append(unreadBadge(unread));
     const meta = document.createElement("p"); meta.className = "muted";
     meta.textContent = `${entry.member_count} member${Number(entry.member_count) === 1 ? "" : "s"} · ${entry.active_status ? `${grubHuntStatusLabel(entry.active_status)} GrubHunt` : "No active GrubHunt"}`;
     copy.append(title, meta);
@@ -342,13 +455,16 @@ async function loadCliques() {
   setMessage("#cliques-message");
 }
 
-$("#cliques-create").addEventListener("click", () => { $("#clique-name").value = ""; showPanel("setup"); });
+$("#cliques-create").addEventListener("click", prepareCliqueCreation);
 
 function renderMembers(members) {
   const list = $("#member-list");
   list.replaceChildren(...members.map((member) => {
     const item = document.createElement("li");
     item.textContent = member.user_id === session.user.id ? "You" : member.display_name;
+    const status=document.createElement('span');
+    const text=participantProgress.find(p=>p.user_id===member.user_id)?.progress_status || (clique?.status==='lobby'?'Ready':'Updating…');
+    status.className=`participant-status${text==='Finished'?' finished':''}`; status.textContent=text; item.append(status);
     return item;
   }));
 }
@@ -381,10 +497,14 @@ async function openGrubHunt(entry) {
 
 async function loadGroup(openPanel = false) {
   if (!group?.id) return;
+  const requestedGroup=group.id;
+  await refreshActivity();
+  if(group?.id!==requestedGroup) return;
   const [{ data, error }, messagesResult] = await Promise.all([
     supabase.rpc("get_friend_clique_state", { target_friend_clique: group.id }),
     supabase.rpc("get_friend_clique_messages", { target_friend_clique: group.id }),
   ]);
+  if(group?.id!==requestedGroup) return;
   if (error) return setMessage("#group-message", friendlyError(error, "We couldn't refresh this Clique."));
   const state = data?.[0]; if (!state) return;
   state.messages = messagesResult.error ? (group.state?.messages || []) : (messagesResult.data || []);
@@ -392,7 +512,7 @@ async function loadGroup(openPanel = false) {
   $("#group-name").textContent = group.name;
   $("#group-code").textContent = `Invite code ${group.code}`;
   renderGroupMembers(state.members || []);
-  if (chatMode === "group") renderChat(state.messages || []);
+  if (currentPanel==='chat' && chatMode === "group") renderChat(state.messages || []);
   $("#manage-members-form").classList.toggle("hidden", !group.isAdmin);
   $("#rename-clique").classList.toggle("hidden", !group.isAdmin);
   $("#leave-group").classList.remove("hidden");
@@ -407,7 +527,8 @@ async function loadGroup(openPanel = false) {
   if (!hunts.length) list.textContent = "No GrubHunts yet. Any member can start the first one.";
   else list.replaceChildren(...hunts.map((hunt) => {
     const card = document.createElement("article"); card.className = "history-card session-card";
-    const copy = document.createElement("div"); const title = document.createElement("h2"); title.textContent = "GrubHunt";
+    const copy = document.createElement("div"); const title = document.createElement("h2"); title.textContent = activity.find(a=>a.chat_scope==='hunt' && a.target_id===hunt.id)?.title || "GrubHunt";
+    title.dataset.unreadHunt=hunt.id; const unread=unreadCount('hunt',hunt.id); if(unread) title.append(unreadBadge(unread));
     const meta = document.createElement("p"); meta.className = "muted"; meta.textContent = `${grubHuntStatusLabel(hunt.status)} · ${new Date(hunt.created_at).toLocaleDateString()} · ${hunt.started_by || "Member"}`;
     copy.append(title, meta);
     const open = document.createElement("button"); open.className = "secondary-button compact-button"; open.type = "button"; open.textContent = hunt.status === "finished" ? "View" : "Open";
@@ -506,18 +627,23 @@ function refreshCuisineOptions() {
 
 async function loadClique(openPanel = false) {
   if (!clique?.id) return;
+  const requestedHunt=clique.id;
   const [{ data, error }, prefResult, progressResult, hiddenResult] = await Promise.all([
     supabase.rpc("get_clique_state", { target_clique: clique.id }),
     supabase.rpc("get_clique_preferences", { target_clique: clique.id }),
-    supabase.rpc("get_grub_hunt_progress", { target_clique: clique.id }),
+    supabase.rpc("get_grub_hunt_participant_progress", { target_clique: clique.id }),
     supabase.rpc("list_hidden_restaurants_v2"),
   ]);
+  if(clique?.id!==requestedHunt) return;
   if (error) return setMessage("#clique-message", friendlyError(error, "We couldn't refresh this clique."));
   const state = data?.[0];
   if (!state) return;
   clique = { ...clique, code: state.invite_code, isHost: state.is_host, status: state.status, state };
   preferences = prefResult.data?.[0] || preferences;
-  completionProgress = progressResult.error ? null : progressResult.data?.[0] || null;
+  participantProgress=progressResult.error?[]:(progressResult.data||[]);
+  completionProgress=participantProgress.length ? {total_members:participantProgress.length,finished_members:participantProgress.filter(p=>p.progress_status==='Finished').length}:null;
+  const progressText=completionProgress ? `${completionProgress.finished_members} of ${completionProgress.total_members} finished swiping` : 'Progress unavailable';
+  $("#overview-progress").textContent=progressText; $("#swipe-group-progress").textContent=progressText;
   const everyoneFinished = Number(completionProgress?.total_members || 0) > 0
     && Number(completionProgress.finished_members) === Number(completionProgress.total_members);
   const completionKey = `grubclique-complete-notified-${clique.id}`;
@@ -539,7 +665,7 @@ async function loadClique(openPanel = false) {
   }
   localStorage.setItem(poolKey, poolFingerprint);
   refreshCuisineOptions();
-  $("#clique-code").textContent = `${group?.name || "Clique"} GrubHunt`;
+  $("#clique-code").textContent = state.title && state.title!=='GrubHunt' ? state.title : `${group?.name || "Clique"} GrubHunt`;
   renderMembers(state.members || []);
   $("#preference-summary").textContent = preferenceLabel();
   const swipeButton = $("#start-swiping");
@@ -556,7 +682,7 @@ async function loadClique(openPanel = false) {
   }
   $("#end-clique").classList.toggle("hidden", state.status === "finished");
   $("#edit-hunt-location").classList.toggle("hidden", state.status === "finished" || !state.is_host);
-  renderChat(state.messages || []);
+  if(currentPanel==='chat' && chatMode==='hunt') renderChat(state.messages || []);
   if (openPanel) showPanel("clique");
   if (!$("#swipe-panel").classList.contains("hidden")) renderRestaurant();
 }
@@ -724,7 +850,7 @@ async function recordSwipe(liked) {
     window.RedxjakAnalytics?.track("match_found");
     $("#match-name").textContent = restaurant.name;
     $("#match-card").classList.remove("hidden");
-    if ("Notification" in window && localStorage.getItem("grubclique-match-notifications") !== "false" && Notification.permission === "granted") {
+    if (!pushEnabled && "Notification" in window && localStorage.getItem("grubclique-match-notifications") !== "false" && Notification.permission === "granted") {
       new Notification("GrubClique match!", { body: `${restaurant.name} is everyone's pick.`, icon: "../assets/app-icon.png" });
     }
   }
@@ -779,6 +905,7 @@ function renderChat(messages) {
     bubble.append(sender, body); return bubble;
   }));
   list.scrollTop = list.scrollHeight;
+  void acknowledgeChat();
 }
 $("#chat-form").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -1010,7 +1137,7 @@ $("#clear-session").addEventListener("click", () => {
   localStorage.setItem(`grubclique-session-cleared-${session.user.id}`, "true");
   setMessage("#settings-message", "Saved GrubHunt cleared.", true);
 });
-$("#settings-sign-out").addEventListener("click", () => supabase.auth.signOut());
+$("#settings-sign-out").addEventListener("click", signOut);
 
 $("#delete-account").addEventListener("click", async () => {
   if (!confirm("Permanently delete your GrubClique account and account data? This cannot be undone.")) return;
@@ -1025,7 +1152,7 @@ $$(".tab-bar button").forEach((button) => button.addEventListener("click", async
   if (view === "cliques") await loadCliques();
   if (view === "history") await loadHistory();
   if (view === "friends") await loadFriends();
-  if (view === "settings") { refreshAccountControls(); await loadHiddenRestaurants(); }
+  if (view === "settings") { refreshAccountControls(); await Promise.all([loadHiddenRestaurants(),refreshPushState()]); }
   showPanel(view);
 }));
 $$(".back-home").forEach((button) => button.addEventListener("click", () => showPanel("home")));
@@ -1034,8 +1161,9 @@ $$(".back-group").forEach((button) => button.addEventListener("click", async () 
 $$(".back-clique").forEach((button) => button.addEventListener("click", () => showPanel("clique")));
 
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); installPrompt = event; $("#install-app").classList.remove("hidden"); });
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) { void refreshActivity(); void acknowledgeChat(); } });
 $("#install-app").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $("#install-app").classList.add("hidden"); });
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=21");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=22");
 
 supabase.auth.onAuthStateChange((_event, nextSession) => {
   const changed = session?.user?.id !== nextSession?.user?.id;
