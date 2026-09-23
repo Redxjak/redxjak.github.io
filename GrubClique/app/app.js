@@ -559,6 +559,8 @@ async function loadGroup(openPanel = false) {
   }
   const state = data?.[0]; if (!state) return clearUnavailableClique();
   state.messages = messagesResult.error ? (group.state?.messages || []) : (messagesResult.data || []);
+  // Keep focused controls intact when polling confirms that nothing has changed.
+  if (!openPanel && JSON.stringify(state) === JSON.stringify(group.state)) return;
   group = { ...group, id: state.friend_clique_id, code: state.invite_code, name: state.clique_name, isAdmin: state.is_admin, state };
   $("#group-name").textContent = group.name;
   $("#group-code").textContent = `Invite code ${group.code}`;
