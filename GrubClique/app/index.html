@@ -8,7 +8,7 @@
     <title>GrubClique Web</title>
     <link rel="icon" href="../assets/app-icon.png">
     <link rel="manifest" href="manifest.webmanifest">
-    <link rel="stylesheet" href="app.css?v=22">
+    <link rel="stylesheet" href="app.css?v=23">
   </head>
   <body>
     <header class="app-header">
@@ -126,7 +126,7 @@
             <button id="open-chat" class="secondary-button" type="button">Open GrubHunt chat</button>
             <button id="edit-hunt-location" class="secondary-button" type="button">Edit location</button>
             <button id="start-swiping" class="primary-button" type="button">Start swiping</button>
-            <button id="start-over" class="secondary-button" type="button">Start over</button>
+            <button id="start-over" class="secondary-button" type="button">Refresh GrubHunt</button>
             <button id="end-clique" class="danger-button hidden" type="button">End GrubHunt</button>
           </div>
           <p id="clique-message" class="form-message" aria-live="polite"></p>
@@ -152,7 +152,7 @@
           <div class="section-heading centered-heading heading-with-action"><button class="icon-button back-group" type="button" aria-label="Back to Clique">←</button><div><p id="swipe-progress" class="eyebrow">0/0</p><h1>Everyone swipes</h1></div><button id="swipe-filters" class="secondary-button compact-button heading-action" type="button">Filters</button></div>
           <article id="restaurant-card" class="restaurant-card"><div id="restaurant-photo" class="restaurant-photo">🍽️</div><div class="restaurant-copy"><h2 id="restaurant-name">Restaurant</h2><p id="restaurant-meta" class="muted"></p><p id="restaurant-hours"></p><p id="completion-progress" class="muted centered hidden"></p><div id="restaurant-links" class="link-row"></div><button id="hide-restaurant" class="danger-text" type="button">Don’t suggest this restaurant again</button></div></article>
           <div class="swipe-actions"><button id="pass" class="pass-button" type="button" aria-label="Pass">✕</button><button id="undo-swipe" class="secondary-button undo-button" type="button" disabled>↶ Undo</button><button id="like" class="like-button" type="button" aria-label="Like">♥</button><button id="swipe-chat" class="chat-button" type="button" aria-label="Open GrubHunt chat" title="Open GrubHunt chat">💬</button></div>
-          <div id="match-card" class="match-card hidden"><p class="eyebrow">It’s a match!</p><h2 id="match-name"></h2><p>Everyone in your GrubHunt liked this restaurant.</p><div class="bottom-actions"><button id="dismiss-match" class="primary-button" type="button">Let’s grub!</button><button id="match-chat" class="secondary-button" type="button">Chat with GrubHunt</button><button id="finish-session" class="text-button" type="button">Back to GrubHunt</button></div></div>
+          <div id="match-card" class="match-card hidden"><p class="eyebrow">It’s a match!</p><h2 id="match-name"></h2><p>Everyone in your GrubHunt liked this restaurant.</p><div class="bottom-actions"><button id="dismiss-match" class="primary-button" type="button">Continue Swiping</button><button id="match-chat" class="secondary-button" type="button">Chat with GrubHunt</button><button id="finish-session" class="text-button" type="button">Back to GrubHunt</button></div></div>
         </section>
 
         <section id="chat-panel" class="panel hidden">
@@ -215,6 +215,6 @@
     </dialog>
     <script src="../../assets/analytics-config.js"></script>
     <script src="../../assets/analytics.js"></script>
-    <script type="module" src="app.js?v=22"></script>
+    <script type="module" src="app.js?v=23"></script>
   </body>
 </html>

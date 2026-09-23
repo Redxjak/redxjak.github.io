@@ -18,7 +18,50 @@ let clique = null;
 let preferences = { meal_periods: [], sort_mode: "default" };
 let localFilters = { cuisine: "Any", maxPrice: 4, maxDistance: 50, minimumRating: 0, openNowOnly: false };
 let restaurants = [];
-let swipeIndex = 0;
+let votedIds = new Set();
+let votesReady = false;
+let swipeBusy = false;
+let huntRevision = 0;
+let huntLoad = 0;
+let groupLoad = 0;
+let preferredCard = null;
+
+function accessRevoked(error) {
+  return /(?:Clique|GrubHunt) membership required/i.test(String(error?.message || ''));
+}
+function resetHuntProgress() {
+  huntRevision++; huntLoad++;
+  votedIds = new Set(); votesReady = false; swipeBusy = false; preferredCard = null;
+}
+function currentRestaurant() {
+  const eligible = filteredRestaurants().filter(r => !votedIds.has(String(r.id)));
+  return eligible.find(r => String(r.id) === preferredCard) || eligible[0];
+}
+async function readSwipeIds(huntId, userId) {
+  const rows = [];
+  for (let offset = 0; ; offset += 1000) {
+    const result = await supabase.from('swipes').select('restaurant_id').eq('clique_id', huntId).eq('user_id', userId).order('restaurant_id').range(offset, offset + 999);
+    if (result.error) return result;
+    rows.push(...(result.data || []));
+    if ((result.data || []).length < 1000) return { data: rows, error: null };
+  }
+}
+function clearUnavailableClique() {
+  stopPolling(); groupLoad++; resetHuntProgress();
+  if (clique?.id) {
+    localStorage.removeItem(`grubclique-index-${clique.id}`);
+    localStorage.removeItem(`grubclique-pool-${clique.id}`);
+  }
+  group = null; clique = null; restaurants = []; participantProgress = []; completionProgress = null;
+  $('#match-card').classList.add('hidden');
+  $('#chat-input').value = ''; $('#chat-list').replaceChildren();
+  $('#member-list').replaceChildren(); $('#group-member-list').replaceChildren(); $('#grub-hunts-list').replaceChildren();
+  if ($('#delete-clique-dialog').open) $('#delete-clique-dialog').close();
+  showPanel('cliques');
+  void loadCliques().then(() => {
+    if (currentPanel === 'cliques' && !group) setMessage('#cliques-message', 'This Clique or GrubHunt is no longer available. It may have been deleted, or your membership changed.');
+  });
+}
 let selectedLocation = null;
 let editingHuntLocation = false;
 let pendingAvatar = null;
@@ -118,12 +161,13 @@ async function acknowledgeChat() {
 }
 
 function showPanel(name) {
+  if (['group','huntsetup'].includes(name) && !group || ['clique','swipe','filters'].includes(name) && !clique || name === 'chat' && !(chatMode === 'group' ? group : clique)) name = 'cliques';
   currentPanel = name;
   panels.forEach((panel) => $(`#${panel}-panel`)?.classList.toggle("hidden", panel !== name));
   $(".tab-bar").classList.toggle("hidden", name === "onboarding");
   $$(".tab-bar button").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
-  if (name === "chat" && chatMode === "group" && group) startGroupPolling();
-  else if (["clique", "swipe", "chat"].includes(name) && clique) startPolling();
+  if (['group','huntsetup'].includes(name) && group || name === "chat" && chatMode === "group" && group) startGroupPolling();
+  else if (["clique", "swipe", "chat", "filters"].includes(name) && clique) startPolling();
   else stopPolling();
   window.scrollTo({ top: 0, behavior: "smooth" });
   window.RedxjakAnalytics?.track("screen_viewed", {}, { screen: `/GrubClique/app/${name}` });
@@ -212,6 +256,7 @@ async function enterApp() {
 }
 
 async function leaveApp() {
+  resetHuntProgress(); groupLoad++;
   clearInterval(activityTimer); activityTimer=null; activity=[]; group=null;
   stopPolling();
   clique = null;
@@ -379,8 +424,7 @@ $("#hunt-setup-form").addEventListener("submit", async (event) => {
         items: search.items,
       });
       if (error) throw error;
-      swipeIndex = 0;
-      localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+      resetHuntProgress();
       clique.status = "lobby";
       editingHuntLocation = false;
       setMessage("#hunt-setup-message");
@@ -396,6 +440,7 @@ $("#hunt-setup-form").addEventListener("submit", async (event) => {
       search_area: area === "Current location" ? null : area,
     });
     if (error) throw error;
+    resetHuntProgress();
     clique = { id: data[0].grub_hunt_id, isHost: true, status: "lobby" };
     await addNearbyRestaurants(search.items);
     window.RedxjakAnalytics?.track("clique_created");
@@ -491,6 +536,8 @@ function renderGroupMembers(members) {
 }
 
 async function openGrubHunt(entry) {
+  resetHuntProgress();
+  $('#match-card').classList.add('hidden');
   clique = { id: entry.id, status: entry.status, isHost: true };
   await loadClique(true);
 }
@@ -498,15 +545,19 @@ async function openGrubHunt(entry) {
 async function loadGroup(openPanel = false) {
   if (!group?.id) return;
   const requestedGroup=group.id;
+  const userId=session?.user.id; const request=++groupLoad;
   await refreshActivity();
-  if(group?.id!==requestedGroup) return;
+  if(group?.id!==requestedGroup || session?.user.id!==userId || request!==groupLoad) return;
   const [{ data, error }, messagesResult] = await Promise.all([
     supabase.rpc("get_friend_clique_state", { target_friend_clique: group.id }),
     supabase.rpc("get_friend_clique_messages", { target_friend_clique: group.id }),
   ]);
-  if(group?.id!==requestedGroup) return;
-  if (error) return setMessage("#group-message", friendlyError(error, "We couldn't refresh this Clique."));
-  const state = data?.[0]; if (!state) return;
+  if(group?.id!==requestedGroup || session?.user.id!==userId || request!==groupLoad) return;
+  if (error) {
+    if (accessRevoked(error)) return clearUnavailableClique();
+    return setMessage("#group-message", friendlyError(error, "We couldn't refresh this Clique."));
+  }
+  const state = data?.[0]; if (!state) return clearUnavailableClique();
   state.messages = messagesResult.error ? (group.state?.messages || []) : (messagesResult.data || []);
   group = { ...group, id: state.friend_clique_id, code: state.invite_code, name: state.clique_name, isAdmin: state.is_admin, state };
   $("#group-name").textContent = group.name;
@@ -523,6 +574,7 @@ async function loadGroup(openPanel = false) {
   $("#new-grub-hunt").disabled = active.length >= 2;
   $("#new-grub-hunt").textContent = active.length >= 2 ? "Two active GrubHunts (maximum)" : "Start a new GrubHunt";
   if (group.isAdmin) await loadCliqueFriendPicker(state.members || []);
+  if(group?.id!==requestedGroup || session?.user.id!==userId || request!==groupLoad) return;
   const list = $("#grub-hunts-list");
   if (!hunts.length) list.textContent = "No GrubHunts yet. Any member can start the first one.";
   else list.replaceChildren(...hunts.map((hunt) => {
@@ -547,11 +599,15 @@ $("#manage-members-form").addEventListener("submit", async (event) => {
 
 async function loadCliqueFriendPicker(members) {
   const picker = $("#clique-friend-picker");
+  const groupId=group?.id; const userId=session?.user.id;
   const memberIds = new Set(members.map((member) => member.user_id));
   const { data, error } = await supabase.rpc("list_friends");
+  if(group?.id!==groupId || session?.user.id!==userId) return;
+  const selected=picker.value;
   const friends = error ? [] : (data || []).filter((friend) => friend.status === "accepted" && !memberIds.has(friend.user_id));
   picker.replaceChildren(new Option(friends.length ? "Select a friend" : "No other accepted friends", ""), ...friends.map((friend) => new Option(`${friend.display_name} (@${friend.username})`, friend.username)));
   picker.disabled = !friends.length;
+  if(friends.some(friend=>friend.username===selected)) picker.value=selected;
 }
 
 $("#rename-clique").addEventListener("click", async () => {
@@ -626,18 +682,26 @@ function refreshCuisineOptions() {
 }
 
 async function loadClique(openPanel = false) {
-  if (!clique?.id) return;
+  if (!clique?.id || swipeBusy) return;
   const requestedHunt=clique.id;
-  const [{ data, error }, prefResult, progressResult, hiddenResult] = await Promise.all([
+  const userId=session?.user.id; const revision=huntRevision; const request=++huntLoad;
+  const [{ data, error }, prefResult, progressResult, hiddenResult, voteResult] = await Promise.all([
     supabase.rpc("get_clique_state", { target_clique: clique.id }),
     supabase.rpc("get_clique_preferences", { target_clique: clique.id }),
     supabase.rpc("get_grub_hunt_participant_progress", { target_clique: clique.id }),
     supabase.rpc("list_hidden_restaurants_v2"),
+    readSwipeIds(requestedHunt, userId),
   ]);
-  if(clique?.id!==requestedHunt) return;
-  if (error) return setMessage("#clique-message", friendlyError(error, "We couldn't refresh this clique."));
+  if(clique?.id!==requestedHunt || session?.user.id!==userId || revision!==huntRevision || request!==huntLoad) return;
+  if (error) {
+    if (accessRevoked(error)) return clearUnavailableClique();
+    return setMessage("#clique-message", friendlyError(error, "We couldn't refresh this clique."));
+  }
   const state = data?.[0];
-  if (!state) return;
+  if (!state) return clearUnavailableClique();
+  votesReady = !voteResult.error;
+  if (votesReady) votedIds = new Set((voteResult.data || []).map(row => String(row.restaurant_id)));
+  setMessage('#clique-message', votesReady ? '' : 'Could not load your saved choices. Please try again.');
   clique = { ...clique, code: state.invite_code, isHost: state.is_host, status: state.status, state };
   preferences = prefResult.data?.[0] || preferences;
   participantProgress=progressResult.error?[]:(progressResult.data||[]);
@@ -655,15 +719,6 @@ async function loadClique(openPanel = false) {
   }
   const hiddenBrands = new Set((hiddenResult.data || []).map((entry) => entry.brand_key));
   restaurants = (state.restaurants || []).filter((restaurant) => !hiddenBrands.has(restaurantBrandKey(restaurant.name)));
-  const poolKey = `grubclique-pool-${clique.id}`;
-  const poolFingerprint = `${restaurants.length}:${restaurants[0]?.id || 0}:${restaurants.at(-1)?.id || 0}`;
-  const previousPool = localStorage.getItem(poolKey);
-  if (previousPool && previousPool !== poolFingerprint) {
-    swipeIndex = 0;
-    localStorage.setItem(`grubclique-index-${clique.id}`, "0");
-    $("#undo-swipe").disabled = true;
-  }
-  localStorage.setItem(poolKey, poolFingerprint);
   refreshCuisineOptions();
   $("#clique-code").textContent = state.title && state.title!=='GrubHunt' ? state.title : `${group?.name || "Clique"} GrubHunt`;
   renderMembers(state.members || []);
@@ -671,13 +726,13 @@ async function loadClique(openPanel = false) {
   const swipeButton = $("#start-swiping");
   const hasRestaurants = filteredRestaurants().length > 0;
   if (state.status === "swiping") {
-    swipeButton.disabled = !hasRestaurants;
+    swipeButton.disabled = !hasRestaurants || !votesReady;
     swipeButton.textContent = "Continue swiping";
   } else if (state.status === "finished") {
     swipeButton.disabled = true;
     swipeButton.textContent = "GrubHunt completed";
   } else {
-    swipeButton.disabled = !hasRestaurants;
+    swipeButton.disabled = !hasRestaurants || !votesReady;
     swipeButton.textContent = "Start swiping";
   }
   $("#end-clique").classList.toggle("hidden", state.status === "finished");
@@ -698,26 +753,20 @@ function startGroupPolling() {
 function stopPolling() { if (pollTimer) clearInterval(pollTimer); pollTimer = null; }
 
 $("#start-swiping").addEventListener("click", async () => {
-  if (clique.status === "finished") return;
+  if (!clique || !votesReady || clique.status === "finished") return;
+  const huntId=clique.id; const userId=session.user.id;
   if (clique.status === "lobby") {
     const { error } = await supabase.rpc("start_clique", { target_clique: clique.id });
-    if (error) return setMessage("#clique-message", friendlyError(error, "We couldn't start swiping."));
-    swipeIndex = 0;
-    localStorage.setItem(`grubclique-index-${clique.id}`, "0");
+    if (clique?.id!==huntId || session?.user.id!==userId) return;
+    if (error) { if(accessRevoked(error)) return clearUnavailableClique(); return setMessage("#clique-message", friendlyError(error, "We couldn't start swiping.")); }
     window.RedxjakAnalytics?.track("clique_started");
     await loadClique(false);
   }
-  $("#undo-swipe").disabled = Number(localStorage.getItem(`grubclique-index-${clique.id}`) || 0) < 1;
+  if (clique?.id!==huntId || session?.user.id!==userId) return;
   showPanel("swipe");
   renderRestaurant();
 });
-$("#start-over").addEventListener("click", () => {
-  swipeIndex = 0;
-  localStorage.setItem(`grubclique-index-${clique.id}`, "0");
-  $("#undo-swipe").disabled = true;
-  showPanel("swipe");
-  renderRestaurant();
-});
+$("#start-over").addEventListener("click", () => loadClique(false));
 async function endClique(targetClique, title) {
   if (!confirm(`End this GrubHunt? Members will no longer be able to continue swiping. Matches and chat history will be preserved.`)) return;
   const { error } = await supabase.rpc("finish_clique", { target_clique: targetClique });
@@ -773,6 +822,8 @@ $("#reset-filters").addEventListener("click", () => {
 });
 $("#filters-form").addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (!clique) return;
+  const huntId=clique.id; const userId=session.user.id;
   localFilters = {
     cuisine: $("#cuisine-filter").value,
     maxPrice: Number($("input[name=max-price]:checked").value),
@@ -780,17 +831,18 @@ $("#filters-form").addEventListener("submit", async (event) => {
     minimumRating: Number($("#rating-filter").value),
     openNowOnly: $("#open-filter").checked,
   };
-  swipeIndex = 0;
-  localStorage.setItem(`grubclique-index-${clique.id}`, "0");
-  $("#undo-swipe").disabled = true;
+  preferredCard = null;
   const mealPeriods = $$("input[name=meal]:checked").map((input) => input.value);
   const sortMode = $("#sort-mode").value;
   if (clique.isHost) {
     const { error } = await supabase.rpc("set_clique_preferences", { target_clique: clique.id, meal_periods: mealPeriods, sort_mode: sortMode });
-    if (error) return alert(friendlyError(error, "We couldn't save those settings."));
+    if (clique?.id!==huntId || session?.user.id!==userId) return;
+    if (error) { if(accessRevoked(error)) return clearUnavailableClique(); return alert(friendlyError(error, "We couldn't save those settings.")); }
     preferences = { meal_periods: mealPeriods, sort_mode: sortMode };
   }
   $("#preference-summary").textContent = preferenceLabel();
+  await loadClique(false);
+  if (clique?.id!==huntId || session?.user.id!==userId) return;
   showPanel("swipe");
   renderRestaurant();
 });
@@ -801,10 +853,19 @@ function priceLabel(value) {
 function restaurantBrandKey(value) { return String(value || "").trim().toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim(); }
 function distanceLabel(meters) { return Number.isFinite(meters) ? `${(meters / 1609.344).toFixed(1)} mi` : "Distance unavailable"; }
 function renderRestaurant() {
+  if (!clique) return;
   const visibleRestaurants = filteredRestaurants();
-  swipeIndex = Number(localStorage.getItem(`grubclique-index-${clique.id}`) || swipeIndex || 0);
-  const restaurant = visibleRestaurants[swipeIndex];
-  $("#swipe-progress").textContent = `${Math.min(swipeIndex + 1, visibleRestaurants.length)}/${visibleRestaurants.length}`;
+  const restaurant = currentRestaurant();
+  const completed = visibleRestaurants.filter(r => votedIds.has(String(r.id))).length;
+  $("#swipe-progress").textContent = `${completed}/${visibleRestaurants.length} reviewed`;
+  $('#undo-swipe').disabled = swipeBusy || !votesReady || !votedIds.size || clique.status!=='swiping';
+  if (!votesReady) {
+    $('#restaurant-name').textContent='Loading saved choices';
+    $('#restaurant-meta').textContent='Your progress is temporarily unavailable. We will retry automatically.';
+    $('#pass').disabled=true; $('#like').disabled=true;
+    $('#hide-restaurant').classList.add('hidden'); $('#restaurant-links').replaceChildren();
+    return;
+  }
   if (!restaurant) {
     $("#restaurant-name").textContent = "You're all caught up";
     const completeSharedList = visibleRestaurants.length === restaurants.length;
@@ -822,7 +883,7 @@ function renderRestaurant() {
     $("#pass").disabled = true; $("#like").disabled = true;
     return;
   }
-  $("#pass").disabled = false; $("#like").disabled = false;
+  $("#pass").disabled = swipeBusy || clique.status!=='swiping'; $("#like").disabled = swipeBusy || clique.status!=='swiping';
   $("#hide-restaurant").classList.remove("hidden");
   $("#completion-progress").classList.add("hidden");
   $("#restaurant-photo").textContent = "🍽️";
@@ -837,14 +898,17 @@ function renderRestaurant() {
 }
 
 async function recordSwipe(liked) {
-  const restaurant = filteredRestaurants()[swipeIndex];
-  if (!restaurant) return;
+  const restaurant = currentRestaurant();
+  if (!clique || clique.status!=='swiping' || !votesReady || swipeBusy || !restaurant) return;
+  const huntId=clique.id; const userId=session.user.id;
+  swipeBusy=true; const revision=++huntRevision;
   $("#pass").disabled = true; $("#like").disabled = true;
-  const { data, error } = await supabase.rpc("record_swipe", { target_clique: clique.id, target_restaurant: restaurant.id, liked });
-  if (error) { $("#pass").disabled = false; $("#like").disabled = false; return alert("We couldn't save that swipe. Please try again."); }
+  const { data, error } = await supabase.rpc("record_swipe", { target_clique: huntId, target_restaurant: restaurant.id, liked });
+  if(clique?.id!==huntId || session?.user.id!==userId || revision!==huntRevision) return;
+  swipeBusy=false; huntRevision++;
+  if (error) { if(accessRevoked(error)) return clearUnavailableClique(); votesReady=false; renderRestaurant(); void loadClique(false); return alert("We couldn't confirm that swipe. Refreshing your saved choices."); }
   window.RedxjakAnalytics?.track("swipe_recorded", { liked });
-  swipeIndex += 1;
-  localStorage.setItem(`grubclique-index-${clique.id}`, String(swipeIndex));
+  votedIds.add(String(restaurant.id)); preferredCard=null;
   $("#undo-swipe").disabled = false;
   if (data?.[0]?.matched) {
     window.RedxjakAnalytics?.track("match_found");
@@ -860,7 +924,8 @@ $("#pass").addEventListener("click", () => recordSwipe(false));
 $("#like").addEventListener("click", () => recordSwipe(true));
 $("#swipe-chat").addEventListener("click", () => openHuntChat("swipe"));
 $("#hide-restaurant").addEventListener("click", async () => {
-  const restaurant = filteredRestaurants()[swipeIndex];
+  if (!clique || !votesReady || swipeBusy) return;
+  const restaurant = currentRestaurant();
   if (!restaurant || !confirm(`Never suggest ${restaurant.name} again? This hides the restaurant across future GrubHunts until you restore it in Account.`)) return;
   const { error } = await supabase.rpc("hide_restaurant", { target_place_id: restaurant.place_id, target_name: restaurant.name, target_cuisine: restaurant.cuisine || null, target_maps_url: restaurant.maps_url || null });
   if (error) return alert(friendlyError(error, "We couldn't hide that restaurant."));
@@ -869,14 +934,18 @@ $("#hide-restaurant").addEventListener("click", async () => {
   renderRestaurant();
 });
 $("#undo-swipe").addEventListener("click", async () => {
+  if (!clique || !votesReady || swipeBusy || clique.status!=='swiping') return;
+  const huntId=clique.id; const userId=session.user.id;
+  swipeBusy=true; const revision=++huntRevision;
   $("#undo-swipe").disabled = true;
   const { data, error } = await supabase.rpc("undo_last_swipe", { target_clique: clique.id });
-  if (error) { $("#undo-swipe").disabled = false; return alert("We couldn't undo that swipe. Please try again."); }
-  if (!data?.length) return;
-  swipeIndex = Math.max(0, swipeIndex - 1);
-  localStorage.setItem(`grubclique-index-${clique.id}`, String(swipeIndex));
+  if(clique?.id!==huntId || session?.user.id!==userId || revision!==huntRevision) return;
+  swipeBusy=false; huntRevision++;
+  if (error) { if(accessRevoked(error)) return clearUnavailableClique(); votesReady=false; renderRestaurant(); void loadClique(false); return alert("We couldn't confirm Undo. Refreshing your saved choices."); }
+  if (data?.length) { preferredCard=String(data[0].restaurant_id); votedIds.delete(preferredCard); }
   $("#match-card").classList.add("hidden");
   renderRestaurant();
+  await loadClique(false);
 });
 
 $("#delete-group").addEventListener("click", () => {
@@ -913,14 +982,14 @@ $("#chat-form").addEventListener("submit", async (event) => {
   const { error } = chatMode === "group"
     ? await supabase.rpc("send_friend_clique_message", { target_friend_clique: group.id, message_body: body })
     : await supabase.rpc("send_clique_message", { target_clique: clique.id, message_body: body });
-  if (error) return alert("We couldn't send that message.");
+  if (error) { if(accessRevoked(error)) return clearUnavailableClique(); return alert("We couldn't send that message."); }
   $("#chat-input").value = "";
   if (chatMode === "group") await loadGroup(false); else await loadClique(false);
 });
 
 $("#chat-back").addEventListener("click", async () => {
   if (chatMode === "group" || chatOrigin === "group") { await loadGroup(false); return showPanel("group"); }
-  if (chatOrigin === "match") { await loadClique(false); showPanel("swipe"); renderRestaurant(); return $("#match-card").classList.remove("hidden"); }
+  if (chatOrigin === "match") { await loadClique(false); if(!clique) return; showPanel("swipe"); renderRestaurant(); return $("#match-card").classList.remove("hidden"); }
   if (chatOrigin === "swipe") { await loadClique(false); showPanel("swipe"); return renderRestaurant(); }
   await loadClique(false); showPanel(chatOrigin === "filters" ? "filters" : "clique");
 });
@@ -1133,7 +1202,7 @@ async function loadHiddenRestaurants() {
 $("#clear-session").addEventListener("click", () => {
   stopPolling();
   if (clique?.id) localStorage.removeItem(`grubclique-index-${clique.id}`);
-  clique = null; restaurants = []; swipeIndex = 0;
+  resetHuntProgress(); clique = null; restaurants = [];
   localStorage.setItem(`grubclique-session-cleared-${session.user.id}`, "true");
   setMessage("#settings-message", "Saved GrubHunt cleared.", true);
 });
@@ -1163,7 +1232,7 @@ $$(".back-clique").forEach((button) => button.addEventListener("click", () => sh
 window.addEventListener("beforeinstallprompt", (event) => { event.preventDefault(); installPrompt = event; $("#install-app").classList.remove("hidden"); });
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden) { void refreshActivity(); void acknowledgeChat(); } });
 $("#install-app").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null; $("#install-app").classList.add("hidden"); });
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=22");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js?v=23");
 
 supabase.auth.onAuthStateChange((_event, nextSession) => {
   const changed = session?.user?.id !== nextSession?.user?.id;
